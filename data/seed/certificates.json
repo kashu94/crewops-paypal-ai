@@ -1,0 +1,2082 @@
+[
+ {
+  "crew_id": "C-1111",
+  "kind": "licence",
+  "expires": "2028-11-17"
+ },
+ {
+  "crew_id": "C-1111",
+  "kind": "medical",
+  "expires": "2026-11-05"
+ },
+ {
+  "crew_id": "C-1111",
+  "kind": "recurrent_training",
+  "expires": "2028-04-20"
+ },
+ {
+  "crew_id": "C-1111",
+  "kind": "safety_equipment",
+  "expires": "2029-03-31"
+ },
+ {
+  "crew_id": "C-1123",
+  "kind": "licence",
+  "expires": "2027-12-07"
+ },
+ {
+  "crew_id": "C-1123",
+  "kind": "medical",
+  "expires": "2028-01-18"
+ },
+ {
+  "crew_id": "C-1123",
+  "kind": "recurrent_training",
+  "expires": "2028-02-25"
+ },
+ {
+  "crew_id": "C-1123",
+  "kind": "safety_equipment",
+  "expires": "2028-10-02"
+ },
+ {
+  "crew_id": "C-1140",
+  "kind": "licence",
+  "expires": "2027-12-24"
+ },
+ {
+  "crew_id": "C-1140",
+  "kind": "medical",
+  "expires": "2027-05-19"
+ },
+ {
+  "crew_id": "C-1140",
+  "kind": "recurrent_training",
+  "expires": "2028-12-16"
+ },
+ {
+  "crew_id": "C-1140",
+  "kind": "safety_equipment",
+  "expires": "2028-06-03"
+ },
+ {
+  "crew_id": "C-1149",
+  "kind": "licence",
+  "expires": "2029-03-22"
+ },
+ {
+  "crew_id": "C-1149",
+  "kind": "medical",
+  "expires": "2029-04-03"
+ },
+ {
+  "crew_id": "C-1149",
+  "kind": "recurrent_training",
+  "expires": "2028-02-13"
+ },
+ {
+  "crew_id": "C-1149",
+  "kind": "safety_equipment",
+  "expires": "2027-03-02"
+ },
+ {
+  "crew_id": "C-1157",
+  "kind": "licence",
+  "expires": "2027-07-02"
+ },
+ {
+  "crew_id": "C-1157",
+  "kind": "medical",
+  "expires": "2027-07-02"
+ },
+ {
+  "crew_id": "C-1157",
+  "kind": "recurrent_training",
+  "expires": "2029-02-04"
+ },
+ {
+  "crew_id": "C-1157",
+  "kind": "safety_equipment",
+  "expires": "2028-10-15"
+ },
+ {
+  "crew_id": "C-1167",
+  "kind": "licence",
+  "expires": "2028-02-04"
+ },
+ {
+  "crew_id": "C-1167",
+  "kind": "medical",
+  "expires": "2027-12-11"
+ },
+ {
+  "crew_id": "C-1167",
+  "kind": "recurrent_training",
+  "expires": "2028-10-06"
+ },
+ {
+  "crew_id": "C-1167",
+  "kind": "safety_equipment",
+  "expires": "2027-12-17"
+ },
+ {
+  "crew_id": "C-1174",
+  "kind": "licence",
+  "expires": "2028-05-01"
+ },
+ {
+  "crew_id": "C-1174",
+  "kind": "medical",
+  "expires": "2029-04-11"
+ },
+ {
+  "crew_id": "C-1174",
+  "kind": "recurrent_training",
+  "expires": "2028-09-14"
+ },
+ {
+  "crew_id": "C-1174",
+  "kind": "safety_equipment",
+  "expires": "2028-10-03"
+ },
+ {
+  "crew_id": "C-1177",
+  "kind": "licence",
+  "expires": "2027-06-13"
+ },
+ {
+  "crew_id": "C-1177",
+  "kind": "medical",
+  "expires": "2027-05-29"
+ },
+ {
+  "crew_id": "C-1177",
+  "kind": "recurrent_training",
+  "expires": "2027-09-24"
+ },
+ {
+  "crew_id": "C-1177",
+  "kind": "safety_equipment",
+  "expires": "2027-04-05"
+ },
+ {
+  "crew_id": "C-1184",
+  "kind": "licence",
+  "expires": "2028-10-26"
+ },
+ {
+  "crew_id": "C-1184",
+  "kind": "medical",
+  "expires": "2028-11-20"
+ },
+ {
+  "crew_id": "C-1184",
+  "kind": "recurrent_training",
+  "expires": "2027-08-27"
+ },
+ {
+  "crew_id": "C-1184",
+  "kind": "safety_equipment",
+  "expires": "2027-04-19"
+ },
+ {
+  "crew_id": "C-1191",
+  "kind": "licence",
+  "expires": "2027-09-30"
+ },
+ {
+  "crew_id": "C-1191",
+  "kind": "medical",
+  "expires": "2027-06-02"
+ },
+ {
+  "crew_id": "C-1191",
+  "kind": "recurrent_training",
+  "expires": "2028-04-16"
+ },
+ {
+  "crew_id": "C-1191",
+  "kind": "safety_equipment",
+  "expires": "2027-08-25"
+ },
+ {
+  "crew_id": "C-1204",
+  "kind": "licence",
+  "expires": "2028-07-17"
+ },
+ {
+  "crew_id": "C-1204",
+  "kind": "medical",
+  "expires": "2028-03-22"
+ },
+ {
+  "crew_id": "C-1204",
+  "kind": "recurrent_training",
+  "expires": "2028-09-01"
+ },
+ {
+  "crew_id": "C-1204",
+  "kind": "safety_equipment",
+  "expires": "2028-01-06"
+ },
+ {
+  "crew_id": "C-1211",
+  "kind": "licence",
+  "expires": "2028-10-20"
+ },
+ {
+  "crew_id": "C-1211",
+  "kind": "medical",
+  "expires": "2027-03-04"
+ },
+ {
+  "crew_id": "C-1211",
+  "kind": "recurrent_training",
+  "expires": "2029-04-14"
+ },
+ {
+  "crew_id": "C-1211",
+  "kind": "safety_equipment",
+  "expires": "2027-09-25"
+ },
+ {
+  "crew_id": "C-1224",
+  "kind": "licence",
+  "expires": "2028-01-16"
+ },
+ {
+  "crew_id": "C-1224",
+  "kind": "medical",
+  "expires": "2028-12-21"
+ },
+ {
+  "crew_id": "C-1224",
+  "kind": "recurrent_training",
+  "expires": "2027-03-06"
+ },
+ {
+  "crew_id": "C-1224",
+  "kind": "safety_equipment",
+  "expires": "2027-06-28"
+ },
+ {
+  "crew_id": "C-1237",
+  "kind": "licence",
+  "expires": "2027-12-24"
+ },
+ {
+  "crew_id": "C-1237",
+  "kind": "medical",
+  "expires": "2027-07-04"
+ },
+ {
+  "crew_id": "C-1237",
+  "kind": "recurrent_training",
+  "expires": "2027-04-14"
+ },
+ {
+  "crew_id": "C-1237",
+  "kind": "safety_equipment",
+  "expires": "2027-08-23"
+ },
+ {
+  "crew_id": "C-1242",
+  "kind": "licence",
+  "expires": "2027-05-22"
+ },
+ {
+  "crew_id": "C-1242",
+  "kind": "medical",
+  "expires": "2028-05-12"
+ },
+ {
+  "crew_id": "C-1242",
+  "kind": "recurrent_training",
+  "expires": "2027-06-16"
+ },
+ {
+  "crew_id": "C-1242",
+  "kind": "safety_equipment",
+  "expires": "2029-01-02"
+ },
+ {
+  "crew_id": "C-1247",
+  "kind": "licence",
+  "expires": "2027-06-23"
+ },
+ {
+  "crew_id": "C-1247",
+  "kind": "medical",
+  "expires": "2028-10-29"
+ },
+ {
+  "crew_id": "C-1247",
+  "kind": "recurrent_training",
+  "expires": "2027-03-14"
+ },
+ {
+  "crew_id": "C-1247",
+  "kind": "safety_equipment",
+  "expires": "2027-11-07"
+ },
+ {
+  "crew_id": "C-1254",
+  "kind": "licence",
+  "expires": "2029-03-29"
+ },
+ {
+  "crew_id": "C-1254",
+  "kind": "medical",
+  "expires": "2027-09-11"
+ },
+ {
+  "crew_id": "C-1254",
+  "kind": "recurrent_training",
+  "expires": "2027-12-04"
+ },
+ {
+  "crew_id": "C-1254",
+  "kind": "safety_equipment",
+  "expires": "2028-10-15"
+ },
+ {
+  "crew_id": "C-1266",
+  "kind": "licence",
+  "expires": "2028-12-24"
+ },
+ {
+  "crew_id": "C-1266",
+  "kind": "medical",
+  "expires": "2028-08-13"
+ },
+ {
+  "crew_id": "C-1266",
+  "kind": "recurrent_training",
+  "expires": "2028-07-30"
+ },
+ {
+  "crew_id": "C-1266",
+  "kind": "safety_equipment",
+  "expires": "2029-03-12"
+ },
+ {
+  "crew_id": "C-1275",
+  "kind": "licence",
+  "expires": "2027-10-19"
+ },
+ {
+  "crew_id": "C-1275",
+  "kind": "medical",
+  "expires": "2028-09-15"
+ },
+ {
+  "crew_id": "C-1275",
+  "kind": "recurrent_training",
+  "expires": "2028-04-04"
+ },
+ {
+  "crew_id": "C-1275",
+  "kind": "safety_equipment",
+  "expires": "2027-10-17"
+ },
+ {
+  "crew_id": "C-1278",
+  "kind": "licence",
+  "expires": "2028-03-11"
+ },
+ {
+  "crew_id": "C-1278",
+  "kind": "medical",
+  "expires": "2027-11-08"
+ },
+ {
+  "crew_id": "C-1278",
+  "kind": "recurrent_training",
+  "expires": "2027-07-21"
+ },
+ {
+  "crew_id": "C-1278",
+  "kind": "safety_equipment",
+  "expires": "2028-04-27"
+ },
+ {
+  "crew_id": "C-1281",
+  "kind": "licence",
+  "expires": "2028-12-06"
+ },
+ {
+  "crew_id": "C-1281",
+  "kind": "medical",
+  "expires": "2027-10-23"
+ },
+ {
+  "crew_id": "C-1281",
+  "kind": "recurrent_training",
+  "expires": "2027-05-01"
+ },
+ {
+  "crew_id": "C-1281",
+  "kind": "safety_equipment",
+  "expires": "2028-10-28"
+ },
+ {
+  "crew_id": "C-1285",
+  "kind": "licence",
+  "expires": "2027-05-09"
+ },
+ {
+  "crew_id": "C-1285",
+  "kind": "medical",
+  "expires": "2028-02-29"
+ },
+ {
+  "crew_id": "C-1285",
+  "kind": "recurrent_training",
+  "expires": "2028-01-16"
+ },
+ {
+  "crew_id": "C-1285",
+  "kind": "safety_equipment",
+  "expires": "2028-08-23"
+ },
+ {
+  "crew_id": "C-1291",
+  "kind": "licence",
+  "expires": "2028-04-24"
+ },
+ {
+  "crew_id": "C-1291",
+  "kind": "medical",
+  "expires": "2028-02-09"
+ },
+ {
+  "crew_id": "C-1291",
+  "kind": "recurrent_training",
+  "expires": "2027-11-04"
+ },
+ {
+  "crew_id": "C-1291",
+  "kind": "safety_equipment",
+  "expires": "2027-08-31"
+ },
+ {
+  "crew_id": "C-1302",
+  "kind": "licence",
+  "expires": "2028-05-04"
+ },
+ {
+  "crew_id": "C-1302",
+  "kind": "medical",
+  "expires": "2028-12-28"
+ },
+ {
+  "crew_id": "C-1302",
+  "kind": "recurrent_training",
+  "expires": "2026-11-08"
+ },
+ {
+  "crew_id": "C-1302",
+  "kind": "safety_equipment",
+  "expires": "2027-06-15"
+ },
+ {
+  "crew_id": "C-1319",
+  "kind": "licence",
+  "expires": "2027-11-30"
+ },
+ {
+  "crew_id": "C-1319",
+  "kind": "medical",
+  "expires": "2028-01-27"
+ },
+ {
+  "crew_id": "C-1319",
+  "kind": "recurrent_training",
+  "expires": "2027-07-08"
+ },
+ {
+  "crew_id": "C-1319",
+  "kind": "safety_equipment",
+  "expires": "2028-05-17"
+ },
+ {
+  "crew_id": "C-1324",
+  "kind": "licence",
+  "expires": "2028-08-06"
+ },
+ {
+  "crew_id": "C-1324",
+  "kind": "medical",
+  "expires": "2029-03-04"
+ },
+ {
+  "crew_id": "C-1324",
+  "kind": "recurrent_training",
+  "expires": "2029-03-05"
+ },
+ {
+  "crew_id": "C-1324",
+  "kind": "safety_equipment",
+  "expires": "2027-06-01"
+ },
+ {
+  "crew_id": "C-1341",
+  "kind": "licence",
+  "expires": "2027-07-19"
+ },
+ {
+  "crew_id": "C-1341",
+  "kind": "medical",
+  "expires": "2028-09-23"
+ },
+ {
+  "crew_id": "C-1341",
+  "kind": "recurrent_training",
+  "expires": "2028-12-06"
+ },
+ {
+  "crew_id": "C-1341",
+  "kind": "safety_equipment",
+  "expires": "2028-07-27"
+ },
+ {
+  "crew_id": "C-1357",
+  "kind": "licence",
+  "expires": "2029-04-13"
+ },
+ {
+  "crew_id": "C-1357",
+  "kind": "medical",
+  "expires": "2027-04-04"
+ },
+ {
+  "crew_id": "C-1357",
+  "kind": "recurrent_training",
+  "expires": "2028-02-16"
+ },
+ {
+  "crew_id": "C-1357",
+  "kind": "safety_equipment",
+  "expires": "2029-03-18"
+ },
+ {
+  "crew_id": "C-1365",
+  "kind": "licence",
+  "expires": "2028-11-15"
+ },
+ {
+  "crew_id": "C-1365",
+  "kind": "medical",
+  "expires": "2027-07-21"
+ },
+ {
+  "crew_id": "C-1365",
+  "kind": "recurrent_training",
+  "expires": "2028-06-04"
+ },
+ {
+  "crew_id": "C-1365",
+  "kind": "safety_equipment",
+  "expires": "2027-10-03"
+ },
+ {
+  "crew_id": "C-1373",
+  "kind": "licence",
+  "expires": "2029-03-20"
+ },
+ {
+  "crew_id": "C-1373",
+  "kind": "medical",
+  "expires": "2028-10-13"
+ },
+ {
+  "crew_id": "C-1373",
+  "kind": "recurrent_training",
+  "expires": "2029-02-08"
+ },
+ {
+  "crew_id": "C-1373",
+  "kind": "safety_equipment",
+  "expires": "2028-11-08"
+ },
+ {
+  "crew_id": "C-1382",
+  "kind": "licence",
+  "expires": "2029-03-18"
+ },
+ {
+  "crew_id": "C-1382",
+  "kind": "medical",
+  "expires": "2028-04-03"
+ },
+ {
+  "crew_id": "C-1382",
+  "kind": "recurrent_training",
+  "expires": "2027-06-06"
+ },
+ {
+  "crew_id": "C-1382",
+  "kind": "safety_equipment",
+  "expires": "2027-11-19"
+ },
+ {
+  "crew_id": "C-1391",
+  "kind": "licence",
+  "expires": "2029-02-18"
+ },
+ {
+  "crew_id": "C-1391",
+  "kind": "medical",
+  "expires": "2027-10-04"
+ },
+ {
+  "crew_id": "C-1391",
+  "kind": "recurrent_training",
+  "expires": "2028-04-05"
+ },
+ {
+  "crew_id": "C-1391",
+  "kind": "safety_equipment",
+  "expires": "2028-01-19"
+ },
+ {
+  "crew_id": "C-1396",
+  "kind": "licence",
+  "expires": "2028-12-01"
+ },
+ {
+  "crew_id": "C-1396",
+  "kind": "medical",
+  "expires": "2027-06-17"
+ },
+ {
+  "crew_id": "C-1396",
+  "kind": "recurrent_training",
+  "expires": "2027-07-06"
+ },
+ {
+  "crew_id": "C-1396",
+  "kind": "safety_equipment",
+  "expires": "2029-04-11"
+ },
+ {
+  "crew_id": "C-1404",
+  "kind": "licence",
+  "expires": "2027-07-17"
+ },
+ {
+  "crew_id": "C-1404",
+  "kind": "medical",
+  "expires": "2028-04-14"
+ },
+ {
+  "crew_id": "C-1404",
+  "kind": "recurrent_training",
+  "expires": "2028-04-15"
+ },
+ {
+  "crew_id": "C-1404",
+  "kind": "safety_equipment",
+  "expires": "2027-09-22"
+ },
+ {
+  "crew_id": "C-1407",
+  "kind": "licence",
+  "expires": "2027-10-27"
+ },
+ {
+  "crew_id": "C-1407",
+  "kind": "medical",
+  "expires": "2028-03-27"
+ },
+ {
+  "crew_id": "C-1407",
+  "kind": "recurrent_training",
+  "expires": "2028-09-21"
+ },
+ {
+  "crew_id": "C-1407",
+  "kind": "safety_equipment",
+  "expires": "2027-03-05"
+ },
+ {
+  "crew_id": "C-1419",
+  "kind": "licence",
+  "expires": "2027-08-16"
+ },
+ {
+  "crew_id": "C-1419",
+  "kind": "medical",
+  "expires": "2027-02-28"
+ },
+ {
+  "crew_id": "C-1419",
+  "kind": "recurrent_training",
+  "expires": "2027-12-02"
+ },
+ {
+  "crew_id": "C-1419",
+  "kind": "safety_equipment",
+  "expires": "2027-12-21"
+ },
+ {
+  "crew_id": "C-1427",
+  "kind": "licence",
+  "expires": "2029-03-16"
+ },
+ {
+  "crew_id": "C-1427",
+  "kind": "medical",
+  "expires": "2028-03-20"
+ },
+ {
+  "crew_id": "C-1427",
+  "kind": "recurrent_training",
+  "expires": "2027-12-01"
+ },
+ {
+  "crew_id": "C-1427",
+  "kind": "safety_equipment",
+  "expires": "2028-04-25"
+ },
+ {
+  "crew_id": "C-1437",
+  "kind": "licence",
+  "expires": "2028-11-01"
+ },
+ {
+  "crew_id": "C-1437",
+  "kind": "medical",
+  "expires": "2028-12-27"
+ },
+ {
+  "crew_id": "C-1437",
+  "kind": "recurrent_training",
+  "expires": "2029-03-05"
+ },
+ {
+  "crew_id": "C-1437",
+  "kind": "safety_equipment",
+  "expires": "2028-06-12"
+ },
+ {
+  "crew_id": "C-1446",
+  "kind": "licence",
+  "expires": "2027-11-10"
+ },
+ {
+  "crew_id": "C-1446",
+  "kind": "medical",
+  "expires": "2028-05-15"
+ },
+ {
+  "crew_id": "C-1446",
+  "kind": "recurrent_training",
+  "expires": "2028-04-30"
+ },
+ {
+  "crew_id": "C-1446",
+  "kind": "safety_equipment",
+  "expires": "2027-06-20"
+ },
+ {
+  "crew_id": "C-1460",
+  "kind": "licence",
+  "expires": "2027-05-08"
+ },
+ {
+  "crew_id": "C-1460",
+  "kind": "medical",
+  "expires": "2028-02-24"
+ },
+ {
+  "crew_id": "C-1460",
+  "kind": "recurrent_training",
+  "expires": "2028-04-16"
+ },
+ {
+  "crew_id": "C-1460",
+  "kind": "safety_equipment",
+  "expires": "2028-04-20"
+ },
+ {
+  "crew_id": "C-1471",
+  "kind": "licence",
+  "expires": "2028-06-19"
+ },
+ {
+  "crew_id": "C-1471",
+  "kind": "medical",
+  "expires": "2027-09-12"
+ },
+ {
+  "crew_id": "C-1471",
+  "kind": "recurrent_training",
+  "expires": "2027-03-09"
+ },
+ {
+  "crew_id": "C-1471",
+  "kind": "safety_equipment",
+  "expires": "2028-04-21"
+ },
+ {
+  "crew_id": "C-1486",
+  "kind": "licence",
+  "expires": "2029-04-12"
+ },
+ {
+  "crew_id": "C-1486",
+  "kind": "medical",
+  "expires": "2028-07-13"
+ },
+ {
+  "crew_id": "C-1486",
+  "kind": "recurrent_training",
+  "expires": "2027-12-05"
+ },
+ {
+  "crew_id": "C-1486",
+  "kind": "safety_equipment",
+  "expires": "2029-02-12"
+ },
+ {
+  "crew_id": "C-1502",
+  "kind": "licence",
+  "expires": "2027-10-16"
+ },
+ {
+  "crew_id": "C-1502",
+  "kind": "medical",
+  "expires": "2027-04-03"
+ },
+ {
+  "crew_id": "C-1502",
+  "kind": "recurrent_training",
+  "expires": "2027-12-23"
+ },
+ {
+  "crew_id": "C-1502",
+  "kind": "safety_equipment",
+  "expires": "2027-12-09"
+ },
+ {
+  "crew_id": "C-1514",
+  "kind": "licence",
+  "expires": "2028-04-28"
+ },
+ {
+  "crew_id": "C-1514",
+  "kind": "medical",
+  "expires": "2028-01-31"
+ },
+ {
+  "crew_id": "C-1514",
+  "kind": "recurrent_training",
+  "expires": "2028-09-26"
+ },
+ {
+  "crew_id": "C-1514",
+  "kind": "safety_equipment",
+  "expires": "2028-03-28"
+ },
+ {
+  "crew_id": "C-1527",
+  "kind": "licence",
+  "expires": "2028-06-29"
+ },
+ {
+  "crew_id": "C-1527",
+  "kind": "medical",
+  "expires": "2028-10-03"
+ },
+ {
+  "crew_id": "C-1527",
+  "kind": "recurrent_training",
+  "expires": "2027-05-14"
+ },
+ {
+  "crew_id": "C-1527",
+  "kind": "safety_equipment",
+  "expires": "2028-06-13"
+ },
+ {
+  "crew_id": "C-1530",
+  "kind": "licence",
+  "expires": "2028-08-05"
+ },
+ {
+  "crew_id": "C-1530",
+  "kind": "medical",
+  "expires": "2027-04-12"
+ },
+ {
+  "crew_id": "C-1530",
+  "kind": "recurrent_training",
+  "expires": "2028-07-21"
+ },
+ {
+  "crew_id": "C-1530",
+  "kind": "safety_equipment",
+  "expires": "2028-09-16"
+ },
+ {
+  "crew_id": "C-1534",
+  "kind": "licence",
+  "expires": "2027-12-08"
+ },
+ {
+  "crew_id": "C-1534",
+  "kind": "medical",
+  "expires": "2028-01-19"
+ },
+ {
+  "crew_id": "C-1534",
+  "kind": "recurrent_training",
+  "expires": "2028-08-30"
+ },
+ {
+  "crew_id": "C-1534",
+  "kind": "safety_equipment",
+  "expires": "2029-04-17"
+ },
+ {
+  "crew_id": "C-1537",
+  "kind": "licence",
+  "expires": "2027-05-22"
+ },
+ {
+  "crew_id": "C-1537",
+  "kind": "medical",
+  "expires": "2027-12-17"
+ },
+ {
+  "crew_id": "C-1537",
+  "kind": "recurrent_training",
+  "expires": "2027-12-02"
+ },
+ {
+  "crew_id": "C-1537",
+  "kind": "safety_equipment",
+  "expires": "2029-04-06"
+ },
+ {
+  "crew_id": "C-1542",
+  "kind": "licence",
+  "expires": "2027-06-01"
+ },
+ {
+  "crew_id": "C-1542",
+  "kind": "medical",
+  "expires": "2029-01-07"
+ },
+ {
+  "crew_id": "C-1542",
+  "kind": "recurrent_training",
+  "expires": "2027-11-13"
+ },
+ {
+  "crew_id": "C-1542",
+  "kind": "safety_equipment",
+  "expires": "2027-09-06"
+ },
+ {
+  "crew_id": "C-1554",
+  "kind": "licence",
+  "expires": "2029-04-07"
+ },
+ {
+  "crew_id": "C-1554",
+  "kind": "medical",
+  "expires": "2028-02-25"
+ },
+ {
+  "crew_id": "C-1554",
+  "kind": "recurrent_training",
+  "expires": "2028-08-02"
+ },
+ {
+  "crew_id": "C-1554",
+  "kind": "safety_equipment",
+  "expires": "2029-03-25"
+ },
+ {
+  "crew_id": "C-1566",
+  "kind": "licence",
+  "expires": "2027-04-03"
+ },
+ {
+  "crew_id": "C-1566",
+  "kind": "medical",
+  "expires": "2027-04-17"
+ },
+ {
+  "crew_id": "C-1566",
+  "kind": "recurrent_training",
+  "expires": "2027-11-07"
+ },
+ {
+  "crew_id": "C-1566",
+  "kind": "safety_equipment",
+  "expires": "2027-07-19"
+ },
+ {
+  "crew_id": "C-1576",
+  "kind": "licence",
+  "expires": "2027-12-08"
+ },
+ {
+  "crew_id": "C-1576",
+  "kind": "medical",
+  "expires": "2027-03-01"
+ },
+ {
+  "crew_id": "C-1576",
+  "kind": "recurrent_training",
+  "expires": "2029-04-09"
+ },
+ {
+  "crew_id": "C-1576",
+  "kind": "safety_equipment",
+  "expires": "2028-10-06"
+ },
+ {
+  "crew_id": "C-1585",
+  "kind": "licence",
+  "expires": "2027-03-18"
+ },
+ {
+  "crew_id": "C-1585",
+  "kind": "medical",
+  "expires": "2029-01-08"
+ },
+ {
+  "crew_id": "C-1585",
+  "kind": "recurrent_training",
+  "expires": "2027-10-16"
+ },
+ {
+  "crew_id": "C-1585",
+  "kind": "safety_equipment",
+  "expires": "2028-02-19"
+ },
+ {
+  "crew_id": "C-1590",
+  "kind": "licence",
+  "expires": "2029-04-06"
+ },
+ {
+  "crew_id": "C-1590",
+  "kind": "medical",
+  "expires": "2027-11-01"
+ },
+ {
+  "crew_id": "C-1590",
+  "kind": "recurrent_training",
+  "expires": "2028-10-24"
+ },
+ {
+  "crew_id": "C-1590",
+  "kind": "safety_equipment",
+  "expires": "2027-09-27"
+ },
+ {
+  "crew_id": "C-1607",
+  "kind": "licence",
+  "expires": "2028-01-22"
+ },
+ {
+  "crew_id": "C-1607",
+  "kind": "medical",
+  "expires": "2029-02-13"
+ },
+ {
+  "crew_id": "C-1607",
+  "kind": "recurrent_training",
+  "expires": "2028-12-07"
+ },
+ {
+  "crew_id": "C-1607",
+  "kind": "safety_equipment",
+  "expires": "2029-03-26"
+ },
+ {
+  "crew_id": "C-1621",
+  "kind": "licence",
+  "expires": "2028-01-26"
+ },
+ {
+  "crew_id": "C-1621",
+  "kind": "medical",
+  "expires": "2028-05-20"
+ },
+ {
+  "crew_id": "C-1621",
+  "kind": "recurrent_training",
+  "expires": "2028-01-30"
+ },
+ {
+  "crew_id": "C-1621",
+  "kind": "safety_equipment",
+  "expires": "2028-12-22"
+ },
+ {
+  "crew_id": "C-1624",
+  "kind": "licence",
+  "expires": "2028-04-04"
+ },
+ {
+  "crew_id": "C-1624",
+  "kind": "medical",
+  "expires": "2028-09-29"
+ },
+ {
+  "crew_id": "C-1624",
+  "kind": "recurrent_training",
+  "expires": "2027-06-03"
+ },
+ {
+  "crew_id": "C-1624",
+  "kind": "safety_equipment",
+  "expires": "2028-11-22"
+ },
+ {
+  "crew_id": "C-1627",
+  "kind": "licence",
+  "expires": "2028-07-22"
+ },
+ {
+  "crew_id": "C-1627",
+  "kind": "medical",
+  "expires": "2027-12-14"
+ },
+ {
+  "crew_id": "C-1627",
+  "kind": "recurrent_training",
+  "expires": "2028-12-01"
+ },
+ {
+  "crew_id": "C-1627",
+  "kind": "safety_equipment",
+  "expires": "2028-12-28"
+ },
+ {
+  "crew_id": "C-1644",
+  "kind": "licence",
+  "expires": "2028-07-15"
+ },
+ {
+  "crew_id": "C-1644",
+  "kind": "medical",
+  "expires": "2028-02-12"
+ },
+ {
+  "crew_id": "C-1644",
+  "kind": "recurrent_training",
+  "expires": "2028-09-08"
+ },
+ {
+  "crew_id": "C-1644",
+  "kind": "safety_equipment",
+  "expires": "2028-07-04"
+ },
+ {
+  "crew_id": "C-1649",
+  "kind": "licence",
+  "expires": "2027-07-05"
+ },
+ {
+  "crew_id": "C-1649",
+  "kind": "medical",
+  "expires": "2027-12-31"
+ },
+ {
+  "crew_id": "C-1649",
+  "kind": "recurrent_training",
+  "expires": "2028-07-06"
+ },
+ {
+  "crew_id": "C-1649",
+  "kind": "safety_equipment",
+  "expires": "2027-08-22"
+ },
+ {
+  "crew_id": "C-1658",
+  "kind": "licence",
+  "expires": "2028-11-15"
+ },
+ {
+  "crew_id": "C-1658",
+  "kind": "medical",
+  "expires": "2028-06-29"
+ },
+ {
+  "crew_id": "C-1658",
+  "kind": "recurrent_training",
+  "expires": "2028-12-02"
+ },
+ {
+  "crew_id": "C-1658",
+  "kind": "safety_equipment",
+  "expires": "2028-11-18"
+ },
+ {
+  "crew_id": "C-1673",
+  "kind": "licence",
+  "expires": "2029-04-05"
+ },
+ {
+  "crew_id": "C-1673",
+  "kind": "medical",
+  "expires": "2027-04-19"
+ },
+ {
+  "crew_id": "C-1673",
+  "kind": "recurrent_training",
+  "expires": "2027-05-08"
+ },
+ {
+  "crew_id": "C-1673",
+  "kind": "safety_equipment",
+  "expires": "2028-08-19"
+ },
+ {
+  "crew_id": "C-1683",
+  "kind": "licence",
+  "expires": "2028-08-04"
+ },
+ {
+  "crew_id": "C-1683",
+  "kind": "medical",
+  "expires": "2028-11-04"
+ },
+ {
+  "crew_id": "C-1683",
+  "kind": "recurrent_training",
+  "expires": "2028-07-14"
+ },
+ {
+  "crew_id": "C-1683",
+  "kind": "safety_equipment",
+  "expires": "2029-02-28"
+ },
+ {
+  "crew_id": "C-1687",
+  "kind": "licence",
+  "expires": "2027-06-14"
+ },
+ {
+  "crew_id": "C-1687",
+  "kind": "medical",
+  "expires": "2028-08-02"
+ },
+ {
+  "crew_id": "C-1687",
+  "kind": "recurrent_training",
+  "expires": "2027-03-26"
+ },
+ {
+  "crew_id": "C-1687",
+  "kind": "safety_equipment",
+  "expires": "2028-04-24"
+ },
+ {
+  "crew_id": "C-1701",
+  "kind": "licence",
+  "expires": "2028-07-15"
+ },
+ {
+  "crew_id": "C-1701",
+  "kind": "medical",
+  "expires": "2027-09-23"
+ },
+ {
+  "crew_id": "C-1701",
+  "kind": "recurrent_training",
+  "expires": "2028-07-25"
+ },
+ {
+  "crew_id": "C-1701",
+  "kind": "safety_equipment",
+  "expires": "2027-04-03"
+ },
+ {
+  "crew_id": "C-1712",
+  "kind": "licence",
+  "expires": "2027-07-19"
+ },
+ {
+  "crew_id": "C-1712",
+  "kind": "medical",
+  "expires": "2028-06-25"
+ },
+ {
+  "crew_id": "C-1712",
+  "kind": "recurrent_training",
+  "expires": "2028-04-18"
+ },
+ {
+  "crew_id": "C-1712",
+  "kind": "safety_equipment",
+  "expires": "2028-03-19"
+ },
+ {
+  "crew_id": "C-1721",
+  "kind": "licence",
+  "expires": "2027-03-20"
+ },
+ {
+  "crew_id": "C-1721",
+  "kind": "medical",
+  "expires": "2027-07-22"
+ },
+ {
+  "crew_id": "C-1721",
+  "kind": "recurrent_training",
+  "expires": "2029-03-29"
+ },
+ {
+  "crew_id": "C-1721",
+  "kind": "safety_equipment",
+  "expires": "2027-08-07"
+ },
+ {
+  "crew_id": "C-1737",
+  "kind": "licence",
+  "expires": "2028-07-23"
+ },
+ {
+  "crew_id": "C-1737",
+  "kind": "medical",
+  "expires": "2028-01-07"
+ },
+ {
+  "crew_id": "C-1737",
+  "kind": "recurrent_training",
+  "expires": "2027-04-25"
+ },
+ {
+  "crew_id": "C-1737",
+  "kind": "safety_equipment",
+  "expires": "2029-01-08"
+ },
+ {
+  "crew_id": "C-1754",
+  "kind": "licence",
+  "expires": "2027-08-30"
+ },
+ {
+  "crew_id": "C-1754",
+  "kind": "medical",
+  "expires": "2027-11-25"
+ },
+ {
+  "crew_id": "C-1754",
+  "kind": "recurrent_training",
+  "expires": "2027-10-29"
+ },
+ {
+  "crew_id": "C-1754",
+  "kind": "safety_equipment",
+  "expires": "2027-11-06"
+ },
+ {
+  "crew_id": "C-1768",
+  "kind": "licence",
+  "expires": "2029-01-24"
+ },
+ {
+  "crew_id": "C-1768",
+  "kind": "medical",
+  "expires": "2027-12-28"
+ },
+ {
+  "crew_id": "C-1768",
+  "kind": "recurrent_training",
+  "expires": "2027-03-02"
+ },
+ {
+  "crew_id": "C-1768",
+  "kind": "safety_equipment",
+  "expires": "2027-11-04"
+ },
+ {
+  "crew_id": "C-1777",
+  "kind": "licence",
+  "expires": "2029-02-27"
+ },
+ {
+  "crew_id": "C-1777",
+  "kind": "medical",
+  "expires": "2028-07-06"
+ },
+ {
+  "crew_id": "C-1777",
+  "kind": "recurrent_training",
+  "expires": "2028-06-02"
+ },
+ {
+  "crew_id": "C-1777",
+  "kind": "safety_equipment",
+  "expires": "2027-03-22"
+ },
+ {
+  "crew_id": "C-1794",
+  "kind": "licence",
+  "expires": "2028-11-05"
+ },
+ {
+  "crew_id": "C-1794",
+  "kind": "medical",
+  "expires": "2027-09-29"
+ },
+ {
+  "crew_id": "C-1794",
+  "kind": "recurrent_training",
+  "expires": "2028-04-09"
+ },
+ {
+  "crew_id": "C-1794",
+  "kind": "safety_equipment",
+  "expires": "2029-04-07"
+ },
+ {
+  "crew_id": "C-1810",
+  "kind": "licence",
+  "expires": "2027-05-27"
+ },
+ {
+  "crew_id": "C-1810",
+  "kind": "medical",
+  "expires": "2027-03-16"
+ },
+ {
+  "crew_id": "C-1810",
+  "kind": "recurrent_training",
+  "expires": "2027-05-03"
+ },
+ {
+  "crew_id": "C-1810",
+  "kind": "safety_equipment",
+  "expires": "2028-04-07"
+ },
+ {
+  "crew_id": "C-1817",
+  "kind": "licence",
+  "expires": "2027-04-05"
+ },
+ {
+  "crew_id": "C-1817",
+  "kind": "medical",
+  "expires": "2027-08-20"
+ },
+ {
+  "crew_id": "C-1817",
+  "kind": "recurrent_training",
+  "expires": "2027-06-05"
+ },
+ {
+  "crew_id": "C-1817",
+  "kind": "safety_equipment",
+  "expires": "2028-09-15"
+ },
+ {
+  "crew_id": "C-1821",
+  "kind": "licence",
+  "expires": "2028-08-29"
+ },
+ {
+  "crew_id": "C-1821",
+  "kind": "medical",
+  "expires": "2027-07-09"
+ },
+ {
+  "crew_id": "C-1821",
+  "kind": "recurrent_training",
+  "expires": "2027-12-09"
+ },
+ {
+  "crew_id": "C-1821",
+  "kind": "safety_equipment",
+  "expires": "2027-03-20"
+ },
+ {
+  "crew_id": "C-1832",
+  "kind": "licence",
+  "expires": "2029-01-23"
+ },
+ {
+  "crew_id": "C-1832",
+  "kind": "medical",
+  "expires": "2027-11-30"
+ },
+ {
+  "crew_id": "C-1832",
+  "kind": "recurrent_training",
+  "expires": "2027-06-23"
+ },
+ {
+  "crew_id": "C-1832",
+  "kind": "safety_equipment",
+  "expires": "2028-08-04"
+ },
+ {
+  "crew_id": "C-1837",
+  "kind": "licence",
+  "expires": "2027-06-25"
+ },
+ {
+  "crew_id": "C-1837",
+  "kind": "medical",
+  "expires": "2027-03-18"
+ },
+ {
+  "crew_id": "C-1837",
+  "kind": "recurrent_training",
+  "expires": "2028-01-31"
+ },
+ {
+  "crew_id": "C-1837",
+  "kind": "safety_equipment",
+  "expires": "2028-05-18"
+ },
+ {
+  "crew_id": "C-1843",
+  "kind": "licence",
+  "expires": "2029-03-10"
+ },
+ {
+  "crew_id": "C-1843",
+  "kind": "medical",
+  "expires": "2027-06-01"
+ },
+ {
+  "crew_id": "C-1843",
+  "kind": "recurrent_training",
+  "expires": "2027-11-11"
+ },
+ {
+  "crew_id": "C-1843",
+  "kind": "safety_equipment",
+  "expires": "2027-07-30"
+ },
+ {
+  "crew_id": "C-1854",
+  "kind": "licence",
+  "expires": "2028-08-24"
+ },
+ {
+  "crew_id": "C-1854",
+  "kind": "medical",
+  "expires": "2028-09-27"
+ },
+ {
+  "crew_id": "C-1854",
+  "kind": "recurrent_training",
+  "expires": "2027-07-07"
+ },
+ {
+  "crew_id": "C-1854",
+  "kind": "safety_equipment",
+  "expires": "2028-03-08"
+ },
+ {
+  "crew_id": "C-1871",
+  "kind": "licence",
+  "expires": "2028-04-18"
+ },
+ {
+  "crew_id": "C-1871",
+  "kind": "medical",
+  "expires": "2027-11-20"
+ },
+ {
+  "crew_id": "C-1871",
+  "kind": "recurrent_training",
+  "expires": "2028-07-22"
+ },
+ {
+  "crew_id": "C-1871",
+  "kind": "safety_equipment",
+  "expires": "2029-02-13"
+ },
+ {
+  "crew_id": "C-1881",
+  "kind": "licence",
+  "expires": "2028-10-22"
+ },
+ {
+  "crew_id": "C-1881",
+  "kind": "medical",
+  "expires": "2027-11-19"
+ },
+ {
+  "crew_id": "C-1881",
+  "kind": "recurrent_training",
+  "expires": "2028-04-05"
+ },
+ {
+  "crew_id": "C-1881",
+  "kind": "safety_equipment",
+  "expires": "2028-01-27"
+ },
+ {
+  "crew_id": "C-1893",
+  "kind": "licence",
+  "expires": "2028-01-30"
+ },
+ {
+  "crew_id": "C-1893",
+  "kind": "medical",
+  "expires": "2029-04-03"
+ },
+ {
+  "crew_id": "C-1893",
+  "kind": "recurrent_training",
+  "expires": "2027-05-21"
+ },
+ {
+  "crew_id": "C-1893",
+  "kind": "safety_equipment",
+  "expires": "2029-02-13"
+ },
+ {
+  "crew_id": "C-1904",
+  "kind": "licence",
+  "expires": "2028-07-20"
+ },
+ {
+  "crew_id": "C-1904",
+  "kind": "medical",
+  "expires": "2028-03-11"
+ },
+ {
+  "crew_id": "C-1904",
+  "kind": "recurrent_training",
+  "expires": "2029-03-27"
+ },
+ {
+  "crew_id": "C-1904",
+  "kind": "safety_equipment",
+  "expires": "2029-03-02"
+ },
+ {
+  "crew_id": "C-1912",
+  "kind": "licence",
+  "expires": "2027-08-15"
+ },
+ {
+  "crew_id": "C-1912",
+  "kind": "medical",
+  "expires": "2028-11-13"
+ },
+ {
+  "crew_id": "C-1912",
+  "kind": "recurrent_training",
+  "expires": "2028-11-14"
+ },
+ {
+  "crew_id": "C-1912",
+  "kind": "safety_equipment",
+  "expires": "2028-11-12"
+ },
+ {
+  "crew_id": "C-1927",
+  "kind": "licence",
+  "expires": "2027-09-08"
+ },
+ {
+  "crew_id": "C-1927",
+  "kind": "medical",
+  "expires": "2029-03-29"
+ },
+ {
+  "crew_id": "C-1927",
+  "kind": "recurrent_training",
+  "expires": "2027-12-22"
+ },
+ {
+  "crew_id": "C-1927",
+  "kind": "safety_equipment",
+  "expires": "2028-04-29"
+ },
+ {
+  "crew_id": "C-1930",
+  "kind": "licence",
+  "expires": "2027-05-12"
+ },
+ {
+  "crew_id": "C-1930",
+  "kind": "medical",
+  "expires": "2028-05-18"
+ },
+ {
+  "crew_id": "C-1930",
+  "kind": "recurrent_training",
+  "expires": "2028-11-18"
+ },
+ {
+  "crew_id": "C-1930",
+  "kind": "safety_equipment",
+  "expires": "2028-05-24"
+ },
+ {
+  "crew_id": "C-1939",
+  "kind": "licence",
+  "expires": "2029-03-03"
+ },
+ {
+  "crew_id": "C-1939",
+  "kind": "medical",
+  "expires": "2028-01-11"
+ },
+ {
+  "crew_id": "C-1939",
+  "kind": "recurrent_training",
+  "expires": "2028-06-25"
+ },
+ {
+  "crew_id": "C-1939",
+  "kind": "safety_equipment",
+  "expires": "2028-04-17"
+ },
+ {
+  "crew_id": "C-1956",
+  "kind": "licence",
+  "expires": "2028-01-27"
+ },
+ {
+  "crew_id": "C-1956",
+  "kind": "medical",
+  "expires": "2028-02-04"
+ },
+ {
+  "crew_id": "C-1956",
+  "kind": "recurrent_training",
+  "expires": "2027-10-11"
+ },
+ {
+  "crew_id": "C-1956",
+  "kind": "safety_equipment",
+  "expires": "2029-01-06"
+ },
+ {
+  "crew_id": "C-1966",
+  "kind": "licence",
+  "expires": "2027-07-03"
+ },
+ {
+  "crew_id": "C-1966",
+  "kind": "medical",
+  "expires": "2028-07-14"
+ },
+ {
+  "crew_id": "C-1966",
+  "kind": "recurrent_training",
+  "expires": "2028-04-03"
+ },
+ {
+  "crew_id": "C-1966",
+  "kind": "safety_equipment",
+  "expires": "2028-12-24"
+ },
+ {
+  "crew_id": "C-1977",
+  "kind": "licence",
+  "expires": "2027-12-05"
+ },
+ {
+  "crew_id": "C-1977",
+  "kind": "medical",
+  "expires": "2027-05-15"
+ },
+ {
+  "crew_id": "C-1977",
+  "kind": "recurrent_training",
+  "expires": "2028-01-20"
+ },
+ {
+  "crew_id": "C-1977",
+  "kind": "safety_equipment",
+  "expires": "2028-01-17"
+ },
+ {
+  "crew_id": "C-1990",
+  "kind": "licence",
+  "expires": "2028-12-22"
+ },
+ {
+  "crew_id": "C-1990",
+  "kind": "medical",
+  "expires": "2027-10-08"
+ },
+ {
+  "crew_id": "C-1990",
+  "kind": "recurrent_training",
+  "expires": "2028-07-10"
+ },
+ {
+  "crew_id": "C-1990",
+  "kind": "safety_equipment",
+  "expires": "2028-02-08"
+ },
+ {
+  "crew_id": "C-2003",
+  "kind": "licence",
+  "expires": "2028-09-18"
+ },
+ {
+  "crew_id": "C-2003",
+  "kind": "medical",
+  "expires": "2027-11-23"
+ },
+ {
+  "crew_id": "C-2003",
+  "kind": "recurrent_training",
+  "expires": "2027-11-17"
+ },
+ {
+  "crew_id": "C-2003",
+  "kind": "safety_equipment",
+  "expires": "2027-11-03"
+ },
+ {
+  "crew_id": "C-2006",
+  "kind": "licence",
+  "expires": "2027-05-17"
+ },
+ {
+  "crew_id": "C-2006",
+  "kind": "medical",
+  "expires": "2028-06-17"
+ },
+ {
+  "crew_id": "C-2006",
+  "kind": "recurrent_training",
+  "expires": "2028-04-15"
+ },
+ {
+  "crew_id": "C-2006",
+  "kind": "safety_equipment",
+  "expires": "2028-05-19"
+ },
+ {
+  "crew_id": "C-2021",
+  "kind": "licence",
+  "expires": "2028-07-13"
+ },
+ {
+  "crew_id": "C-2021",
+  "kind": "medical",
+  "expires": "2028-11-10"
+ },
+ {
+  "crew_id": "C-2021",
+  "kind": "recurrent_training",
+  "expires": "2027-10-05"
+ },
+ {
+  "crew_id": "C-2021",
+  "kind": "safety_equipment",
+  "expires": "2028-01-14"
+ },
+ {
+  "crew_id": "C-2025",
+  "kind": "licence",
+  "expires": "2027-09-30"
+ },
+ {
+  "crew_id": "C-2025",
+  "kind": "medical",
+  "expires": "2028-10-16"
+ },
+ {
+  "crew_id": "C-2025",
+  "kind": "recurrent_training",
+  "expires": "2028-01-14"
+ },
+ {
+  "crew_id": "C-2025",
+  "kind": "safety_equipment",
+  "expires": "2027-11-15"
+ },
+ {
+  "crew_id": "C-2029",
+  "kind": "licence",
+  "expires": "2028-12-03"
+ },
+ {
+  "crew_id": "C-2029",
+  "kind": "medical",
+  "expires": "2027-07-03"
+ },
+ {
+  "crew_id": "C-2029",
+  "kind": "recurrent_training",
+  "expires": "2027-06-28"
+ },
+ {
+  "crew_id": "C-2029",
+  "kind": "safety_equipment",
+  "expires": "2027-06-09"
+ },
+ {
+  "crew_id": "C-2034",
+  "kind": "licence",
+  "expires": "2027-03-05"
+ },
+ {
+  "crew_id": "C-2034",
+  "kind": "medical",
+  "expires": "2028-06-18"
+ },
+ {
+  "crew_id": "C-2034",
+  "kind": "recurrent_training",
+  "expires": "2028-08-16"
+ },
+ {
+  "crew_id": "C-2034",
+  "kind": "safety_equipment",
+  "expires": "2028-03-12"
+ },
+ {
+  "crew_id": "C-2047",
+  "kind": "licence",
+  "expires": "2028-10-18"
+ },
+ {
+  "crew_id": "C-2047",
+  "kind": "medical",
+  "expires": "2027-03-17"
+ },
+ {
+  "crew_id": "C-2047",
+  "kind": "recurrent_training",
+  "expires": "2028-06-26"
+ },
+ {
+  "crew_id": "C-2047",
+  "kind": "safety_equipment",
+  "expires": "2028-04-02"
+ },
+ {
+  "crew_id": "C-2054",
+  "kind": "licence",
+  "expires": "2028-06-21"
+ },
+ {
+  "crew_id": "C-2054",
+  "kind": "medical",
+  "expires": "2027-03-31"
+ },
+ {
+  "crew_id": "C-2054",
+  "kind": "recurrent_training",
+  "expires": "2027-10-06"
+ },
+ {
+  "crew_id": "C-2054",
+  "kind": "safety_equipment",
+  "expires": "2028-01-16"
+ },
+ {
+  "crew_id": "C-2061",
+  "kind": "licence",
+  "expires": "2027-10-28"
+ },
+ {
+  "crew_id": "C-2061",
+  "kind": "medical",
+  "expires": "2027-07-01"
+ },
+ {
+  "crew_id": "C-2061",
+  "kind": "recurrent_training",
+  "expires": "2029-03-22"
+ },
+ {
+  "crew_id": "C-2061",
+  "kind": "safety_equipment",
+  "expires": "2029-03-10"
+ },
+ {
+  "crew_id": "C-2067",
+  "kind": "licence",
+  "expires": "2028-03-09"
+ },
+ {
+  "crew_id": "C-2067",
+  "kind": "medical",
+  "expires": "2028-03-06"
+ },
+ {
+  "crew_id": "C-2067",
+  "kind": "recurrent_training",
+  "expires": "2029-03-10"
+ },
+ {
+  "crew_id": "C-2067",
+  "kind": "safety_equipment",
+  "expires": "2028-07-04"
+ },
+ {
+  "crew_id": "C-2078",
+  "kind": "licence",
+  "expires": "2029-04-16"
+ },
+ {
+  "crew_id": "C-2078",
+  "kind": "medical",
+  "expires": "2027-08-08"
+ },
+ {
+  "crew_id": "C-2078",
+  "kind": "recurrent_training",
+  "expires": "2027-12-06"
+ },
+ {
+  "crew_id": "C-2078",
+  "kind": "safety_equipment",
+  "expires": "2027-09-29"
+ },
+ {
+  "crew_id": "C-2084",
+  "kind": "licence",
+  "expires": "2028-09-18"
+ },
+ {
+  "crew_id": "C-2084",
+  "kind": "medical",
+  "expires": "2028-09-12"
+ },
+ {
+  "crew_id": "C-2084",
+  "kind": "recurrent_training",
+  "expires": "2029-03-03"
+ },
+ {
+  "crew_id": "C-2084",
+  "kind": "safety_equipment",
+  "expires": "2027-05-13"
+ },
+ {
+  "crew_id": "C-2101",
+  "kind": "licence",
+  "expires": "2028-10-14"
+ },
+ {
+  "crew_id": "C-2101",
+  "kind": "medical",
+  "expires": "2027-04-30"
+ },
+ {
+  "crew_id": "C-2101",
+  "kind": "recurrent_training",
+  "expires": "2028-06-05"
+ },
+ {
+  "crew_id": "C-2101",
+  "kind": "safety_equipment",
+  "expires": "2027-04-07"
+ }
+]

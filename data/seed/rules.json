@@ -1,0 +1,76 @@
+[
+ {
+  "rule_id": "FDTL-01",
+  "title": "Flight duty period",
+  "text": "A flight duty period may not exceed 13 hours, reduced by 30 minutes for each sector beyond the second.",
+  "params": {
+   "base_hours": 13.0,
+   "cut_per_extra_sector": 0.5,
+   "free_sectors": 2.0
+  }
+ },
+ {
+  "rule_id": "FDTL-02",
+  "title": "Night duty",
+  "text": "A duty that touches 00:00-06:00 India time may not exceed 10 hours and may include at most two landings in that window.",
+  "params": {
+   "night_start_local": 0.0,
+   "night_end_local": 6.0,
+   "max_fdp_hours": 10.0,
+   "max_landings": 2.0
+  }
+ },
+ {
+  "rule_id": "FDTL-03",
+  "title": "Duty in 7 days",
+  "text": "No more than 60 duty hours in any 7 consecutive calendar days.",
+  "params": {
+   "max_hours": 60.0,
+   "window_days": 7.0
+  }
+ },
+ {
+  "rule_id": "FDTL-04",
+  "title": "Flying in 28 days",
+  "text": "No more than 100 block hours in any 28 consecutive calendar days.",
+  "params": {
+   "max_hours": 100.0,
+   "window_days": 28.0
+  }
+ },
+ {
+  "rule_id": "FDTL-05",
+  "title": "Rest between duties",
+  "text": "Rest before a duty must be at least 12 hours and at least as long as the duty before it.",
+  "params": {
+   "min_hours": 12.0
+  }
+ },
+ {
+  "rule_id": "FDTL-06",
+  "title": "Weekly rest",
+  "text": "Every 7 consecutive days must include two clear days in a row.",
+  "params": {
+   "clear_days": 2.0,
+   "window_days": 7.0
+  }
+ },
+ {
+  "rule_id": "FDTL-07",
+  "title": "Type rating",
+  "text": "Crew must be active and rated on the aircraft type, and fly only for their own airline.",
+  "params": {}
+ },
+ {
+  "rule_id": "FDTL-08",
+  "title": "Certificates",
+  "text": "Licence, medical, recurrent training and safety equipment certificates must all be valid on each duty date.",
+  "params": {}
+ },
+ {
+  "rule_id": "FDTL-09",
+  "title": "Home base",
+  "text": "Crew are called out from their home base; anyone based elsewhere must be positioned on a flight that day, at a cost.",
+  "params": {}
+ }
+]

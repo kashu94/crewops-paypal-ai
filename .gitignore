@@ -1,24 +1,31 @@
-# Secrets — never commit PayPal / AI API keys
+# Secrets: Bedrock, PayPal and any other keys stay out of git
 .env
 .env.*
 !.env.example
 
-# Dependencies & builds
-node_modules/
-dist/
-build/
-.next/
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 .venv/
-venv/
+.pytest_cache/
+.ruff_cache/
+dist/
+*.egg-info/
 
-# Logs / OS / editor
+# Web
+node_modules/
+.next/
+web/out/
+*.tsbuildinfo
+
+# Local files
 *.log
+*.db
+*.sqlite3
 .DS_Store
 Thumbs.db
-.vscode/
 .idea/
+.vscode/
 
-# Git bundles used for transfer
+# Git bundles used to move commits between laptops
 *.bundle

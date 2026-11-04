@@ -1,0 +1,1892 @@
+[
+ {
+  "crew_id": "C-1275",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1224",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1341",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1427",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1446",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1590",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1627",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1721",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1768",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1837",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1956",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2006",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2034",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2061",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2054",
+  "base": "HYD",
+  "dates": [
+   "2026-10-30"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1167",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1224",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1365",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1437",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1460",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1590",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1644",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1721",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1817",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1754",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1930",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1990",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2021",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2084",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2078",
+  "base": "HYD",
+  "dates": [
+   "2026-10-31"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1111",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1237",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1357",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1460",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1446",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1554",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1624",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1701",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1768",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1832",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1927",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2006",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2034",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2078",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2084",
+  "base": "HYD",
+  "dates": [
+   "2026-11-01"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1254",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1211",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1365",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1527",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1407",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1554",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1649",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1687",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1794",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1777",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1912",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2003",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2021",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2101",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2061",
+  "base": "HYD",
+  "dates": [
+   "2026-11-02"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1167",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1302",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1365",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1404",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1527",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1576",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1624",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1701",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1794",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1854",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1927",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2003",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2034",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2084",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2061",
+  "base": "HYD",
+  "dates": [
+   "2026-11-03"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1140",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1211",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1324",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1527",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1404",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1554",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1627",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1712",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1843",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1810",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1939",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1977",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2025",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2084",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2054",
+  "base": "HYD",
+  "dates": [
+   "2026-11-04"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1157",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1211",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1382",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1407",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1537",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1554",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1624",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1721",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1794",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1810",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1930",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1966",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2047",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2054",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2101",
+  "base": "HYD",
+  "dates": [
+   "2026-11-05"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1149",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1211",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1382",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1530",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1427",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1607",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1624",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1737",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1881",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1810",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1956",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1977",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2047",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2054",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2067",
+  "base": "HYD",
+  "dates": [
+   "2026-11-06"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1266",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1242",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1382",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1502",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1530",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1607",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1624",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1687",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1837",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1817",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1956",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1977",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2025",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2101",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2067",
+  "base": "HYD",
+  "dates": [
+   "2026-11-07"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1123",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1184",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1382",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1530",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1502",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1576",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1644",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1737",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1754",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1777",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1956",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1990",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2025",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2067",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2101",
+  "base": "HYD",
+  "dates": [
+   "2026-11-08"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1278",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1302",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1319",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1404",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1537",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1566",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1627",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1721",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1754",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1854",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1939",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1977",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2025",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2054",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2078",
+  "base": "HYD",
+  "dates": [
+   "2026-11-09"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1111",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1184",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1365",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1527",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1419",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1566",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1658",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1721",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1854",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1832",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1912",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1990",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2025",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2067",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2054",
+  "base": "HYD",
+  "dates": [
+   "2026-11-10"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1266",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1302",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1341",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1486",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1534",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1554",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1673",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1721",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1810",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1832",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1939",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1966",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2047",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2061",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-2067",
+  "base": "HYD",
+  "dates": [
+   "2026-11-11"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1157",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1204",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1324",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1404",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1527",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1566",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1644",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1721",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1837",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-1832",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ },
+ {
+  "crew_id": "C-1912",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2003",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2034",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2084",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "08:00:00",
+  "window_end": "16:00:00"
+ },
+ {
+  "crew_id": "C-2054",
+  "base": "HYD",
+  "dates": [
+   "2026-11-12"
+  ],
+  "window_start": "00:00:00",
+  "window_end": "08:00:00"
+ }
+]

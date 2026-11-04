@@ -1,0 +1,152 @@
+[
+ {
+  "team": "gate_control",
+  "station": "HYD",
+  "name": "Ravi Teja",
+  "phone": "+91 98040 31000"
+ },
+ {
+  "team": "gate_control",
+  "station": "DEL",
+  "name": "Neha Bansal",
+  "phone": "+91 98141 31731"
+ },
+ {
+  "team": "gate_control",
+  "station": "BOM",
+  "name": "Arjun Pillai",
+  "phone": "+91 98242 32462"
+ },
+ {
+  "team": "gate_control",
+  "station": "BLR",
+  "name": "Kavya Shetty",
+  "phone": "+91 98343 33193"
+ },
+ {
+  "team": "gate_control",
+  "station": "MAA",
+  "name": "Senthil Kumar",
+  "phone": "+91 98444 33924"
+ },
+ {
+  "team": "gate_control",
+  "station": "GOI",
+  "name": "Rohan Naik",
+  "phone": "+91 98545 34655"
+ },
+ {
+  "team": "gate_control",
+  "station": "VGA",
+  "name": "Srinivas Rao",
+  "phone": "+91 98646 35386"
+ },
+ {
+  "team": "gate_control",
+  "station": "TIR",
+  "name": "Lakshmi Prasanna",
+  "phone": "+91 98740 36117"
+ },
+ {
+  "team": "gate_control",
+  "station": "RJA",
+  "name": "Harsha Varma",
+  "phone": "+91 98841 36848"
+ },
+ {
+  "team": "gate_control",
+  "station": "VTZ",
+  "name": "Bhavana Reddy",
+  "phone": "+91 98942 37579"
+ },
+ {
+  "team": "station_ops",
+  "station": "HYD",
+  "name": "Faizan Qadri",
+  "phone": "+91 97043 38310"
+ },
+ {
+  "team": "station_ops",
+  "station": "DEL",
+  "name": "Meera Joshi",
+  "phone": "+91 97144 39041"
+ },
+ {
+  "team": "station_ops",
+  "station": "BOM",
+  "name": "Vikram Desai",
+  "phone": "+91 97245 39772"
+ },
+ {
+  "team": "station_ops",
+  "station": "BLR",
+  "name": "Shreya Hegde",
+  "phone": "+91 97346 40503"
+ },
+ {
+  "team": "station_ops",
+  "station": "MAA",
+  "name": "Karthik Raman",
+  "phone": "+91 97440 41234"
+ },
+ {
+  "team": "station_ops",
+  "station": "GOI",
+  "name": "Anita Fernandes",
+  "phone": "+91 97541 41965"
+ },
+ {
+  "team": "station_ops",
+  "station": "VGA",
+  "name": "Prakash Babu",
+  "phone": "+91 97642 42696"
+ },
+ {
+  "team": "station_ops",
+  "station": "TIR",
+  "name": "Deepika Naidu",
+  "phone": "+91 97743 43427"
+ },
+ {
+  "team": "station_ops",
+  "station": "RJA",
+  "name": "Suresh Chandra",
+  "phone": "+91 97844 44158"
+ },
+ {
+  "team": "station_ops",
+  "station": "VTZ",
+  "name": "Swathi Kiran",
+  "phone": "+91 97945 44889"
+ },
+ {
+  "team": "flight_info",
+  "station": "NETWORK",
+  "name": "Nisha Kapoor",
+  "phone": "+91 40 6612 3100"
+ },
+ {
+  "team": "ops_monitoring",
+  "station": "NETWORK",
+  "name": "Venkat Subramanian",
+  "phone": "+91 40 6612 3200"
+ },
+ {
+  "team": "maintenance_control",
+  "station": "NETWORK",
+  "name": "Imtiaz Ahmed",
+  "phone": "+91 40 6612 3300"
+ },
+ {
+  "team": "crew_records",
+  "station": "NETWORK",
+  "name": "Padma Iyengar",
+  "phone": "+91 40 6612 3400"
+ },
+ {
+  "team": "customer_care",
+  "station": "NETWORK",
+  "name": "Rahul Mehta",
+  "phone": "+91 40 6612 3500"
+ }
+]

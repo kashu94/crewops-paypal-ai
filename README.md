@@ -1,4 +1,4 @@
-# CrewOps — PayPal AI Hackathon
+# CrewPay — PayPal AI Hackathon
 
 Project for the [PayPal AI Hackathon](https://paypalaihackathon.devpost.com/) (deadline Nov 12, 2026, 12:00 pm PT).
 

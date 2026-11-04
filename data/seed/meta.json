@@ -1,0 +1,27 @@
+{
+ "data_version": 7,
+ "as_of": "2026-10-29T18:00:00+00:00",
+ "first_day": "2026-10-30",
+ "last_day": "2026-11-12",
+ "seed": 2611,
+ "known_issues": [
+  {
+   "crew_id": "C-1111",
+   "trip_id": "T-1018",
+   "rule_id": "FDTL-08",
+   "note": "medical lapses 2026-11-05, rostered on T-1018 on 2026-11-05"
+  },
+  {
+   "crew_id": "C-1111",
+   "trip_id": "T-1009",
+   "rule_id": "FDTL-08",
+   "note": "medical lapses 2026-11-05, rostered on T-1009 on 2026-11-07"
+  },
+  {
+   "crew_id": "C-1111",
+   "trip_id": "T-1010",
+   "rule_id": "FDTL-08",
+   "note": "medical lapses 2026-11-05, rostered on T-1010 on 2026-11-08"
+  }
+ ]
+}

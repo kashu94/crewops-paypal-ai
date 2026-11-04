@@ -1,0 +1,3705 @@
+[
+ {
+  "trip_id": "T-1001",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-10-30",
+    "legs": [
+     "SY201-2026-10-30",
+     "SY202-2026-10-30",
+     "SY203-2026-10-30",
+     "SY204-2026-10-30"
+    ],
+    "report": "2026-10-30T00:30:00Z",
+    "release": "2026-10-30T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1123",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1211",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1357",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1471",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1534",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1404",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1036",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-10-30",
+    "legs": [
+     "KF501-2026-10-30",
+     "KF502-2026-10-30",
+     "KF503-2026-10-30",
+     "KF504-2026-10-30"
+    ],
+    "report": "2026-10-30T00:45:00Z",
+    "release": "2026-10-30T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1554",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1624",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1687",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1871",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1854",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1794",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1064",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-10-30",
+    "legs": [
+     "GL701-2026-10-30",
+     "GL702-2026-10-30",
+     "GL703-2026-10-30",
+     "GL704-2026-10-30"
+    ],
+    "report": "2026-10-30T00:45:00Z",
+    "release": "2026-10-30T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1939",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1977",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2025",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2084",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1015",
+  "airline": "SY",
+  "tail": "VT-SYB",
+  "days": [
+   {
+    "day": "2026-10-30",
+    "legs": [
+     "SY221-2026-10-30",
+     "SY222-2026-10-30",
+     "SY223-2026-10-30"
+    ],
+    "report": "2026-10-30T01:00:00Z",
+    "release": "2026-10-30T08:20:00Z"
+   },
+   {
+    "day": "2026-10-31",
+    "legs": [
+     "SY224-2026-10-31",
+     "SY225-2026-10-31",
+     "SY226-2026-10-31"
+    ],
+    "report": "2026-10-31T01:30:00Z",
+    "release": "2026-10-31T08:50:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1140",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1242",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1391",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1407",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1486",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1527",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1022",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-10-30",
+    "legs": [
+     "SY241-2026-10-30",
+     "SY242-2026-10-30",
+     "SY243-2026-10-30",
+     "SY244-2026-10-30"
+    ],
+    "report": "2026-10-30T01:00:00Z",
+    "release": "2026-10-30T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1254",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1302",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1324",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1460",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1078",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-10-30",
+    "legs": [
+     "GL721-2026-10-30",
+     "GL722-2026-10-30",
+     "GL723-2026-10-30",
+     "GL724-2026-10-30"
+    ],
+    "report": "2026-10-30T06:30:00Z",
+    "release": "2026-10-30T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1927",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1966",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2047",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2101",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1050",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-10-30",
+    "legs": [
+     "KF521-2026-10-30",
+     "KF522-2026-10-30"
+    ],
+    "report": "2026-10-30T13:30:00Z",
+    "release": "2026-10-30T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1576",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1649",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1712",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1832",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1810",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1843",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1002",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-10-31",
+    "legs": [
+     "SY201-2026-10-31",
+     "SY202-2026-10-31",
+     "SY203-2026-10-31",
+     "SY204-2026-10-31"
+    ],
+    "report": "2026-10-31T00:30:00Z",
+    "release": "2026-10-31T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1157",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1211",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1357",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1534",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1471",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1530",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1037",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-10-31",
+    "legs": [
+     "KF501-2026-10-31",
+     "KF502-2026-10-31",
+     "KF503-2026-10-31",
+     "KF504-2026-10-31"
+    ],
+    "report": "2026-10-31T00:45:00Z",
+    "release": "2026-10-31T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1554",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1658",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1687",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1871",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1794",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1837",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1065",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-10-31",
+    "legs": [
+     "GL701-2026-10-31",
+     "GL702-2026-10-31",
+     "GL703-2026-10-31",
+     "GL704-2026-10-31"
+    ],
+    "report": "2026-10-31T00:45:00Z",
+    "release": "2026-10-31T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1956",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1977",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2025",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2054",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1023",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-10-31",
+    "legs": [
+     "SY241-2026-10-31",
+     "SY242-2026-10-31",
+     "SY243-2026-10-31",
+     "SY244-2026-10-31"
+    ],
+    "report": "2026-10-31T01:00:00Z",
+    "release": "2026-10-31T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1254",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1302",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1319",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1396",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1079",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-10-31",
+    "legs": [
+     "GL721-2026-10-31",
+     "GL722-2026-10-31",
+     "GL723-2026-10-31",
+     "GL724-2026-10-31"
+    ],
+    "report": "2026-10-31T06:30:00Z",
+    "release": "2026-10-31T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1927",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1966",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2047",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2101",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1051",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-10-31",
+    "legs": [
+     "KF521-2026-10-31",
+     "KF522-2026-10-31"
+    ],
+    "report": "2026-10-31T13:30:00Z",
+    "release": "2026-10-31T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1576",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1627",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1712",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1832",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1810",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1843",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1003",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-11-01",
+    "legs": [
+     "SY201-2026-11-01",
+     "SY202-2026-11-01",
+     "SY203-2026-11-01",
+     "SY204-2026-11-01"
+    ],
+    "report": "2026-11-01T00:30:00Z",
+    "release": "2026-11-01T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1157",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1224",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1319",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1396",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1530",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1407",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1038",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-11-01",
+    "legs": [
+     "KF501-2026-11-01",
+     "KF502-2026-11-01",
+     "KF503-2026-11-01",
+     "KF504-2026-11-01"
+    ],
+    "report": "2026-11-01T00:45:00Z",
+    "release": "2026-11-01T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1607",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1658",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1721",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1837",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1794",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1817",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1066",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-11-01",
+    "legs": [
+     "GL701-2026-11-01",
+     "GL702-2026-11-01",
+     "GL703-2026-11-01",
+     "GL704-2026-11-01"
+    ],
+    "report": "2026-11-01T00:45:00Z",
+    "release": "2026-11-01T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1956",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1977",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2025",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2054",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1016",
+  "airline": "SY",
+  "tail": "VT-SYB",
+  "days": [
+   {
+    "day": "2026-11-01",
+    "legs": [
+     "SY221-2026-11-01",
+     "SY222-2026-11-01",
+     "SY223-2026-11-01"
+    ],
+    "report": "2026-11-01T01:00:00Z",
+    "release": "2026-11-01T08:20:00Z"
+   },
+   {
+    "day": "2026-11-02",
+    "legs": [
+     "SY224-2026-11-02",
+     "SY225-2026-11-02",
+     "SY226-2026-11-02"
+    ],
+    "report": "2026-11-02T01:30:00Z",
+    "release": "2026-11-02T08:50:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1149",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1204",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1382",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1537",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1514",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1427",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1024",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-11-01",
+    "legs": [
+     "SY241-2026-11-01",
+     "SY242-2026-11-01",
+     "SY243-2026-11-01",
+     "SY244-2026-11-01"
+    ],
+    "report": "2026-11-01T01:00:00Z",
+    "release": "2026-11-01T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1275",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1285",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1391",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1534",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1080",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-11-01",
+    "legs": [
+     "GL721-2026-11-01",
+     "GL722-2026-11-01",
+     "GL723-2026-11-01",
+     "GL724-2026-11-01"
+    ],
+    "report": "2026-11-01T06:30:00Z",
+    "release": "2026-11-01T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1930",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1966",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2047",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2101",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1052",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-11-01",
+    "legs": [
+     "KF521-2026-11-01",
+     "KF522-2026-11-01"
+    ],
+    "report": "2026-11-01T13:30:00Z",
+    "release": "2026-11-01T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1576",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1627",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1737",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1810",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1843",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1881",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1004",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-11-02",
+    "legs": [
+     "SY201-2026-11-02",
+     "SY202-2026-11-02",
+     "SY203-2026-11-02",
+     "SY204-2026-11-02"
+    ],
+    "report": "2026-11-02T00:30:00Z",
+    "release": "2026-11-02T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1157",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1224",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1319",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1396",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1530",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1437",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1039",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-11-02",
+    "legs": [
+     "KF501-2026-11-02",
+     "KF502-2026-11-02",
+     "KF503-2026-11-02",
+     "KF504-2026-11-02"
+    ],
+    "report": "2026-11-02T00:45:00Z",
+    "release": "2026-11-02T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1607",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1658",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1721",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1817",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1837",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1754",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1067",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-11-02",
+    "legs": [
+     "GL701-2026-11-02",
+     "GL702-2026-11-02",
+     "GL703-2026-11-02",
+     "GL704-2026-11-02"
+    ],
+    "report": "2026-11-02T00:45:00Z",
+    "release": "2026-11-02T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1956",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1977",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2025",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2054",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1025",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-11-02",
+    "legs": [
+     "SY241-2026-11-02",
+     "SY242-2026-11-02",
+     "SY243-2026-11-02",
+     "SY244-2026-11-02"
+    ],
+    "report": "2026-11-02T01:00:00Z",
+    "release": "2026-11-02T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1275",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1285",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1373",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1446",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1081",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-11-02",
+    "legs": [
+     "GL721-2026-11-02",
+     "GL722-2026-11-02",
+     "GL723-2026-11-02",
+     "GL724-2026-11-02"
+    ],
+    "report": "2026-11-02T06:30:00Z",
+    "release": "2026-11-02T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1930",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1966",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2047",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2067",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1053",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-11-02",
+    "legs": [
+     "KF521-2026-11-02",
+     "KF522-2026-11-02"
+    ],
+    "report": "2026-11-02T13:30:00Z",
+    "release": "2026-11-02T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1576",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1627",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1737",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1881",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1810",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1843",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1005",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-11-03",
+    "legs": [
+     "SY201-2026-11-03",
+     "SY202-2026-11-03",
+     "SY203-2026-11-03",
+     "SY204-2026-11-03"
+    ],
+    "report": "2026-11-03T00:30:00Z",
+    "release": "2026-11-03T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1149",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1204",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1373",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1537",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1514",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1437",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1040",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-11-03",
+    "legs": [
+     "KF501-2026-11-03",
+     "KF502-2026-11-03",
+     "KF503-2026-11-03",
+     "KF504-2026-11-03"
+    ],
+    "report": "2026-11-03T00:45:00Z",
+    "release": "2026-11-03T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1607",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1658",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1721",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1754",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1817",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1837",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1068",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-11-03",
+    "legs": [
+     "GL701-2026-11-03",
+     "GL702-2026-11-03",
+     "GL703-2026-11-03",
+     "GL704-2026-11-03"
+    ],
+    "report": "2026-11-03T00:45:00Z",
+    "release": "2026-11-03T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1956",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1990",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2029",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2054",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1017",
+  "airline": "SY",
+  "tail": "VT-SYB",
+  "days": [
+   {
+    "day": "2026-11-03",
+    "legs": [
+     "SY221-2026-11-03",
+     "SY222-2026-11-03",
+     "SY223-2026-11-03"
+    ],
+    "report": "2026-11-03T01:00:00Z",
+    "release": "2026-11-03T08:20:00Z"
+   },
+   {
+    "day": "2026-11-04",
+    "legs": [
+     "SY224-2026-11-04",
+     "SY225-2026-11-04",
+     "SY226-2026-11-04"
+    ],
+    "report": "2026-11-04T01:30:00Z",
+    "release": "2026-11-04T08:50:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1174",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1224",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1382",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1427",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1446",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1502",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1026",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-11-03",
+    "legs": [
+     "SY241-2026-11-03",
+     "SY242-2026-11-03",
+     "SY243-2026-11-03",
+     "SY244-2026-11-03"
+    ],
+    "report": "2026-11-03T01:00:00Z",
+    "release": "2026-11-03T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1275",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1285",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1319",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1396",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1082",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-11-03",
+    "legs": [
+     "GL721-2026-11-03",
+     "GL722-2026-11-03",
+     "GL723-2026-11-03",
+     "GL724-2026-11-03"
+    ],
+    "report": "2026-11-03T06:30:00Z",
+    "release": "2026-11-03T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1930",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-2006",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2021",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2067",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1054",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-11-03",
+    "legs": [
+     "KF521-2026-11-03",
+     "KF522-2026-11-03"
+    ],
+    "report": "2026-11-03T13:30:00Z",
+    "release": "2026-11-03T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1566",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1627",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1737",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1881",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1777",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1768",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1006",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-11-04",
+    "legs": [
+     "SY201-2026-11-04",
+     "SY202-2026-11-04",
+     "SY203-2026-11-04",
+     "SY204-2026-11-04"
+    ],
+    "report": "2026-11-04T00:30:00Z",
+    "release": "2026-11-04T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1149",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1204",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1373",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1437",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1537",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1514",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1041",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-11-04",
+    "legs": [
+     "KF501-2026-11-04",
+     "KF502-2026-11-04",
+     "KF503-2026-11-04",
+     "KF504-2026-11-04"
+    ],
+    "report": "2026-11-04T00:45:00Z",
+    "release": "2026-11-04T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1607",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1673",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1721",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1754",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1817",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1854",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1069",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-11-04",
+    "legs": [
+     "GL701-2026-11-04",
+     "GL702-2026-11-04",
+     "GL703-2026-11-04",
+     "GL704-2026-11-04"
+    ],
+    "report": "2026-11-04T00:45:00Z",
+    "release": "2026-11-04T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1912",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1990",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2029",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2078",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1027",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-11-04",
+    "legs": [
+     "SY241-2026-11-04",
+     "SY242-2026-11-04",
+     "SY243-2026-11-04",
+     "SY244-2026-11-04"
+    ],
+    "report": "2026-11-04T01:00:00Z",
+    "release": "2026-11-04T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1275",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1285",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1365",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1419",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1083",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-11-04",
+    "legs": [
+     "GL721-2026-11-04",
+     "GL722-2026-11-04",
+     "GL723-2026-11-04",
+     "GL724-2026-11-04"
+    ],
+    "report": "2026-11-04T06:30:00Z",
+    "release": "2026-11-04T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1930",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-2006",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2021",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2067",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1055",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-11-04",
+    "legs": [
+     "KF521-2026-11-04",
+     "KF522-2026-11-04"
+    ],
+    "report": "2026-11-04T13:30:00Z",
+    "release": "2026-11-04T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1566",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1644",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1737",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1777",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1768",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1881",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1007",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-11-05",
+    "legs": [
+     "SY201-2026-11-05",
+     "SY202-2026-11-05",
+     "SY203-2026-11-05",
+     "SY204-2026-11-05"
+    ],
+    "report": "2026-11-05T00:30:00Z",
+    "release": "2026-11-05T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1174",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1237",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1365",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1419",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1502",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1446",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1042",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-11-05",
+    "legs": [
+     "KF501-2026-11-05",
+     "KF502-2026-11-05",
+     "KF503-2026-11-05",
+     "KF504-2026-11-05"
+    ],
+    "report": "2026-11-05T00:45:00Z",
+    "release": "2026-11-05T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1590",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1673",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1701",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1854",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1754",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1832",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1070",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-11-05",
+    "legs": [
+     "GL701-2026-11-05",
+     "GL702-2026-11-05",
+     "GL703-2026-11-05",
+     "GL704-2026-11-05"
+    ],
+    "report": "2026-11-05T00:45:00Z",
+    "release": "2026-11-05T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1912",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1990",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2029",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2078",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1018",
+  "airline": "SY",
+  "tail": "VT-SYB",
+  "days": [
+   {
+    "day": "2026-11-05",
+    "legs": [
+     "SY221-2026-11-05",
+     "SY222-2026-11-05",
+     "SY223-2026-11-05"
+    ],
+    "report": "2026-11-05T01:00:00Z",
+    "release": "2026-11-05T08:20:00Z"
+   },
+   {
+    "day": "2026-11-06",
+    "legs": [
+     "SY224-2026-11-06",
+     "SY225-2026-11-06",
+     "SY226-2026-11-06"
+    ],
+    "report": "2026-11-06T01:30:00Z",
+    "release": "2026-11-06T08:50:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1111",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1191",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1341",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1460",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1404",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1486",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1028",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-11-05",
+    "legs": [
+     "SY241-2026-11-05",
+     "SY242-2026-11-05",
+     "SY243-2026-11-05",
+     "SY244-2026-11-05"
+    ],
+    "report": "2026-11-05T01:00:00Z",
+    "release": "2026-11-05T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1278",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1281",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1373",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1437",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1084",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-11-05",
+    "legs": [
+     "GL721-2026-11-05",
+     "GL722-2026-11-05",
+     "GL723-2026-11-05",
+     "GL724-2026-11-05"
+    ],
+    "report": "2026-11-05T06:30:00Z",
+    "release": "2026-11-05T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1939",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-2006",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2021",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2067",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1056",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-11-05",
+    "legs": [
+     "KF521-2026-11-05",
+     "KF522-2026-11-05"
+    ],
+    "report": "2026-11-05T13:30:00Z",
+    "release": "2026-11-05T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1566",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1644",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1712",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1777",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1768",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1871",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1008",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-11-06",
+    "legs": [
+     "SY201-2026-11-06",
+     "SY202-2026-11-06",
+     "SY203-2026-11-06",
+     "SY204-2026-11-06"
+    ],
+    "report": "2026-11-06T00:30:00Z",
+    "release": "2026-11-06T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1174",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1237",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1365",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1419",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1502",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1527",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1043",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-11-06",
+    "legs": [
+     "KF501-2026-11-06",
+     "KF502-2026-11-06",
+     "KF503-2026-11-06",
+     "KF504-2026-11-06"
+    ],
+    "report": "2026-11-06T00:45:00Z",
+    "release": "2026-11-06T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1590",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1673",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1701",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1832",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1854",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1794",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1071",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-11-06",
+    "legs": [
+     "GL701-2026-11-06",
+     "GL702-2026-11-06",
+     "GL703-2026-11-06",
+     "GL704-2026-11-06"
+    ],
+    "report": "2026-11-06T00:45:00Z",
+    "release": "2026-11-06T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1912",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1990",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2029",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2078",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1029",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-11-06",
+    "legs": [
+     "SY241-2026-11-06",
+     "SY242-2026-11-06",
+     "SY243-2026-11-06",
+     "SY244-2026-11-06"
+    ],
+    "report": "2026-11-06T01:00:00Z",
+    "release": "2026-11-06T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1278",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1281",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1324",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1471",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1085",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-11-06",
+    "legs": [
+     "GL721-2026-11-06",
+     "GL722-2026-11-06",
+     "GL723-2026-11-06",
+     "GL724-2026-11-06"
+    ],
+    "report": "2026-11-06T06:30:00Z",
+    "release": "2026-11-06T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1939",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-2006",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2021",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2061",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1057",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-11-06",
+    "legs": [
+     "KF521-2026-11-06",
+     "KF522-2026-11-06"
+    ],
+    "report": "2026-11-06T13:30:00Z",
+    "release": "2026-11-06T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1566",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1644",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1712",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1871",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1777",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1768",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1009",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-11-07",
+    "legs": [
+     "SY201-2026-11-07",
+     "SY202-2026-11-07",
+     "SY203-2026-11-07",
+     "SY204-2026-11-07"
+    ],
+    "report": "2026-11-07T00:30:00Z",
+    "release": "2026-11-07T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1111",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1191",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1324",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1471",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1527",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1486",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1044",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-11-07",
+    "legs": [
+     "KF501-2026-11-07",
+     "KF502-2026-11-07",
+     "KF503-2026-11-07",
+     "KF504-2026-11-07"
+    ],
+    "report": "2026-11-07T00:45:00Z",
+    "release": "2026-11-07T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1590",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1673",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1701",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1794",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1832",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1854",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1072",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-11-07",
+    "legs": [
+     "GL701-2026-11-07",
+     "GL702-2026-11-07",
+     "GL703-2026-11-07",
+     "GL704-2026-11-07"
+    ],
+    "report": "2026-11-07T00:45:00Z",
+    "release": "2026-11-07T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1912",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-2003",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2034",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2078",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1019",
+  "airline": "SY",
+  "tail": "VT-SYB",
+  "days": [
+   {
+    "day": "2026-11-07",
+    "legs": [
+     "SY221-2026-11-07",
+     "SY222-2026-11-07",
+     "SY223-2026-11-07"
+    ],
+    "report": "2026-11-07T01:00:00Z",
+    "release": "2026-11-07T08:20:00Z"
+   },
+   {
+    "day": "2026-11-08",
+    "legs": [
+     "SY224-2026-11-08",
+     "SY225-2026-11-08",
+     "SY226-2026-11-08"
+    ],
+    "report": "2026-11-08T01:30:00Z",
+    "release": "2026-11-08T08:50:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1140",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1237",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1341",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1460",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1404",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1534",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1030",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-11-07",
+    "legs": [
+     "SY241-2026-11-07",
+     "SY242-2026-11-07",
+     "SY243-2026-11-07",
+     "SY244-2026-11-07"
+    ],
+    "report": "2026-11-07T01:00:00Z",
+    "release": "2026-11-07T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1278",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1281",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1365",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1419",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1086",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-11-07",
+    "legs": [
+     "GL721-2026-11-07",
+     "GL722-2026-11-07",
+     "GL723-2026-11-07",
+     "GL724-2026-11-07"
+    ],
+    "report": "2026-11-07T06:30:00Z",
+    "release": "2026-11-07T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1939",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1966",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2047",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2061",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1058",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-11-07",
+    "legs": [
+     "KF521-2026-11-07",
+     "KF522-2026-11-07"
+    ],
+    "report": "2026-11-07T13:30:00Z",
+    "release": "2026-11-07T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1554",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1644",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1712",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1871",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1843",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1810",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1010",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-11-08",
+    "legs": [
+     "SY201-2026-11-08",
+     "SY202-2026-11-08",
+     "SY203-2026-11-08",
+     "SY204-2026-11-08"
+    ],
+    "report": "2026-11-08T00:30:00Z",
+    "release": "2026-11-08T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1111",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1191",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1324",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1471",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1527",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1486",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1045",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-11-08",
+    "legs": [
+     "KF501-2026-11-08",
+     "KF502-2026-11-08",
+     "KF503-2026-11-08",
+     "KF504-2026-11-08"
+    ],
+    "report": "2026-11-08T00:45:00Z",
+    "release": "2026-11-08T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1590",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1624",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1701",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1794",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1832",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1837",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1073",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-11-08",
+    "legs": [
+     "GL701-2026-11-08",
+     "GL702-2026-11-08",
+     "GL703-2026-11-08",
+     "GL704-2026-11-08"
+    ],
+    "report": "2026-11-08T00:45:00Z",
+    "release": "2026-11-08T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1927",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-2003",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2034",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2084",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1031",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-11-08",
+    "legs": [
+     "SY241-2026-11-08",
+     "SY242-2026-11-08",
+     "SY243-2026-11-08",
+     "SY244-2026-11-08"
+    ],
+    "report": "2026-11-08T01:00:00Z",
+    "release": "2026-11-08T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1278",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1281",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1391",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1407",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1087",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-11-08",
+    "legs": [
+     "GL721-2026-11-08",
+     "GL722-2026-11-08",
+     "GL723-2026-11-08",
+     "GL724-2026-11-08"
+    ],
+    "report": "2026-11-08T06:30:00Z",
+    "release": "2026-11-08T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1939",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1966",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2047",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2061",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1059",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-11-08",
+    "legs": [
+     "KF521-2026-11-08",
+     "KF522-2026-11-08"
+    ],
+    "report": "2026-11-08T13:30:00Z",
+    "release": "2026-11-08T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1554",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1649",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1712",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1843",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1810",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1871",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1011",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-11-09",
+    "legs": [
+     "SY201-2026-11-09",
+     "SY202-2026-11-09",
+     "SY203-2026-11-09",
+     "SY204-2026-11-09"
+    ],
+    "report": "2026-11-09T00:30:00Z",
+    "release": "2026-11-09T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1140",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1242",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1391",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1407",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1534",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1471",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1046",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-11-09",
+    "legs": [
+     "KF501-2026-11-09",
+     "KF502-2026-11-09",
+     "KF503-2026-11-09",
+     "KF504-2026-11-09"
+    ],
+    "report": "2026-11-09T00:45:00Z",
+    "release": "2026-11-09T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1576",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1624",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1687",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1837",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1794",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1881",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1074",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-11-09",
+    "legs": [
+     "GL701-2026-11-09",
+     "GL702-2026-11-09",
+     "GL703-2026-11-09",
+     "GL704-2026-11-09"
+    ],
+    "report": "2026-11-09T00:45:00Z",
+    "release": "2026-11-09T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1927",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-2003",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2034",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2084",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1020",
+  "airline": "SY",
+  "tail": "VT-SYB",
+  "days": [
+   {
+    "day": "2026-11-09",
+    "legs": [
+     "SY221-2026-11-09",
+     "SY222-2026-11-09",
+     "SY223-2026-11-09"
+    ],
+    "report": "2026-11-09T01:00:00Z",
+    "release": "2026-11-09T08:20:00Z"
+   },
+   {
+    "day": "2026-11-10",
+    "legs": [
+     "SY224-2026-11-10",
+     "SY225-2026-11-10",
+     "SY226-2026-11-10"
+    ],
+    "report": "2026-11-10T01:30:00Z",
+    "release": "2026-11-10T08:50:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1167",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1211",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1357",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1530",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1396",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1427",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1032",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-11-09",
+    "legs": [
+     "SY241-2026-11-09",
+     "SY242-2026-11-09",
+     "SY243-2026-11-09",
+     "SY244-2026-11-09"
+    ],
+    "report": "2026-11-09T01:00:00Z",
+    "release": "2026-11-09T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1254",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1285",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1324",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1527",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1088",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-11-09",
+    "legs": [
+     "GL721-2026-11-09",
+     "GL722-2026-11-09",
+     "GL723-2026-11-09",
+     "GL724-2026-11-09"
+    ],
+    "report": "2026-11-09T06:30:00Z",
+    "release": "2026-11-09T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1956",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1966",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2047",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2061",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1060",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-11-09",
+    "legs": [
+     "KF521-2026-11-09",
+     "KF522-2026-11-09"
+    ],
+    "report": "2026-11-09T13:30:00Z",
+    "release": "2026-11-09T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1554",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1649",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1737",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1810",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1843",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1817",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1012",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-11-10",
+    "legs": [
+     "SY201-2026-11-10",
+     "SY202-2026-11-10",
+     "SY203-2026-11-10",
+     "SY204-2026-11-10"
+    ],
+    "report": "2026-11-10T00:30:00Z",
+    "release": "2026-11-10T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1140",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1242",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1391",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1407",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1534",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1537",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1047",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-11-10",
+    "legs": [
+     "KF501-2026-11-10",
+     "KF502-2026-11-10",
+     "KF503-2026-11-10",
+     "KF504-2026-11-10"
+    ],
+    "report": "2026-11-10T00:45:00Z",
+    "release": "2026-11-10T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1576",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1624",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1687",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1881",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1837",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1754",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1075",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-11-10",
+    "legs": [
+     "GL701-2026-11-10",
+     "GL702-2026-11-10",
+     "GL703-2026-11-10",
+     "GL704-2026-11-10"
+    ],
+    "report": "2026-11-10T00:45:00Z",
+    "release": "2026-11-10T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1927",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-2003",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2034",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2084",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1033",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-11-10",
+    "legs": [
+     "SY241-2026-11-10",
+     "SY242-2026-11-10",
+     "SY243-2026-11-10",
+     "SY244-2026-11-10"
+    ],
+    "report": "2026-11-10T01:00:00Z",
+    "release": "2026-11-10T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1254",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1285",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1319",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1514",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1089",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-11-10",
+    "legs": [
+     "GL721-2026-11-10",
+     "GL722-2026-11-10",
+     "GL723-2026-11-10",
+     "GL724-2026-11-10"
+    ],
+    "report": "2026-11-10T06:30:00Z",
+    "release": "2026-11-10T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1956",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1966",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2047",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2101",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1061",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-11-10",
+    "legs": [
+     "KF521-2026-11-10",
+     "KF522-2026-11-10"
+    ],
+    "report": "2026-11-10T13:30:00Z",
+    "release": "2026-11-10T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1554",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1649",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1737",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1817",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1810",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1843",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1013",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-11-11",
+    "legs": [
+     "SY201-2026-11-11",
+     "SY202-2026-11-11",
+     "SY203-2026-11-11",
+     "SY204-2026-11-11"
+    ],
+    "report": "2026-11-11T00:30:00Z",
+    "release": "2026-11-11T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1167",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1211",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1319",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1514",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1537",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1530",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1048",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-11-11",
+    "legs": [
+     "KF501-2026-11-11",
+     "KF502-2026-11-11",
+     "KF503-2026-11-11",
+     "KF504-2026-11-11"
+    ],
+    "report": "2026-11-11T00:45:00Z",
+    "release": "2026-11-11T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1576",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1624",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1687",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1754",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1881",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1837",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1076",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-11-11",
+    "legs": [
+     "GL701-2026-11-11",
+     "GL702-2026-11-11",
+     "GL703-2026-11-11",
+     "GL704-2026-11-11"
+    ],
+    "report": "2026-11-11T00:45:00Z",
+    "release": "2026-11-11T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1927",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1977",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2025",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2084",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1021",
+  "airline": "SY",
+  "tail": "VT-SYB",
+  "days": [
+   {
+    "day": "2026-11-11",
+    "legs": [
+     "SY221-2026-11-11",
+     "SY222-2026-11-11",
+     "SY223-2026-11-11"
+    ],
+    "report": "2026-11-11T01:00:00Z",
+    "release": "2026-11-11T08:20:00Z"
+   },
+   {
+    "day": "2026-11-12",
+    "legs": [
+     "SY224-2026-11-12",
+     "SY225-2026-11-12",
+     "SY226-2026-11-12"
+    ],
+    "report": "2026-11-12T01:30:00Z",
+    "release": "2026-11-12T08:50:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1123",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1242",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1357",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1427",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1396",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1437",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1034",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-11-11",
+    "legs": [
+     "SY241-2026-11-11",
+     "SY242-2026-11-11",
+     "SY243-2026-11-11",
+     "SY244-2026-11-11"
+    ],
+    "report": "2026-11-11T01:00:00Z",
+    "release": "2026-11-11T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1254",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1285",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1391",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1407",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1090",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-11-11",
+    "legs": [
+     "GL721-2026-11-11",
+     "GL722-2026-11-11",
+     "GL723-2026-11-11",
+     "GL724-2026-11-11"
+    ],
+    "report": "2026-11-11T06:30:00Z",
+    "release": "2026-11-11T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1956",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-2006",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2021",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2101",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1062",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-11-11",
+    "legs": [
+     "KF521-2026-11-11",
+     "KF522-2026-11-11"
+    ],
+    "report": "2026-11-11T13:30:00Z",
+    "release": "2026-11-11T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1607",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1649",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1737",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1817",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1777",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1768",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1014",
+  "airline": "SY",
+  "tail": "VT-SYA",
+  "days": [
+   {
+    "day": "2026-11-12",
+    "legs": [
+     "SY201-2026-11-12",
+     "SY202-2026-11-12",
+     "SY203-2026-11-12",
+     "SY204-2026-11-12"
+    ],
+    "report": "2026-11-12T00:30:00Z",
+    "release": "2026-11-12T11:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1167",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1211",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1319",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1514",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1537",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1530",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1049",
+  "airline": "KF",
+  "tail": "VT-KFA",
+  "days": [
+   {
+    "day": "2026-11-12",
+    "legs": [
+     "KF501-2026-11-12",
+     "KF502-2026-11-12",
+     "KF503-2026-11-12",
+     "KF504-2026-11-12"
+    ],
+    "report": "2026-11-12T00:45:00Z",
+    "release": "2026-11-12T09:55:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1576",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1627",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1687",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1754",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1881",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1854",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1077",
+  "airline": "GL",
+  "tail": "VT-GLT",
+  "days": [
+   {
+    "day": "2026-11-12",
+    "legs": [
+     "GL701-2026-11-12",
+     "GL702-2026-11-12",
+     "GL703-2026-11-12",
+     "GL704-2026-11-12"
+    ],
+    "report": "2026-11-12T00:45:00Z",
+    "release": "2026-11-12T08:35:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1930",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1977",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2025",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2067",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1035",
+  "airline": "SY",
+  "tail": "VT-SYT",
+  "days": [
+   {
+    "day": "2026-11-12",
+    "legs": [
+     "SY241-2026-11-12",
+     "SY242-2026-11-12",
+     "SY243-2026-11-12",
+     "SY244-2026-11-12"
+    ],
+    "report": "2026-11-12T01:00:00Z",
+    "release": "2026-11-12T08:10:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1254",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1285",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1382",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1446",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1091",
+  "airline": "GL",
+  "tail": "VT-GLU",
+  "days": [
+   {
+    "day": "2026-11-12",
+    "legs": [
+     "GL721-2026-11-12",
+     "GL722-2026-11-12",
+     "GL723-2026-11-12",
+     "GL724-2026-11-12"
+    ],
+    "report": "2026-11-12T06:30:00Z",
+    "release": "2026-11-12T13:40:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1956",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-2006",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-2021",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-2101",
+    "rank": "Cabin Crew"
+   }
+  ]
+ },
+ {
+  "trip_id": "T-1063",
+  "airline": "KF",
+  "tail": "VT-KFB",
+  "days": [
+   {
+    "day": "2026-11-12",
+    "legs": [
+     "KF521-2026-11-12",
+     "KF522-2026-11-12"
+    ],
+    "report": "2026-11-12T13:30:00Z",
+    "release": "2026-11-12T20:00:00Z"
+   }
+  ],
+  "crew": [
+   {
+    "crew_id": "C-1607",
+    "rank": "Captain"
+   },
+   {
+    "crew_id": "C-1658",
+    "rank": "First Officer"
+   },
+   {
+    "crew_id": "C-1737",
+    "rank": "Purser"
+   },
+   {
+    "crew_id": "C-1768",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1777",
+    "rank": "Cabin Crew"
+   },
+   {
+    "crew_id": "C-1817",
+    "rank": "Cabin Crew"
+   }
+  ]
+ }
+]

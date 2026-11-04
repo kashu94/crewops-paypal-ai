@@ -1,0 +1,61 @@
+[
+ {
+  "code": "SY",
+  "name": "Sahyadri Air",
+  "color": "#0f766e",
+  "hub": "HYD",
+  "fleet": [
+   {
+    "tail": "VT-SYA",
+    "type": "A320",
+    "seats": 180
+   },
+   {
+    "tail": "VT-SYB",
+    "type": "A320",
+    "seats": 180
+   },
+   {
+    "tail": "VT-SYT",
+    "type": "ATR72",
+    "seats": 72
+   }
+  ]
+ },
+ {
+  "code": "KF",
+  "name": "Kaveri Flyers",
+  "color": "#b45309",
+  "hub": "HYD",
+  "fleet": [
+   {
+    "tail": "VT-KFA",
+    "type": "A320",
+    "seats": 186
+   },
+   {
+    "tail": "VT-KFB",
+    "type": "A320",
+    "seats": 186
+   }
+  ]
+ },
+ {
+  "code": "GL",
+  "name": "Godavari Link",
+  "color": "#4338ca",
+  "hub": "HYD",
+  "fleet": [
+   {
+    "tail": "VT-GLT",
+    "type": "ATR72",
+    "seats": 70
+   },
+   {
+    "tail": "VT-GLU",
+    "type": "ATR72",
+    "seats": 70
+   }
+  ]
+ }
+]

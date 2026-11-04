@@ -1,0 +1,46 @@
+[project]
+name = "crewpay"
+version = "0.1.0"
+description = "Crew control for regional airlines that pays the crew it calls in: an agent on Amazon Bedrock that keeps every roster change legal and settles it through PayPal."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+dependencies = [
+  "boto3>=1.40",
+  "fastapi>=0.115",
+  "httpx>=0.27",
+  "mcp>=1.2",
+  "pillow>=11",
+  "pydantic>=2.9",
+  "python-multipart>=0.0.20",
+  "uvicorn>=0.30",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/crewpay"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI declares request parameters with these markers as defaults; they are not mutable.
+extend-immutable-calls = ["fastapi.Body", "fastapi.Depends", "fastapi.File", "fastapi.Form"]

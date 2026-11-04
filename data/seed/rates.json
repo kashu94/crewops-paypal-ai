@@ -1,0 +1,14 @@
+{
+ "currency": "INR",
+ "standby_callout_pilot": 16000,
+ "standby_callout_cabin": 8500,
+ "day_off_callout_pilot": 23000,
+ "day_off_callout_cabin": 11500,
+ "positioning": 7500,
+ "delay_per_hour": 6200,
+ "cancellation_per_leg": 320000,
+ "hotel_night": 4800,
+ "service_allowance_pilot": 420,
+ "service_allowance_cabin": 130,
+ "travel_per_10_minutes": 160
+}
