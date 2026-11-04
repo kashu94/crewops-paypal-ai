@@ -1,0 +1,24 @@
+# Secrets — never commit PayPal / AI API keys
+.env
+.env.*
+!.env.example
+
+# Dependencies & builds
+node_modules/
+dist/
+build/
+.next/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Logs / OS / editor
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Git bundles used for transfer
+*.bundle
