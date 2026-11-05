@@ -127,6 +127,8 @@ class Context:
     """Team accounts (``crewpay.ops.accounts``), for admins."""
     alerts: Any = None
     """Alert addresses (``crewpay.ops.alerts``), for admins."""
+    payroll: Any = None
+    """Crew pay (``crewpay.pay.Payroll``): the PayPal payouts for approved cover."""
 
     def operation(self) -> Operation:
         return self.store.operation(self.now)

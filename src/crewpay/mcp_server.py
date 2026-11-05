@@ -23,13 +23,15 @@ from crewpay.agent import Caller, Context, Role, ToolBox
 from crewpay.agent.tools import Roster
 from crewpay.ops import CalloutDesk, StoreOutbox
 from crewpay.ops.reports import ReportDesk
+from crewpay.pay import PayConfig, PayPalClient, Payroll
 from crewpay.settings import settings
 from crewpay.store import open_store
 
 INSTRUCTIONS = (
     "Crew control for three regional airlines based in Hyderabad. Every answer about legality, "
     "hours or cost must come from these tools: quote their numbers, never estimate. Times are "
-    "IST. Turn names into crew ids with search_crew first."
+    "IST. Turn names into crew ids with search_crew first. Approved cover is paid through "
+    "PayPal Payouts: crew_payments shows each payment, its rupee lines and its PayPal status."
 )
 
 
@@ -40,9 +42,10 @@ def build_server(
     now: datetime | None = None,
     desk: CalloutDesk | None = None,
     reports: ReportDesk | None = None,
+    payroll: Payroll | None = None,
 ) -> Server:
     box = toolbox or ToolBox()
-    ctx = Context(store, caller, now, desk, reports=reports)
+    ctx = Context(store, caller, now, desk, reports=reports, payroll=payroll)
 
     async def list_tools(_ctx, _params) -> types.ListToolsResult:
         return types.ListToolsResult(
@@ -87,11 +90,26 @@ def main() -> None:
     config = settings()
     store = open_store(config)
     outbox = StoreOutbox(store)
+    desk = CalloutDesk(store, outbox, docs=store, four_eyes=True)
+    payroll = Payroll(
+        store,
+        outbox,
+        PayPalClient.from_settings(config),
+        PayConfig(
+            currency=config.paypal_currency,
+            fx_inr_per_usd=config.fx_inr_per_usd,
+            cap=config.pay_cap,
+            receiver=config.sandbox_receiver,
+        ),
+    )
+    if desk.plans is not None:
+        desk.plans.listeners.append(payroll.on_plan)
     server = build_server(
         store,
         caller,
-        desk=CalloutDesk(store, outbox, docs=store, four_eyes=True),
+        desk=desk,
         reports=ReportDesk(store, outbox, config.seed_dir),
+        payroll=payroll,
     )
 
     async def serve() -> None:

@@ -24,6 +24,7 @@ callout, so the person who approves it is always someone else.
 
 from __future__ import annotations
 
+import logging
 import threading
 import uuid
 from collections.abc import Callable
@@ -79,6 +80,8 @@ class Plan:
     decided_at: datetime | None = None
     decision_note: str = ""
     to_arrange: tuple[str, ...] = ()
+    breakdown: dict[str, int] = field(default_factory=dict)
+    """The cost in parts, in rupees, as the engine worked it out: what the crew are paid."""
     version: int | None = None
     """The trip's version after the change was made."""
     history: list[dict] = field(default_factory=list)
@@ -128,6 +131,8 @@ class PlanDesk:
         self._plans: dict[str, Plan] = {}
         self.on_decided = on_decided
         """Told about every decided plan: the callout desk fills or reopens its seat."""
+        self.listeners: list[Callable[[Plan], None]] = []
+        """Also told about every decided plan, after the callout desk: the payroll."""
 
     def _sync(self) -> None:
         if self.docs is not None:
@@ -212,6 +217,7 @@ class PlanDesk:
                 note=note,
                 source=source,
                 to_arrange=arrangements(op, trip_id, choice),
+                breakdown=dict(choice.breakdown),
             )
             self._note(plan, "submitted", by, note)
             self._save(plan)
@@ -249,6 +255,11 @@ class PlanDesk:
         self._save(plan)
         if self.on_decided is not None:
             self.on_decided(plan)
+        for listener in self.listeners:
+            try:
+                listener(plan)
+            except Exception:  # paying must never undo or block a roster decision
+                logging.getLogger("crewpay.plans").exception("plan listener failed")
         return plan
 
     def _stale_reason(self, plan: Plan) -> str | None:

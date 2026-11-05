@@ -11,6 +11,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field, model_validator
 
+from crewpay.agent.pay_tools import PAY_TOOLS
 from crewpay.agent.tools import (
     ADMINS,
     CREW_ID,
@@ -1878,6 +1879,7 @@ MORE_TOOLS = (
 ALL_TOOLS = (
     TOOLS
     + MORE_TOOLS
+    + PAY_TOOLS
     + (
         Tool(
             "operations",

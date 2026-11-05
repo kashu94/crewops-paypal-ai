@@ -65,7 +65,7 @@ class Endpoint:
 
     name: str
     model: str
-    region: str = "us-east-1"
+    region: str = "ap-southeast-2"
     available: bool = True
 
     @classmethod

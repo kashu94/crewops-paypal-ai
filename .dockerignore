@@ -1,0 +1,12 @@
+node_modules
+web/node_modules
+web/.next
+web/out
+.venv
+.git
+.env
+.env.*
+**/__pycache__
+.pytest_cache
+.ruff_cache
+*.bundle

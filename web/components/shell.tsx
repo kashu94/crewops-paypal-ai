@@ -19,6 +19,7 @@ import {
   Tv,
   UserPlus,
   Volume2,
+  Wallet,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -51,6 +52,7 @@ const ICONS: Record<string, LucideIcon> = {
   admin: Settings,
   board: Tv,
   speaker: Volume2,
+  pay: Wallet,
 };
 
 export function Logo({ size = 28 }: { size?: number }) {

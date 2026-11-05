@@ -184,6 +184,7 @@ class Advisor:
         self.verifier = verifier
         self.desk = desk
         self.reports = None
+        self.payroll = None
         """Disruption reports (``crewpay.ops.reports.ReportDesk``), set by the API."""
         self.max_steps = max_steps
 
@@ -239,7 +240,9 @@ class Advisor:
             answer.verified = True
             return answer
 
-        ctx = Context(self.store, caller, now, self.desk, reports=self.reports)
+        ctx = Context(
+            self.store, caller, now, self.desk, reports=self.reports, payroll=self.payroll
+        )
         op = ctx.operation()
         allowed = {t.name for t in self.toolbox.available(caller)}
         names = [n for n in route.tools if n in allowed] or sorted(allowed)

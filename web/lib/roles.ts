@@ -72,6 +72,8 @@ const I = {
   crew: { href: "/crew/", label: "My roster", hint: "Your calendar, flights, limits and offers", icon: "crew" },
   messages: { href: "/messages/", label: "Messages", hint: "Offers and roster changes sent to you", icon: "messages" },
   admin: { href: "/admin/", label: "Admin", hint: "Accounts, alerts, roster upload and limits", icon: "admin" },
+  pay: { href: "/pay/", label: "Crew pay", hint: "PayPal payouts for approved cover", icon: "pay" },
+  myPay: { href: "/pay/", label: "My pay", hint: "What you were paid for cover, through PayPal", icon: "pay" },
   board: { href: "/board/", label: "TV board", hint: "The ops-room wall", icon: "board", external: true },
   speaker: { href: "/speaker/", label: "Speaker", hint: "The ops-room speaker", icon: "speaker", external: true },
 } satisfies Record<string, NavItem>;
@@ -81,23 +83,23 @@ const OPS_ROOM: NavGroup = { group: "Ops room", items: [I.board, I.speaker] };
 export function navFor(role: Role): NavGroup[] {
   switch (role) {
     case "crew":
-      return [{ group: "Me", items: [I.crew, I.messages, I.assistant] }];
+      return [{ group: "Me", items: [I.crew, I.myPay, I.messages, I.assistant] }];
     case "reporter":
       return [{ group: "Station", items: [I.operations, I.report, I.myReports, I.assistant] }, OPS_ROOM];
     case "controller":
-      return [{ group: "Crew control", items: [I.desk, I.disruptions, I.assistant] }, OPS_ROOM];
+      return [{ group: "Crew control", items: [I.desk, I.disruptions, I.pay, I.assistant] }, OPS_ROOM];
     case "approver":
-      return [{ group: "Second pair of eyes", items: [I.approvals, I.disruptions, I.assistant] }, OPS_ROOM];
+      return [{ group: "Second pair of eyes", items: [I.approvals, I.pay, I.disruptions, I.assistant] }, OPS_ROOM];
     case "auditor":
       return [
-        { group: "Read only", items: [I.disruptions, I.approvals, I.assistant] },
+        { group: "Read only", items: [I.disruptions, I.approvals, I.pay, I.assistant] },
         { group: "Oversight", items: [I.activity, I.limits] },
         OPS_ROOM,
       ];
     case "admin":
     case "super_admin":
       return [
-        { group: "Administration", items: [I.admin, I.disruptions, I.leave, I.limits] },
+        { group: "Administration", items: [I.admin, I.disruptions, I.pay, I.leave, I.limits] },
         { group: "Oversight", items: [I.activity, I.assistant] },
         OPS_ROOM,
       ];

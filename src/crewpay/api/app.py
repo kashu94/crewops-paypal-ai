@@ -51,6 +51,7 @@ from crewpay.ops.messages import (
 from crewpay.ops.push import Push, PushingOutbox
 from crewpay.ops.reports import ReportDesk, ReportStatus
 from crewpay.ops.roster_upload import MAX_BYTES as ROSTER_LIMIT
+from crewpay.pay import PayConfig, PayPalClient, PayPalError, Payroll
 from crewpay.seed import load_dataset, read_meta, shifted
 from crewpay.settings import ROOT, Settings, settings
 from crewpay.store import MemoryStore, Store, open_store
@@ -97,6 +98,19 @@ class Services:
         self.desk = CalloutDesk(self.store, self.outbox, docs=self.store, four_eyes=True)
         self.reports = ReportDesk(self.store, self.outbox, config.seed_dir)
         self.alerts = AlertAddresses(self.store)
+        self.payroll = Payroll(
+            self.store,
+            self.outbox,
+            PayPalClient.from_settings(config),
+            PayConfig(
+                currency=config.paypal_currency,
+                fx_inr_per_usd=config.fx_inr_per_usd,
+                cap=config.pay_cap,
+                receiver=config.sandbox_receiver,
+            ),
+        )
+        if self.desk.plans is not None:
+            self.desk.plans.listeners.append(self.payroll.on_plan)
         self.accounts = StoreAccounts(self.store)
         self.conversations = Conversations(docs=self.store)
         self.toolbox = ToolBox()
@@ -140,6 +154,7 @@ class Services:
                 self._advisor = build_advisor(self.config, self.store, self.outbox)
                 self._advisor.desk = self.desk
                 self._advisor.reports = self.reports
+                self._advisor.payroll = self.payroll
             return self._advisor
 
     def context(self, caller: Caller) -> Context:
@@ -150,6 +165,7 @@ class Services:
             reports=self.reports,
             accounts=self.accounts,
             alerts=self.alerts,
+            payroll=self.payroll,
         )
 
     def set_outbox(self, outbox: Any) -> None:
@@ -159,6 +175,7 @@ class Services:
         if self.desk.plans is not None:
             self.desk.plans.outbox = outbox
         self.reports.outbox = outbox
+        self.payroll.outbox = outbox
 
     def spend(self, what: str) -> None:
         """Count one model-backed request against today's allowance."""
@@ -834,6 +851,58 @@ def create_app(config: Settings | None = None, services: Services | None = None)
         if data is None:
             raise HTTPException(404)
         return Response(data, media_type="image/jpeg", headers={"Cache-Control": "max-age=86400"})
+
+    # -- crew pay -------------------------------------------------------------------------
+
+    @app.get("/api/payments")
+    def payments(who: Caller = Depends(caller)) -> dict[str, Any]:
+        """The payment ledger for the console: crew see their own, crew control all of it."""
+        if who.role is Role.SPEAKER or who.role is Role.REPORTER:
+            raise HTTPException(403, f"the {who.role} role cannot see crew pay")
+        s = svc()
+        rows = s.payroll.all()
+        if who.role is Role.CREW:
+            rows = [p for p in rows if p["crew_id"] == who.crew_id]
+        return {
+            **s.payroll.totals(),
+            "cap": s.payroll.config.cap,
+            "fx_inr_per_usd": s.payroll.config.fx_inr_per_usd,
+            "payments": rows,
+        }
+
+    @app.post("/api/payments/sync")
+    def payments_sync(who: Caller = Depends(caller)) -> dict[str, int]:
+        if who.role not in (Role.CONTROLLER, Role.APPROVER, Role.ADMIN, Role.SUPER_ADMIN):
+            raise HTTPException(403, f"the {who.role} role cannot refresh payments")
+        return {"changed": svc().payroll.sync()}
+
+    @app.post("/api/paypal/webhook")
+    async def paypal_webhook(request: Request) -> dict[str, Any]:
+        """PayPal's notices about payout items. Each is checked with PayPal before it counts."""
+        s = svc()
+        try:
+            event = await request.json()
+        except ValueError as err:
+            raise HTTPException(400, "not JSON") from err
+        paypal = s.payroll.paypal
+        if paypal is None or not config.paypal_webhook_id:
+            raise HTTPException(404, "PayPal webhooks are not set up on this server")
+        try:
+            genuine = paypal.verify_webhook(dict(request.headers), event, config.paypal_webhook_id)
+        except PayPalError as err:
+            raise HTTPException(502, f"could not verify with PayPal: {err}") from err
+        if not genuine:
+            raise HTTPException(400, "the signature did not verify")
+        moved = s.payroll.webhook(event)
+        log(
+            s.store,
+            "activity",
+            by="paypal",
+            role="webhook",
+            action=str(event.get("event_type", "")),
+            detail=moved or "no matching payment",
+        )
+        return {"received": True, "payment_id": moved}
 
     @app.get("/api/router-eval")
     def router_eval() -> Any:

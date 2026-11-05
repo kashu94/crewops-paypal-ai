@@ -59,7 +59,12 @@ class Settings:
     paypal_webhook_id: str
     paypal_currency: str
     pay_cap: float
-    """The most one plan may pay out in total, in ``paypal_currency``; more needs finance."""
+    """The most one payment may be, in ``paypal_currency``, before a second approver must
+    release it."""
+    fx_inr_per_usd: float
+    """The demo exchange rate: costs are in rupees, payouts in ``paypal_currency``."""
+    sandbox_receiver: str
+    """A sandbox personal account every payout goes to (empty: each crew member's address)."""
     # -- the app ----------------------------------------------------------------------------
     stage: str
     auth: str
@@ -103,15 +108,15 @@ def load_settings(env: dict[str, str] | None = None) -> Settings:
     paypal_base = get("PAYPAL_BASE_URL", PAYPAL_SANDBOX).rstrip("/")
     if "sandbox" not in paypal_base and not _flag(get("PAYPAL_ALLOW_LIVE", "false")):
         raise ValueError("PAYPAL_BASE_URL must be the PayPal sandbox")
-    lite = "us.amazon.nova-2-lite-v1:0"
+    lite = "global.amazon.nova-2-lite-v1:0"
     return Settings(
         bedrock_api_key=get("CREWPAY_BEDROCK_API_KEY"),
         aws_access_key_id=get("CREWPAY_AWS_ACCESS_KEY_ID"),
         aws_secret_access_key=get("CREWPAY_AWS_SECRET_ACCESS_KEY"),
         aws_profile=profile,
-        bedrock_region=get("CREWPAY_BEDROCK_REGION", "us-east-1"),
+        bedrock_region=get("CREWPAY_BEDROCK_REGION", "ap-southeast-2"),
         advisor_model=get("CREWPAY_ADVISOR_MODEL", lite),
-        router_model=get("CREWPAY_ROUTER_MODEL", "us.amazon.nova-micro-v1:0"),
+        router_model=get("CREWPAY_ROUTER_MODEL", "amazon.nova-micro-v1:0"),
         writer_model=get("CREWPAY_WRITER_MODEL", lite),
         vision_model=get("CREWPAY_VISION_MODEL", lite),
         paypal_client_id=get("PAYPAL_CLIENT_ID"),
@@ -119,7 +124,9 @@ def load_settings(env: dict[str, str] | None = None) -> Settings:
         paypal_base_url=paypal_base,
         paypal_webhook_id=get("PAYPAL_WEBHOOK_ID"),
         paypal_currency=get("CREWPAY_CURRENCY", "USD"),
-        pay_cap=float(get("CREWPAY_PAY_CAP", "2500")),
+        pay_cap=float(get("CREWPAY_PAY_CAP", "500")),
+        fx_inr_per_usd=float(get("CREWPAY_FX_INR_PER_USD", "84")),
+        sandbox_receiver=get("PAYPAL_SANDBOX_RECEIVER"),
         stage=get("CREWPAY_STAGE", "dev"),
         auth="demo",
         store="memory",

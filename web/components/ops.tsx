@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, CameraOff, ChevronDown, Gauge, Inbox, Users } from "lucide-react";
+import { Camera, CameraOff, ChevronDown, Gauge, Inbox, Users, Wallet } from "lucide-react";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 
@@ -216,6 +216,14 @@ export function PlanRow({ p }: { p: Plan }) {
         <p className="mt-1 text-xs">
           {words(p.status)} by {p.decided_by}
           {p.decision_note ? `: ${p.decision_note}` : ""}
+          {p.status === "approved" && (
+            <>
+              {" · "}
+              <Link href="/pay/" className="inline-flex items-center gap-1 font-medium text-accent hover:underline">
+                <Wallet size={12} /> {p.name} paid through PayPal
+              </Link>
+            </>
+          )}
         </p>
       )}
       {p.status === "submitted" && approver && !mine && (

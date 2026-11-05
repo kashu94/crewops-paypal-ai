@@ -1,0 +1,40 @@
+# Render Blueprint for CrewPay: one web service, built from the Dockerfile.
+# Secrets are marked sync: false: Render asks for them when the Blueprint is applied, and they
+# never live in this file.
+services:
+  - type: web
+    name: crewpay-console
+    runtime: docker
+    plan: starter
+    region: singapore
+    healthCheckPath: /api/health
+    autoDeploy: false
+    envVars:
+      - key: CREWPAY_STAGE
+        value: demo
+      - key: CREWPAY_LIVE_CLOCK
+        value: "true"
+      - key: CREWPAY_TICKER_SECONDS
+        value: "60"
+      - key: CREWPAY_DAILY_ASKS
+        value: "300"
+      - key: CREWPAY_BEDROCK_REGION
+        value: ap-southeast-2
+      - key: CREWPAY_BEDROCK_API_KEY
+        sync: false
+      - key: PAYPAL_BASE_URL
+        value: https://api-m.sandbox.paypal.com
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: PAYPAL_WEBHOOK_ID
+        sync: false
+      - key: PAYPAL_SANDBOX_RECEIVER
+        sync: false
+      - key: CREWPAY_CURRENCY
+        value: USD
+      - key: CREWPAY_FX_INR_PER_USD
+        value: "84"
+      - key: CREWPAY_PAY_CAP
+        value: "500"

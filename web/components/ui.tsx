@@ -147,12 +147,23 @@ const STATUS_TONE: Record<string, PillTone> = {
   filled: "ok",
   needs_decision: "critical",
   awaiting_approval: "pending",
+  held: "pending",
+  queued: "neutral",
+  sent: "accent",
+  paid: "ok",
+  unclaimed: "pending",
+  failed: "critical",
+  returned: "critical",
+  blocked: "critical",
+  cancelled: "neutral",
 };
 const STATUS_LABEL: Record<string, string> = {
   in_progress: "In progress",
   resolved: "Awaiting sign-off",
   needs_decision: "Decision needed",
   awaiting_approval: "Awaiting approval",
+  held: "Held for release",
+  sent: "With PayPal",
 };
 
 export function StatusPill({ value }: { value: string }) {
