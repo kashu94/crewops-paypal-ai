@@ -65,6 +65,10 @@ class Settings:
     """The demo exchange rate: costs are in rupees, payouts in ``paypal_currency``."""
     sandbox_receiver: str
     """A sandbox personal account every payout goes to (empty: each crew member's address)."""
+    seat_seller: str
+    """A sandbox business account that sells positioning seats (empty: the app's own account)."""
+    public_url: str
+    """Where the console is served, for PayPal to send a payer back to after approving."""
     # -- the app ----------------------------------------------------------------------------
     stage: str
     auth: str
@@ -127,6 +131,8 @@ def load_settings(env: dict[str, str] | None = None) -> Settings:
         pay_cap=float(get("CREWPAY_PAY_CAP", "500")),
         fx_inr_per_usd=float(get("CREWPAY_FX_INR_PER_USD", "84")),
         sandbox_receiver=get("PAYPAL_SANDBOX_RECEIVER"),
+        seat_seller=get("PAYPAL_SEAT_SELLER"),
+        public_url=get("CREWPAY_PUBLIC_URL", get("RENDER_EXTERNAL_URL")).rstrip("/"),
         stage=get("CREWPAY_STAGE", "dev"),
         auth="demo",
         store="memory",

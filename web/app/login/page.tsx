@@ -35,8 +35,8 @@ const AIRLINES = [
 const MODELS = [
   ["Amazon Nova on Bedrock", "Plans every answer with tool calls, and reads photos into fixed forms"],
   ["Nova Micro router", "Routes each question and screens out attacks on the assistant"],
-  ["PayPal Payouts", "Pays callout and positioning allowances to crew the moment cover is approved"],
-  ["PayPal Orders & webhooks", "Buys the positioning seat, and tracks every payment to settled"],
+  ["PayPal Payouts", "Pays callout, service and travel allowance to crew the moment cover is approved"],
+  ["PayPal Checkout & webhooks", "Buys the positioning seat with an Orders API order, and tracks every payment to settled"],
 ] as const;
 
 // The duty rules every cover is checked against (data/seed/rules.json), in short.

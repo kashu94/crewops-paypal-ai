@@ -19,7 +19,8 @@ them into one PayPal payout per plan:
   payment, so the demo works on any laptop.
 
 What the airline pays others (a positioning seat, delay costs) is listed with the payment as
-airline cost, not paid to the crew member.
+airline cost, not paid to the crew member. A positioning seat is bought separately, through
+PayPal Checkout (see :mod:`crewpay.pay.seats`).
 """
 
 from __future__ import annotations
@@ -27,7 +28,7 @@ from __future__ import annotations
 import threading
 import uuid
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from decimal import ROUND_HALF_UP, Decimal
 from enum import StrEnum
@@ -35,6 +36,7 @@ from typing import Any, Protocol
 
 from crewpay.ops.notify import DESK, Notice, Outbox
 from crewpay.pay.paypal import PayPalClient, PayPalError
+from crewpay.pay.seats import SeatConfig, Seats
 
 CREW_PAY = ("callout", "service allowance", "travel allowance")
 """The cost lines that are the crew member's pay; the rest are airline costs."""
@@ -92,6 +94,10 @@ class PayConfig:
     receiver: str = ""
     """A sandbox personal account every payout goes to; empty pays each crew member's own
     address, which PayPal keeps as unclaimed until someone signs up with it."""
+    seller: str = ""
+    """The sandbox business account paid for positioning seats (empty: the app's own)."""
+    public_url: str = ""
+    airlines: dict[str, str] = field(default_factory=dict)
 
 
 def to_usd(inr: int, rate: float) -> str:
@@ -117,6 +123,19 @@ class Payroll:
         self.config = config or PayConfig()
         self.clock = clock
         self._lock = threading.RLock()
+        self.seats = Seats(
+            docs,
+            lambda notice: self.outbox.send(notice),
+            paypal,
+            SeatConfig(
+                currency=self.config.currency,
+                fx_inr_per_usd=self.config.fx_inr_per_usd,
+                seller=self.config.seller,
+                public_url=self.config.public_url,
+                airlines=self.config.airlines,
+            ),
+            clock,
+        )
 
     @property
     def mode(self) -> str:
@@ -158,6 +177,8 @@ class Payroll:
         if str(plan.status) != "approved" or self.for_plan(plan.plan_id) is not None:
             return None
         breakdown: dict[str, int] = dict(getattr(plan, "breakdown", {}) or {})
+        if breakdown.get("positioning"):
+            self.seats.on_plan(plan, breakdown["positioning"])
         lines = [{"label": k, "inr": v} for k, v in breakdown.items() if k in CREW_PAY and v]
         airline = [{"label": k, "inr": v} for k, v in breakdown.items() if k not in CREW_PAY and v]
         total = sum(line["inr"] for line in lines)
@@ -285,8 +306,9 @@ class Payroll:
     # -- keeping up with PayPal -------------------------------------------------------------
 
     def sync(self, payment_id: str | None = None) -> int:
-        """Ask PayPal how each sent payment stands. Returns how many changed."""
-        changed = 0
+        """Ask PayPal how each sent payment, and each open seat order, stands. Returns how many
+        changed."""
+        changed = 0 if payment_id else self.seats.sync()
         with self._lock:
             rows = [self.get(payment_id)] if payment_id else self.docs.docs(KIND)
             for payment in rows:
@@ -328,6 +350,8 @@ class Payroll:
     def webhook(self, event: dict[str, Any]) -> str | None:
         """Apply a PayPal webhook event about a payout item. Returns the payment it moved."""
         kind = event.get("event_type", "")
+        if kind.startswith(("CHECKOUT.ORDER.", "PAYMENT.CAPTURE.")):
+            return self.seats.webhook(event)
         if not kind.startswith("PAYMENT.PAYOUTS-ITEM."):
             return None
         resource = event.get("resource") or {}

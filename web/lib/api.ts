@@ -11,6 +11,9 @@ export type Config = {
   models?: boolean;
   /** Whether the server has PayPal sandbox credentials (off: payments are simulated). */
   paypal?: boolean;
+  /** The PayPal app's public client id, for the PayPal button in the browser. */
+  paypal_client_id?: string | null;
+  currency?: string;
 };
 
 export type DemoAccount = { user: string; role: Role; crew_id: string | null; label: string };

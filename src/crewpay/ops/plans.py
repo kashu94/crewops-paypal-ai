@@ -82,6 +82,8 @@ class Plan:
     to_arrange: tuple[str, ...] = ()
     breakdown: dict[str, int] = field(default_factory=dict)
     """The cost in parts, in rupees, as the engine worked it out: what the crew are paid."""
+    positioning: dict[str, str] | None = None
+    """The flight that brings the crew member in, when they must position: the seat to buy."""
     version: int | None = None
     """The trip's version after the change was made."""
     history: list[dict] = field(default_factory=list)
@@ -218,6 +220,7 @@ class PlanDesk:
                 source=source,
                 to_arrange=arrangements(op, trip_id, choice),
                 breakdown=dict(choice.breakdown),
+                positioning=_positioning(op, choice.positioning_leg),
             )
             self._note(plan, "submitted", by, note)
             self._save(plan)
@@ -394,3 +397,17 @@ class PlanDesk:
             if by != plan.submitted_by:
                 raise PlanError(f"only {plan.submitted_by}, who submitted it, can withdraw it")
             return self._decide(plan, PlanStatus.WITHDRAWN, by, "")
+
+
+def _positioning(op: Operation, leg_id: str | None) -> dict[str, str] | None:
+    if leg_id is None:
+        return None
+    leg = op.legs[leg_id]
+    return {
+        "leg_id": leg.leg_id,
+        "flight_no": leg.flight_no,
+        "airline": leg.flight_no[:2],
+        "origin": str(leg.origin),
+        "destination": str(leg.destination),
+        "departs": leg.off_block.isoformat(),
+    }

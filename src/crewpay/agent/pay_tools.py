@@ -4,6 +4,10 @@ Every figure comes from the payment record: the rupee lines the engine costed, t
 rate, the amount PayPal was asked to pay and what PayPal says happened. Crew see only their own
 payments. Releasing a held payment is for an approver who did not approve the plan; cancelling
 an unclaimed one is for approvers and admins, with a reason.
+
+Positioning seats are bought with PayPal Checkout. The agent can find the seat and hand over
+the order's approve link, and take the payment once the payer has approved it in PayPal; it can
+never approve a payment itself.
 """
 
 from __future__ import annotations
@@ -22,9 +26,10 @@ from crewpay.agent.tools import (
     Tool,
     ToolError,
 )
-from crewpay.pay import PayError
+from crewpay.pay import PayError, SeatError
 
 PAYMENT_ID = r"^PAY-[0-9a-f]{8}$"
+SEAT_ID = r"^SEAT-[0-9a-f]{8}$"
 EVERYONE_WITH_PAY = frozenset(
     {
         Role.CREW,
@@ -152,6 +157,75 @@ def cancel_payment(ctx: Context, args: CancelPayment) -> dict[str, Any]:
         raise ToolError(str(err)) from err
 
 
+def _seat_view(s: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "seat_id": s["seat_id"],
+        "status": s["status"],
+        "crew_id": s["crew_id"],
+        "name": s["name"],
+        "trip_id": s["trip_id"],
+        "plan_id": s["plan_id"],
+        "flight": f"{s['flight_no']} {s['origin']}-{s['destination']}",
+        "departs": s["departs"],
+        "airline": s["airline"],
+        "amount": s["amount"],
+        "currency": s["currency"],
+        "inr": s["inr"],
+        "paid_with": "PayPal Checkout"
+        + (" (simulated)" if s["mode"] == "simulated" else " sandbox"),
+        "paypal_order_id": s.get("order_id"),
+        "paypal_approve_link": s.get("approve_url") if s["status"] == "to pay" else None,
+        "paypal_capture_id": s.get("capture_id"),
+        "paid_by": s.get("paid_by"),
+        "error": s.get("error"),
+    }
+
+
+class PositioningSeats(BaseModel):
+    crew_id: str | None = Field(None, pattern=CREW_ID, description="Only this crew member's")
+    trip_id: str | None = Field(None, pattern=TRIP_ID, description="Only seats for this trip")
+    status: Literal["to pay", "pending", "paid", "failed", "cancelled", "refunded"] | None = None
+
+
+def positioning_seats(ctx: Context, args: PositioningSeats) -> dict[str, Any]:
+    seats = _payroll(ctx).seats
+    rows = seats.all()
+    if ctx.caller.role is Role.CREW:
+        rows = [s for s in rows if s["crew_id"] == ctx.caller.crew_id]
+    if args.crew_id:
+        ctx.own(args.crew_id)
+        rows = [s for s in rows if s["crew_id"] == args.crew_id]
+    if args.trip_id:
+        rows = [s for s in rows if s["trip_id"] == args.trip_id]
+    if args.status:
+        rows = [s for s in rows if s["status"] == args.status]
+    return {"mode": seats.mode, "count": len(rows), "seats": [_seat_view(s) for s in rows[:25]]}
+
+
+class PaySeat(BaseModel):
+    seat_id: str = Field(pattern=SEAT_ID)
+    order_id: str | None = Field(None, max_length=40, description="The PayPal order approved")
+
+
+def pay_seat(ctx: Context, args: PaySeat) -> dict[str, Any]:
+    try:
+        return _seat_view(_payroll(ctx).seats.capture(args.seat_id, ctx.caller.user, args.order_id))
+    except SeatError as err:
+        raise ToolError(str(err)) from err
+
+
+class CancelSeat(BaseModel):
+    seat_id: str = Field(pattern=SEAT_ID)
+    reason: str = Field(min_length=3, max_length=300)
+
+
+def cancel_seat(ctx: Context, args: CancelSeat) -> dict[str, Any]:
+    try:
+        return _seat_view(_payroll(ctx).seats.cancel(args.seat_id, ctx.caller.user, args.reason))
+    except SeatError as err:
+        raise ToolError(str(err)) from err
+
+
 PAY_TOOLS = (
     Tool(
         "crew_payments",
@@ -185,6 +259,32 @@ PAY_TOOLS = (
         "reason; logged.",
         CancelPayment,
         cancel_payment,
+        frozenset({Role.APPROVER}) | ADMINS,
+        writes=True,
+    ),
+    Tool(
+        "positioning_seats",
+        "Seats bought for crew who fly in to cover a trip, paid with PayPal Checkout: flight, "
+        "amount, state, the PayPal order id and, while unpaid, the link to approve the payment "
+        "in PayPal. Crew see only their own.",
+        PositioningSeats,
+        positioning_seats,
+        EVERYONE_WITH_PAY,
+    ),
+    Tool(
+        "pay_seat",
+        "Take the payment for a positioning seat once the payer has approved its PayPal order "
+        "(approvers and admins). If it is not approved yet, give them the approve link.",
+        PaySeat,
+        pay_seat,
+        frozenset({Role.APPROVER}) | ADMINS,
+        writes=True,
+    ),
+    Tool(
+        "cancel_seat",
+        "Cancel an unpaid positioning seat, with a reason (approvers and admins).",
+        CancelSeat,
+        cancel_seat,
         frozenset({Role.APPROVER}) | ADMINS,
         writes=True,
     ),

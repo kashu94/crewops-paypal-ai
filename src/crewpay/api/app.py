@@ -107,6 +107,9 @@ class Services:
                 fx_inr_per_usd=config.fx_inr_per_usd,
                 cap=config.pay_cap,
                 receiver=config.sandbox_receiver,
+                seller=config.seat_seller,
+                public_url=config.public_url,
+                airlines=_airline_names(config.seed_dir),
             ),
         )
         if self.desk.plans is not None:
@@ -186,6 +189,14 @@ class Services:
         used["count"] += 1
         used[what] = used.get(what, 0) + 1
         self.store.put_doc("usage", today, used)
+
+
+def _airline_names(seed_dir: Path) -> dict[str, str]:
+    try:
+        rows = json.loads((seed_dir / "airlines.json").read_text())
+    except (OSError, ValueError):
+        return {}
+    return {a["code"]: a["name"] for a in rows if "code" in a and "name" in a}
 
 
 def answer_json(answer: Answer, conversation_id: str) -> dict[str, Any]:
@@ -456,6 +467,9 @@ def create_app(config: Settings | None = None, services: Services | None = None)
             "stage": config.stage,
             "models": config.has_bedrock,
             "paypal": config.has_paypal,
+            # The client id is public: the PayPal button in the browser needs it.
+            "paypal_client_id": config.paypal_client_id or None,
+            "currency": config.paypal_currency,
         }
 
     # -- reading --------------------------------------------------------------------------
@@ -861,13 +875,16 @@ def create_app(config: Settings | None = None, services: Services | None = None)
             raise HTTPException(403, f"the {who.role} role cannot see crew pay")
         s = svc()
         rows = s.payroll.all()
+        seats = s.payroll.seats.all()
         if who.role is Role.CREW:
             rows = [p for p in rows if p["crew_id"] == who.crew_id]
+            seats = [x for x in seats if x["crew_id"] == who.crew_id]
         return {
             **s.payroll.totals(),
             "cap": s.payroll.config.cap,
             "fx_inr_per_usd": s.payroll.config.fx_inr_per_usd,
             "payments": rows,
+            "seats": seats,
         }
 
     @app.post("/api/payments/sync")
@@ -878,7 +895,8 @@ def create_app(config: Settings | None = None, services: Services | None = None)
 
     @app.post("/api/paypal/webhook")
     async def paypal_webhook(request: Request) -> dict[str, Any]:
-        """PayPal's notices about payout items. Each is checked with PayPal before it counts."""
+        """PayPal's notices about payout items and seat orders. Each is checked with PayPal
+        before it counts."""
         s = svc()
         try:
             event = await request.json()

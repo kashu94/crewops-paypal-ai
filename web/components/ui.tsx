@@ -156,6 +156,9 @@ const STATUS_TONE: Record<string, PillTone> = {
   returned: "critical",
   blocked: "critical",
   cancelled: "neutral",
+  "to pay": "pending",
+  pending: "accent",
+  refunded: "critical",
 };
 const STATUS_LABEL: Record<string, string> = {
   in_progress: "In progress",

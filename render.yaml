@@ -3,7 +3,7 @@
 # never live in this file.
 services:
   - type: web
-    name: crewpay-console
+    name: paypal-crewpay-console
     runtime: docker
     plan: starter
     region: singapore
@@ -31,6 +31,8 @@ services:
       - key: PAYPAL_WEBHOOK_ID
         sync: false
       - key: PAYPAL_SANDBOX_RECEIVER
+        sync: false
+      - key: PAYPAL_SEAT_SELLER
         sync: false
       - key: CREWPAY_CURRENCY
         value: USD

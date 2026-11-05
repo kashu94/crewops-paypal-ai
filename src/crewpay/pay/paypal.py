@@ -1,9 +1,12 @@
-"""The PayPal REST API, sandbox only: OAuth, Payouts and webhook verification.
+"""The PayPal REST API, sandbox only: OAuth, Payouts, Orders and webhook verification.
 
     POST /v1/oauth2/token                                   client credentials -> access token
     POST /v1/payments/payouts                               one batch per approved plan
     GET  /v1/payments/payouts/{batch_id}                    the batch and each item's status
     POST /v1/payments/payouts-item/{item_id}/cancel         take back an unclaimed payment
+    POST /v2/checkout/orders                                buy a positioning seat
+    GET  /v2/checkout/orders/{order_id}                     has the payer approved it?
+    POST /v2/checkout/orders/{order_id}/capture             take the approved payment
     POST /v1/notifications/verify-webhook-signature         is this event really from PayPal?
 
 Every request that moves money carries a ``PayPal-Request-Id``, and every batch a
@@ -163,6 +166,20 @@ class PayPalClient:
 
     def cancel_item(self, payout_item_id: str) -> dict[str, Any]:
         return self.request("POST", f"/v1/payments/payouts-item/{payout_item_id}/cancel")
+
+    # -- orders -----------------------------------------------------------------------------
+
+    def create_order(self, body: dict[str, Any], request_id: str) -> dict[str, Any]:
+        """Create a Checkout order. Returns it with its ``id`` and approve link."""
+        return self.request("POST", "/v2/checkout/orders", body, request_id=request_id)
+
+    def get_order(self, order_id: str) -> dict[str, Any]:
+        return self.request("GET", f"/v2/checkout/orders/{order_id}")
+
+    def capture_order(self, order_id: str, request_id: str) -> dict[str, Any]:
+        return self.request(
+            "POST", f"/v2/checkout/orders/{order_id}/capture", {}, request_id=request_id
+        )
 
     # -- webhooks ---------------------------------------------------------------------------
 
