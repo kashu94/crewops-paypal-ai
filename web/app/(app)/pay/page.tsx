@@ -1,13 +1,12 @@
 "use client";
 
-import { Ban, CircleCheck, Clock3, ExternalLink, Hourglass, Plane, RefreshCw, Send, ShieldCheck, Wallet } from "lucide-react";
+import { AtSign, Ban, CircleCheck, Clock3, Hourglass, Plane, RefreshCw, Send, ShieldCheck, Wallet } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
-import { PayPalButton } from "@/components/paypal-button";
 import { useSession } from "@/components/session";
 import { Button, control, cx, Empty, Kpi, Kpis, Loading, Mono, Notice, PageHeader, Panel, Pill, StatusPill, Table } from "@/components/ui";
-import { api, loadConfig, tool, type Config } from "@/lib/api";
+import { api, tool } from "@/lib/api";
 import { cap, inr, plural, words } from "@/lib/format";
 import { useAction, useLoad } from "@/lib/use-load";
 
@@ -31,6 +30,7 @@ export type Payment = {
   amount: string;
   currency: string;
   receiver: string;
+  receiver_is?: string;
   mode: "paypal" | "simulated";
   status: string;
   batch_id: string | null;
@@ -38,34 +38,6 @@ export type Payment = {
   transaction_id: string | null;
   paypal_status: string | null;
   fee?: string;
-  error: string | null;
-  created_at: string;
-  history: Step[];
-};
-export type Seat = {
-  seat_id: string;
-  plan_id: string;
-  trip_id: string;
-  crew_id: string;
-  name: string;
-  approved_by: string | null;
-  flight_no: string;
-  airline: string;
-  origin: string;
-  destination: string;
-  departs: string;
-  inr: number;
-  fx_inr_per_usd: number;
-  amount: string;
-  currency: string;
-  payee: string | null;
-  mode: "paypal" | "simulated";
-  status: string;
-  order_id: string | null;
-  approve_url: string | null;
-  capture_id: string | null;
-  paypal_status: string | null;
-  paid_by: string | null;
   error: string | null;
   created_at: string;
   history: Step[];
@@ -78,7 +50,8 @@ type Ledger = {
   fx_inr_per_usd: number;
   by_status: Record<string, { count: number; amount: string; inr: number }>;
   payments: Payment[];
-  seats: Seat[];
+  approvals: Funded[];
+  payout_account: { email: string; is: string; set_at: string | null } | null;
 };
 
 const money = (amount: string | number, currency: string) =>
@@ -203,6 +176,7 @@ function Row({ p, crewView }: { p: Payment; crewView: boolean }) {
                 </p>
                 <p className="mt-1">
                   To <Mono className="text-xs">{p.receiver}</Mono>
+                  {p.receiver_is && <span className="text-xs text-muted">, {p.receiver_is}</span>}
                 </p>
                 {p.item_id && (
                   <p className="mt-1 text-xs text-muted">
@@ -245,145 +219,124 @@ function Row({ p, crewView }: { p: Payment; crewView: boolean }) {
   );
 }
 
-function SeatPay({ seat, config }: { seat: Seat; config: Config | null }) {
-  const { can, flash, bump } = useSession();
+function PayoutAccount({ account }: { account: NonNullable<Ledger["payout_account"]> }) {
+  const { can } = useSession();
   const { busy, run } = useAction();
-  const [reason, setReason] = useState("");
-  if (!can("pay_seat") || !["to pay", "failed"].includes(seat.status)) return null;
-  const pay = (orderId?: string) =>
-    run("pay", () => tool("pay_seat", { seat_id: seat.seat_id, ...(orderId ? { order_id: orderId } : {}) }), () => `Seat on ${seat.flight_no} paid.`);
-  const live = seat.mode === "paypal" && config?.paypal_client_id && seat.order_id && seat.status === "to pay";
+  const [email, setEmail] = useState("");
+  const own = account.set_at !== null;
   return (
-    <div className="mt-2 flex flex-wrap items-center gap-2">
-      {live ? (
-        <>
-          <PayPalButton
-            clientId={config!.paypal_client_id!}
-            currency={seat.currency}
-            orderId={seat.order_id!}
-            onApproved={async (orderId) => {
-              await pay(orderId);
-            }}
-            onError={(m) => {
-              flash(m, "critical");
-              bump();
-            }}
-          />
-          {seat.approve_url && (
-            <a href={seat.approve_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs text-muted hover:text-accent">
-              <ExternalLink size={12} /> Approve in PayPal instead
-            </a>
-          )}
-        </>
-      ) : (
-        seat.status === "to pay" && (
-          <Button size="sm" disabled={busy !== null} onClick={() => pay()}>
-            <Wallet size={13} /> Pay with PayPal{seat.mode === "simulated" ? " (simulated)" : ""}
-          </Button>
-        )
-      )}
-      <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Reason to cancel" className={cx(control, "h-7 w-48 text-[13px]")} />
-      <Button
-        size="sm"
-        tone="secondary"
-        disabled={busy !== null}
-        onClick={() => {
-          if (reason.trim().length < 3) return flash("Say why the seat is not needed.", "pending");
-          run("cancel", () => tool("cancel_seat", { seat_id: seat.seat_id, reason: reason.trim() }), () => `Seat on ${seat.flight_no} cancelled.`);
-        }}
-      >
-        <Ban size={13} /> Cancel
-      </Button>
-    </div>
-  );
-}
-
-function Seats({ seats, crewView }: { seats: Seat[]; crewView: boolean }) {
-  const [config, setConfig] = useState<Config | null>(null);
-  useEffect(() => {
-    loadConfig().then(setConfig);
-  }, []);
-  return (
-    <Panel title={crewView ? "Your positioning seats" : "Positioning seats"} icon={<Plane size={15} />} className="mb-5">
-      <p className="mb-3 text-sm text-muted">
-        {crewView
-          ? "When you fly in to cover a trip, the airline buys your seat with PayPal. It shows here once it is paid."
-          : "Cover based at another airport flies in first. Approving that plan creates a PayPal order for the seat; an approver pays it with PayPal, and the server takes the payment only after PayPal confirms it."}
+    <Panel title="Where you are paid" icon={<AtSign size={15} />} className="mb-5">
+      <p className="text-sm">
+        Your next payout goes to <Mono>{account.email}</Mono>
+        <span className="text-muted">, {own ? "the account you chose" : account.is}</span>
+        {own && <span className="text-xs text-faint"> · set {when(account.set_at!)}</span>}.
       </p>
-      <ul className="divide-y divide-line">
-        {seats.map((seat) => (
-          <li key={seat.seat_id} className="py-3 first:pt-0 last:pb-0">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <div>
-                <span className="font-medium">
-                  {seat.flight_no} {seat.origin}–{seat.destination}
-                </span>{" "}
-                <span className="text-sm text-muted">
-                  {seat.airline} · departs {when(seat.departs)}
-                </span>
-                <div className="text-xs text-muted">
-                  {!crewView && (
-                    <>
-                      {seat.name} (<Mono>{seat.crew_id}</Mono>) ·{" "}
-                    </>
-                  )}
-                  covering <Mono>{seat.trip_id}</Mono> · <Mono>{seat.seat_id}</Mono>
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="font-semibold tabular-nums">{money(seat.amount, seat.currency)}</span>{" "}
-                <StatusPill value={seat.status} />
-                {seat.mode === "simulated" && (
-                  <Pill className="ml-1" title="No PayPal credentials on this server: the same steps, simulated">
-                    simulated
-                  </Pill>
-                )}
-                <div className="text-xs text-muted">
-                  {inr(seat.inr)} at ₹{seat.fx_inr_per_usd}/$
-                </div>
-              </div>
-            </div>
-            <div className="mt-1 text-xs text-faint">
-              PayPal order <Mono>{seat.order_id ?? "–"}</Mono>
-              {seat.capture_id && (
-                <>
-                  {" "}
-                  · capture <Mono>{seat.capture_id}</Mono>
-                </>
-              )}
-              {seat.paid_by && ` · paid by ${seat.paid_by}`}
-              {seat.payee && ` · to ${seat.payee}`}
-            </div>
-            {seat.error && (
-              <Notice tone="error" className="mt-2">
-                {seat.error}
-              </Notice>
-            )}
-            {!crewView && <SeatPay seat={seat} config={config} />}
-          </li>
-        ))}
-      </ul>
+      {!own && <p className="mt-1 text-xs text-muted">Give the email of your own PayPal account and you are paid there from now on.</p>}
+      {can("set_payout_email") && (
+        <form
+          className="mt-3 flex flex-wrap items-center gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            run("payee", () => tool("set_payout_email", { email: email.trim() }), () => {
+              setEmail("");
+              return "Saved. You and crew control have been told about the change.";
+            });
+          }}
+        >
+          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" aria-label="PayPal email" className={cx(control, "h-8 max-w-72 text-sm")} />
+          <Button size="sm" type="submit" disabled={busy !== null || !email.trim()}>
+            Pay me here
+          </Button>
+          <span className="text-xs text-faint">Payments already sent are not moved.</span>
+        </form>
+      )}
     </Panel>
   );
 }
 
-/** Back from PayPal's approve link (?seat=…&token=<order id>): take the payment once. */
-function useReturnFromPayPal(seats: Seat[] | undefined) {
-  const { can } = useSession();
-  const { run } = useAction();
-  const done = useRef(false);
-  useEffect(() => {
-    if (done.current || !seats || !can("pay_seat")) return;
-    const q = new URLSearchParams(window.location.search);
-    const seatId = q.get("seat");
-    const orderId = q.get("token");
-    if (!seatId) return;
-    done.current = true;
-    window.history.replaceState(null, "", window.location.pathname);
-    const seat = seats.find((x) => x.seat_id === seatId);
-    if (!seat || seat.status !== "to pay" || !orderId) return;
-    run("pay", () => tool("pay_seat", { seat_id: seatId, order_id: orderId }), () => `Seat on ${seat.flight_no} paid.`);
-  }, [seats, can, run]);
+type Funded = {
+  funding_id: string;
+  plan_id: string;
+  trip_id: string;
+  crew_id: string;
+  name: string;
+  approver: string;
+  lines: { label: string; inr: number; amount: string; for: "crew" | "seat" }[];
+  total_inr: number;
+  amount: string;
+  currency: string;
+  mode: "paypal" | "simulated";
+  status: string;
+  order_id: string | null;
+  capture_id: string | null;
+  refund_id: string | null;
+  created_at: string;
+};
+
+/** What approvers paid with PayPal to confirm their approvals: the cover's full cost. */
+function ApprovalPayments({ rows }: { rows: Funded[] }) {
+  return (
+    <Panel flush title="Approvals confirmed with PayPal" icon={<ShieldCheck size={15} />} className="mb-5" action={plural(rows.length, "payment")}>
+      <p className="px-4 pt-3 text-sm text-muted sm:px-5">
+        An approval of cover takes effect only once the approver pays for it with PayPal Checkout: the crew pay below, and the seat when cover flies in first. Then the crew member is paid out.
+      </p>
+      <Table>
+        <thead>
+          <tr>
+            <th>Plan</th>
+            <th>Cover</th>
+            <th>Paid for</th>
+            <th className="text-right">Amount</th>
+            <th>Status</th>
+            <th className="hidden lg:table-cell">PayPal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((f) => (
+            <tr key={f.funding_id}>
+              <td>
+                <Link href="/approvals/" className="font-mono text-xs hover:text-accent">
+                  {f.plan_id}
+                </Link>
+                <div className="text-xs text-faint">by {f.approver}</div>
+              </td>
+              <td>
+                <span className="font-medium">{f.name}</span>
+                <div className="text-xs text-muted">
+                  <Mono>{f.trip_id}</Mono>
+                </div>
+              </td>
+              <td className="text-xs text-muted">
+                {f.lines.map((l) => (
+                  <div key={l.label} className="flex items-center gap-1">
+                    {l.for === "seat" && <Plane size={11} />}
+                    {cap(l.label)}
+                  </div>
+                ))}
+              </td>
+              <td className="text-right tabular-nums">
+                <span className="font-semibold">{money(f.amount, f.currency)}</span>
+                <div className="text-xs text-muted">{inr(f.total_inr)}</div>
+              </td>
+              <td>
+                <StatusPill value={f.status} />
+                {f.mode === "simulated" && (
+                  <Pill className="ml-1" title="No PayPal credentials on this server: the same steps, simulated">
+                    simulated
+                  </Pill>
+                )}
+              </td>
+              <td className="hidden lg:table-cell">
+                <Mono className="text-xs text-muted">{f.order_id ?? "–"}</Mono>
+                {f.capture_id && <div className="text-xs text-faint">capture {f.capture_id}</div>}
+                {f.refund_id && <div className="text-xs text-faint">refund {f.refund_id}</div>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </Panel>
+  );
 }
 
 const FILTERS = ["all", "held", "sent", "paid", "unclaimed", "failed"] as const;
@@ -393,7 +346,6 @@ export default function PayPage() {
   const { busy, run } = useAction();
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("all");
   const { data, error } = useLoad(() => api<Ledger>("/api/payments"));
-  useReturnFromPayPal(data?.seats);
   if (error) return <Notice tone="error">{error}</Notice>;
   if (!data) return <Loading />;
 
@@ -410,7 +362,7 @@ export default function PayPage() {
         lede={
           crewView
             ? "What you were paid for covering a trip at short notice, line by line, and where each PayPal payment stands."
-            : "When an approver approves cover, the crew member is paid through PayPal Payouts straight away: the callout, service and travel allowance the rules engine costed, never a figure a model made up. Anything over the cap waits for a second approver."
+            : "An approver confirms each approval of cover by paying for it with PayPal; then the crew member is paid through PayPal Payouts: the callout, service and travel allowance the rules engine costed, never a figure a model made up. Anything over the cap waits for a second approver."
         }
         actions={
           !crewView && can("payment_status") ? (
@@ -440,7 +392,9 @@ export default function PayPage() {
         <Kpi icon={<Wallet size={13} />} label="Need attention" value={attention} sub="held, unclaimed or failed" tone={attention ? "critical" : undefined} />
       </Kpis>
 
-      {data.seats.length > 0 && <Seats seats={data.seats} crewView={crewView} />}
+      {crewView && data.payout_account && <PayoutAccount account={data.payout_account} />}
+
+      {!crewView && data.approvals.length > 0 && <ApprovalPayments rows={data.approvals} />}
 
       <Panel
         flush

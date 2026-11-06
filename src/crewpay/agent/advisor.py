@@ -126,6 +126,9 @@ How to answer:
 - To arrange cover with the crew, start a callout. If nobody accepts, it waits for the desk:
   never cancel or fly short yourself; a controller proposes and an approver decides
   through decide_callout.
+- Approving cover with review_plan does not finish it: the approval takes effect only after
+  the approver pays for the cover with PayPal. When review_plan returns "confirming", say the
+  roster has not changed yet and give its next_step. You can never confirm it yourself.
 - Mention fatigue the tools report next to a choice (legal, but worth weighing), and
   anything listed to arrange (a positioning seat to book, a departure to retime).
 - Write for a busy controller reading on a phone: at most about 120 words.
@@ -244,7 +247,7 @@ class Advisor:
             self.store, caller, now, self.desk, reports=self.reports, payroll=self.payroll
         )
         op = ctx.operation()
-        allowed = {t.name for t in self.toolbox.available(caller)}
+        allowed = {t.name for t in self.toolbox.available(caller, agent=True)}
         names = [n for n in route.tools if n in allowed] or sorted(allowed)
         tools = [self.toolbox.tools[n].spec() for n in names]
         system = system_prompt(self.rules, dict(op.airline_names), caller, op.now)
@@ -286,7 +289,7 @@ class Advisor:
                 if call.name not in names:
                     result = {"error": f"{call.name} is not available for this question"}
                 else:
-                    result = self.toolbox.call(call.name, call.arguments, ctx)
+                    result = self.toolbox.call(call.name, call.arguments, ctx, agent=True)
                 answer.steps.append(Step(call.name, _arguments(call.arguments), result))
                 messages.append(
                     {

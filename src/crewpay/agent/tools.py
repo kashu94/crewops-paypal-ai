@@ -56,7 +56,7 @@ from crewpay.engine.watch import scan
 from crewpay.ops.callout import Callout, CalloutDesk, CalloutError, Status
 from crewpay.ops.governance import LimitError, limits, log, set_limit
 from crewpay.ops.notify import DESK, Notice
-from crewpay.ops.plans import Plan, PlanDesk, PlanError
+from crewpay.ops.plans import Plan, PlanDesk, PlanError, PlanStatus
 from crewpay.store.roster import RosterChange, StaleTrip
 
 CREW_ID = r"^C-\d{4}$"
@@ -1041,6 +1041,9 @@ class Tool:
     run: Callable[[Context, Any], dict[str, Any]]
     roles: frozenset[Role]
     writes: bool = False
+    console_only: bool = False
+    """Only a person at the console may use it, never the agent or an MCP client: confirming an
+    approval with PayPal."""
 
     def parameters(self) -> dict[str, Any]:
         return _untitled(self.args.model_json_schema())
@@ -1102,7 +1105,19 @@ def review_plan(ctx: Context, args: ReviewPlan) -> dict[str, Any]:
                 plan = plans.withdraw(args.plan_id, by)
     except PlanError as err:
         raise ToolError(str(err)) from err
-    return _plan(plan)
+    out = _plan(plan)
+    if plan.status is PlanStatus.CONFIRMING and ctx.payroll is not None:
+        funding = ctx.payroll.funding.for_plan(plan.plan_id)
+        out["next_step"] = (
+            f"Not in effect yet: {by} must confirm this approval by paying "
+            f"{funding['amount']} {funding['currency']} with PayPal, on the Approvals page"
+            + (" or through the PayPal link" if funding and funding.get("approve_url") else "")
+            + ". The roster changes only after that."
+        )
+        out["funding_id"] = funding["funding_id"]
+        if funding.get("approve_url"):
+            out["paypal_approve_link"] = funding["approve_url"]
+    return out
 
 
 def _ist(moment: datetime) -> datetime:
@@ -1567,19 +1582,30 @@ class ToolBox:
             tools = ALL_TOOLS
         self.tools = {t.name: t for t in tools}
 
-    def available(self, caller: Caller) -> list[Tool]:
-        return [t for t in self.tools.values() if caller.role in t.roles]
+    def available(self, caller: Caller, agent: bool = False) -> list[Tool]:
+        """The tools this caller may use; ``agent`` leaves out those only a person may use."""
+        return [
+            t
+            for t in self.tools.values()
+            if caller.role in t.roles and not (agent and t.console_only)
+        ]
 
     def specs(self, caller: Caller) -> list[dict[str, Any]]:
-        return [t.spec() for t in self.available(caller)]
+        return [t.spec() for t in self.available(caller, agent=True)]
 
-    def call(self, name: str, arguments: str | dict[str, Any], ctx: Context) -> dict[str, Any]:
-        """Run a tool for the model. Problems come back as ``{"error": ...}`` for it to read."""
+    def call(
+        self, name: str, arguments: str | dict[str, Any], ctx: Context, agent: bool = False
+    ) -> dict[str, Any]:
+        """Run a tool for the model. Problems come back as ``{"error": ...}`` for it to read.
+        ``agent`` is set for the assistant and MCP clients, which may not use console-only
+        tools."""
         tool = self.tools.get(name)
         if tool is None:
             return {"error": f"no tool named {name!r}"}
         if ctx.caller.role not in tool.roles:
             return {"error": f"the {ctx.caller.role} role cannot use {name}"}
+        if agent and tool.console_only:
+            return {"error": f"{name} needs a person at the console, in PayPal"}
         try:
             raw = json.loads(arguments or "{}") if isinstance(arguments, str) else arguments
             args = tool.args.model_validate(raw)

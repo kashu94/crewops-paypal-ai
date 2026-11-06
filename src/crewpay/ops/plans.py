@@ -6,9 +6,11 @@ crew member in that seat. An **approver**, never the person who submitted it, de
 * **approve**: the plan is judged again as the roster stands now. If its seat changed since it
   was submitted (the person it replaces is no longer in it, or the new crew member is already
   on the trip), or the crew member is no longer legal cover, the plan goes **stale** and
-  nothing changes; otherwise the change is made. A change to another seat on the same trip
-  does not make it stale, so the seats of one report can be approved one after another; the
-  legality check at approval covers whatever else moved.
+  nothing changes. Otherwise, when cover costs money, the approval waits for the approver to
+  **confirm it with PayPal** (see ``crewpay.pay.funding``): only once PayPal has taken the
+  payment is the plan judged once more and the change made. A change to another seat on the
+  same trip does not make it stale, so the seats of one report can be approved one after
+  another; the legality check at approval covers whatever else moved.
 * **reject**, with a reason: the plan is closed.
 * **send back**, with a note: the plan returns to the controller who submitted it, to rework.
 
@@ -16,7 +18,9 @@ The controller who submitted a plan may **withdraw** it until it is decided. A p
 callout (someone accepted an offer) is submitted in the name of the controller who opened the
 callout, so the person who approves it is always someone else.
 
-    SUBMITTED --approve--> APPROVED       (or STALE, when the roster moved on)
+    SUBMITTED --approve--> CONFIRMING --paid with PayPal--> APPROVED   (or STALE)
+        |                     '--cancelled--> SUBMITTED
+        |---approve (nothing to pay)--> APPROVED
         |---reject------> REJECTED
         |---send back---> SENT_BACK
         '---withdraw----> WITHDRAWN
@@ -49,9 +53,13 @@ class PlanStatus(StrEnum):
     SENT_BACK = "sent_back"
     WITHDRAWN = "withdrawn"
     STALE = "stale"
+    CONFIRMING = "confirming"
+    """Approved, and waiting for the approver to confirm the approval with PayPal."""
 
 
 OPEN = (PlanStatus.SUBMITTED,)
+WAITING = (PlanStatus.SUBMITTED, PlanStatus.CONFIRMING)
+"""Not final yet: nobody else may propose the same seat, and the plan still counts as waiting."""
 
 
 class PlanError(ValueError):
@@ -134,6 +142,9 @@ class PlanDesk:
         self.on_decided = on_decided
         """Told about every decided plan: the callout desk fills or reopens its seat."""
         self.listeners: list[Callable[[Plan], None]] = []
+        self.gate: Callable[[Plan], bool] | None = None
+        """Asked when an approver approves: True means the approval waits for payment (the
+        payroll has opened a PayPal order for it) and ``confirm`` finishes it."""
         """Also told about every decided plan, after the callout desk: the payroll."""
 
     def _sync(self) -> None:
@@ -162,7 +173,7 @@ class PlanDesk:
             return sorted(self._plans.values(), key=lambda p: p.submitted_at, reverse=True)
 
     def waiting(self) -> list[Plan]:
-        return [p for p in self.all() if p.status in OPEN]
+        return [p for p in self.all() if p.status in WAITING]
 
     def _note(self, plan: Plan, what: str, by: str, text: str = "") -> None:
         plan.history.append(
@@ -186,7 +197,7 @@ class PlanDesk:
         with self._lock:
             self._sync()
             for p in self._plans.values():
-                if p.status in OPEN and (p.trip_id, p.replacing) == (trip_id, replacing):
+                if p.status in WAITING and (p.trip_id, p.replacing) == (trip_id, replacing):
                     raise PlanError(
                         f"{p.plan_id} already proposes cover for {replacing} on {trip_id}"
                     )
@@ -290,66 +301,130 @@ class PlanDesk:
         return None
 
     def approve(self, plan_id: str, by: str) -> Plan:
-        """Check the plan again against the roster now, then make the change."""
+        """Check the plan again against the roster now. If cover costs money, open its PayPal
+        payment and wait for the approver to confirm; otherwise make the change."""
         with self._lock:
             self._sync()
             plan = self._open(plan_id)
             self._second(plan, by)
             stale = self._stale_reason(plan)
-            if stale is None:
-                trip, current = self.store.trip(plan.trip_id)
-                crew = [
-                    Seat(crew_id=plan.crew_id, rank=s.rank) if s.crew_id == plan.replacing else s
-                    for s in trip.crew
-                ]
-                try:
-                    plan.version = self.store.change_crew(
-                        plan.trip_id,
-                        crew,
-                        current,
-                        actor=f"{plan.submitted_by}, approved by {by}",
-                        reason=f"{plan.plan_id}: {plan.name} replaces {plan.replacing}"
-                        + "".join(f"; {n}" for n in plan.to_arrange),
-                        at=self.clock(),
-                    )
-                except StaleTrip as err:
-                    stale = str(err)
             if stale is not None:
-                self._decide(plan, PlanStatus.STALE, by, stale)
-                self.outbox.send(
-                    Notice(
-                        to=DESK,
-                        subject=f"Stale: {plan.rank} on {plan.trip_id}",
-                        body=f"{plan.plan_id} was not applied: {stale}. Nothing changed; "
-                        "submit a new plan.",
-                        at=self.clock(),
-                        ref=plan.plan_id,
+                return self._go_stale(plan, by, stale)
+            if self.gate is not None:
+                plan.decided_by = by  # who must confirm it with PayPal
+                try:
+                    waits = self.gate(plan)
+                except Exception as err:  # PayPal down: the plan stays as it was
+                    plan.decided_by = None
+                    raise PlanError(f"could not open the PayPal payment: {err}") from err
+                if waits:
+                    plan.status = PlanStatus.CONFIRMING
+                    plan.decided_at = self.clock()
+                    plan.decision_note = "waiting for PayPal"
+                    self._note(
+                        plan, str(PlanStatus.CONFIRMING), by, "approved; confirm with PayPal"
                     )
-                )
-                return plan
-            self._decide(plan, PlanStatus.APPROVED, by, "")
-            todo = "".join(f" To do: {n}." for n in plan.to_arrange)
-            self.outbox.send(
-                Notice(
-                    to=DESK,
-                    subject=f"Approved: {plan.rank} on {plan.trip_id}",
-                    body=f"{plan.name} ({plan.crew_id}) replaces {plan.replacing} on "
-                    f"{plan.trip_id}, submitted by {plan.submitted_by} and approved by {by}."
-                    + todo,
-                    at=self.clock(),
-                    ref=plan.plan_id,
-                )
-            )
-            self.outbox.send(
-                Notice(
-                    to=plan.crew_id,
-                    subject=f"Rostered: {plan.trip_id}",
-                    body=f"{plan.name}, you are now rostered on {plan.trip_id} as {plan.rank}.",
-                    at=self.clock(),
-                    ref=plan.plan_id,
-                )
-            )
+                    self._save(plan)
+                    return plan
+            return self._apply(plan, by)
+
+    def confirm(self, plan_id: str) -> Plan:
+        """PayPal has the payment: judge the plan once more and make the change. The approver
+        is the one who approved it."""
+        with self._lock:
+            self._sync()
+            plan = self._get(plan_id)
+            if plan.status is not PlanStatus.CONFIRMING:
+                raise PlanError(f"{plan_id} is {plan.status}, not waiting for PayPal")
+            by = plan.decided_by or "approver"
+            stale = self._stale_reason(plan)
+            if stale is not None:
+                return self._go_stale(plan, by, stale)
+            return self._apply(plan, by)
+
+    def check(self, plan_id: str) -> str | None:
+        """Why the plan could not be applied now, if it could not."""
+        with self._lock:
+            self._sync()
+            return self._stale_reason(self._get(plan_id))
+
+    def expire(self, plan_id: str, why: str) -> Plan:
+        """A plan waiting for PayPal whose trip moved on: stale, nothing changes."""
+        with self._lock:
+            self._sync()
+            plan = self._get(plan_id)
+            return self._go_stale(plan, plan.decided_by or "approver", why)
+
+    def reopen(self, plan_id: str, by: str, why: str) -> Plan:
+        """The PayPal step was cancelled: the plan waits for a decision again."""
+        with self._lock:
+            self._sync()
+            plan = self._get(plan_id)
+            if plan.status is not PlanStatus.CONFIRMING:
+                raise PlanError(f"{plan_id} is {plan.status}, not waiting for PayPal")
+            plan.status = PlanStatus.SUBMITTED
+            plan.decided_by = None
+            plan.decided_at = None
+            plan.decision_note = ""
+            self._note(plan, str(PlanStatus.SUBMITTED), by, why)
+            self._save(plan)
             return plan
+
+    def _go_stale(self, plan: Plan, by: str, stale: str) -> Plan:
+        self._decide(plan, PlanStatus.STALE, by, stale)
+        self.outbox.send(
+            Notice(
+                to=DESK,
+                subject=f"Stale: {plan.rank} on {plan.trip_id}",
+                body=f"{plan.plan_id} was not applied: {stale}. Nothing changed; "
+                "submit a new plan.",
+                at=self.clock(),
+                ref=plan.plan_id,
+            )
+        )
+        return plan
+
+    def _apply(self, plan: Plan, by: str) -> Plan:
+        """Make the change on the roster and tell everyone."""
+        trip, current = self.store.trip(plan.trip_id)
+        crew = [
+            Seat(crew_id=plan.crew_id, rank=s.rank) if s.crew_id == plan.replacing else s
+            for s in trip.crew
+        ]
+        try:
+            plan.version = self.store.change_crew(
+                plan.trip_id,
+                crew,
+                current,
+                actor=f"{plan.submitted_by}, approved by {by}",
+                reason=f"{plan.plan_id}: {plan.name} replaces {plan.replacing}"
+                + "".join(f"; {n}" for n in plan.to_arrange),
+                at=self.clock(),
+            )
+        except StaleTrip as err:
+            return self._go_stale(plan, by, str(err))
+        self._decide(plan, PlanStatus.APPROVED, by, "")
+        todo = "".join(f" To do: {n}." for n in plan.to_arrange)
+        self.outbox.send(
+            Notice(
+                to=DESK,
+                subject=f"Approved: {plan.rank} on {plan.trip_id}",
+                body=f"{plan.name} ({plan.crew_id}) replaces {plan.replacing} on "
+                f"{plan.trip_id}, submitted by {plan.submitted_by} and approved by {by}." + todo,
+                at=self.clock(),
+                ref=plan.plan_id,
+            )
+        )
+        self.outbox.send(
+            Notice(
+                to=plan.crew_id,
+                subject=f"Rostered: {plan.trip_id}",
+                body=f"{plan.name}, you are now rostered on {plan.trip_id} as {plan.rank}.",
+                at=self.clock(),
+                ref=plan.plan_id,
+            )
+        )
+        return plan
 
     def reject(self, plan_id: str, by: str, reason: str) -> Plan:
         if len(reason.strip()) < 3:
@@ -386,7 +461,7 @@ class PlanDesk:
             waiting = [
                 p
                 for p in self._plans.values()
-                if (p.trip_id, p.replacing) == (trip_id, replacing) and p.status in OPEN
+                if (p.trip_id, p.replacing) == (trip_id, replacing) and p.status in WAITING
             ]
             return [self._decide(p, PlanStatus.WITHDRAWN, by, why) for p in waiting]
 

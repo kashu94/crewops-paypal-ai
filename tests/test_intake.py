@@ -2,15 +2,14 @@ import io
 import random
 from datetime import timedelta
 
-import httpx
 import pytest
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
 
 from crewpay.engine import build_operation
 from crewpay.engine.clock import IST
-from crewpay.models.media import Box, MediaClient
+from crewpay.models.media import Box
 from crewpay.seed import load_dataset
-from crewpay.settings import ROOT, load_settings
+from crewpay.settings import ROOT
 from crewpay.vision import Kind, Status, measure, read_photo
 from crewpay.vision.intake import (
     CertificateForm,
@@ -256,11 +255,6 @@ def test_swaps_and_certificates_are_checked_against_the_roster(op):
     )
     result = read_photo(op, Kind.CERTIFICATE, SHARP, "image/jpeg", Reader(cert))
     assert "expiring 05 Nov 2027; on file: 05 Nov 2026" in result.message
-
-
-def media(handler):
-    config = load_settings({"MODEL_API_KEY": "k", "META_BASE_URL": "https://models.test/v1"})
-    return MediaClient(config, http=httpx.Client(transport=httpx.MockTransport(handler)))
 
 
 def board(*flights, readable="clear", is_notice=True):

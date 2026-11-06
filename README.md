@@ -1,9 +1,9 @@
 # CrewPay
 
 Crew control for regional airlines that **pays the crew it calls in**: an AI agent on Amazon
-Bedrock finds legal cover for a sick pilot in seconds, a second person approves it, and the crew
-member who steps in is paid through **PayPal Payouts** the moment the plan is approved. When
-they must fly in first, their seat is bought with **PayPal Checkout**.
+Bedrock finds legal cover for a sick pilot in seconds, a second person approves it and confirms
+the approval by paying for the cover with **PayPal Checkout**, and the crew member who steps in
+is paid through **PayPal Payouts** the moment it goes through.
 
 At 04:10 a first officer reports sick. Their trip leaves at 06:30. Today a controller digs
 through the roster, duty-hour sheets and licence records to find someone rested, rated and
@@ -16,12 +16,14 @@ CrewPay does both in one flow, and shows its working:
 1. **Report** a disruption (by text, voice or a photo of the sick note).
 2. **Find cover**: the rules engine checks every candidate against nine duty-time rules and
    ranks the legal ones by what they cost.
-3. **Approve**: a controller submits a plan; a different person approves it. The rules are
-   checked again at approval.
-4. **Pay**: the payroll turns the engine's cost lines into a PayPal payout to that crew member,
-   tracks it to settled through PayPal webhooks and status checks, and tells them they were paid.
-   If cover is based at another airport, approving the plan also creates a PayPal order for their
-   seat on the positioning flight, which an approver pays with the PayPal button.
+3. **Approve, then confirm with PayPal**: a controller submits a plan; a different person
+   approves it. The approval does not take effect yet: the approver confirms it by paying for
+   the cover with PayPal (the crew member's callout, service and travel allowance, and the seat
+   on the positioning flight when they must fly in first). The rules are checked again at
+   approval and before the payment is taken. A callout someone accepts goes the same way.
+4. **Pay**: once PayPal has the payment, the roster changes and the payroll pays the crew member
+   their lines through a PayPal payout, tracks it to settled through webhooks and status checks,
+   and tells them they were paid.
 
 > The model reads, plans and explains. It never does the arithmetic, and it never decides to
 > move money on its own.
@@ -43,13 +45,15 @@ sees it.
 
 | What | PayPal capability | Where |
 |---|---|---|
-| Pay the crew member who covers a seat, the moment the plan is approved | **Payouts API** (`POST /v1/payments/payouts`), one batch per plan | [`src/crewpay/pay/payroll.py`](src/crewpay/pay/payroll.py) |
+| Confirm every approval of cover by paying for it: the approval takes effect only once PayPal has the payment | **Orders v2** (`POST /v2/checkout/orders`, then `/capture`), created by the server from the rate card, with one item per cost line; the approver pays with the **PayPal JavaScript SDK** button or the order's approve link | [`src/crewpay/pay/funding.py`](src/crewpay/pay/funding.py), [`web/components/confirm-paypal.tsx`](web/components/confirm-paypal.tsx) |
+| Never charge for a change that did not happen | The plan is judged again before capture (not charged if stale); a plan that goes stale after capture is **refunded** (`POST /v2/payments/captures/{id}/refund`) | [`src/crewpay/pay/funding.py`](src/crewpay/pay/funding.py) |
+| Pay the crew member who covers a seat, the moment the approval goes through | **Payouts API** (`POST /v1/payments/payouts`), one batch per plan | [`src/crewpay/pay/payroll.py`](src/crewpay/pay/payroll.py) |
 | Never pay twice, even on a retry or a timeout | `sender_batch_id` and `PayPal-Request-Id` set to the payment id | [`src/crewpay/pay/paypal.py`](src/crewpay/pay/paypal.py) |
 | Follow each payout to paid, unclaimed, failed or returned | **Webhooks** (`PAYMENT.PAYOUTS-ITEM.*`), each one verified with `verify-webhook-signature`; plus a status check every minute (`GET /v1/payments/payouts/{id}`) | [`src/crewpay/api/app.py`](src/crewpay/api/app.py), [`src/crewpay/api/ticker.py`](src/crewpay/api/ticker.py) |
+| Pay each crew member at the PayPal account they choose | Payout `receiver` from the crew member's own setting on **My pay** (or "pay me at …" to the assistant); they and crew control are both told of every change | `set_payout_email` tool, [`src/crewpay/pay/payroll.py`](src/crewpay/pay/payroll.py) |
 | Take back a payment nobody claimed | **Cancel unclaimed payout item** | `cancel_payment` tool |
-| Buy the seat on the flight that positions cover from another base | **Orders v2** (`POST /v2/checkout/orders`, then `/capture`), created by the server from the rate card; the payer approves with the **PayPal JavaScript SDK** button or the order's approve link | [`src/crewpay/pay/seats.py`](src/crewpay/pay/seats.py), [`web/components/paypal-button.tsx`](web/components/paypal-button.tsx) |
-| Never buy a seat twice, and finish a payment if the browser closes | `PayPal-Request-Id` on create and capture; **webhooks** `CHECKOUT.ORDER.APPROVED` and `PAYMENT.CAPTURE.*`, and the status check, capture an approved order | [`src/crewpay/pay/seats.py`](src/crewpay/pay/seats.py) |
-| Ask about pay in plain words ("has D. Reddy been paid for T-1018?", "pay S. Rao's positioning seat") | The agent's `crew_payments`, `payment_status` and `positioning_seats` tools read the ledger and PayPal; `pay_seat` takes the payment once the payer has approved it in PayPal, and hands over the approve link if not | [`src/crewpay/agent/pay_tools.py`](src/crewpay/agent/pay_tools.py) |
+| Finish a payment if the browser closes, and never charge twice | `PayPal-Request-Id` on create, capture and refund; **webhooks** `CHECKOUT.ORDER.APPROVED` and `PAYMENT.CAPTURE.*`, and the status check, capture an approved order | [`src/crewpay/pay/funding.py`](src/crewpay/pay/funding.py) |
+| Ask about pay in plain words ("has D. Reddy been paid for T-1018?", "is my approval still waiting for PayPal?") | The agent's `crew_payments`, `payment_status` and `approval_payments` tools read the ledger and PayPal. The agent can approve, and hands over the PayPal link, but `confirm_approval` is console-only: a person always pays in PayPal | [`src/crewpay/agent/pay_tools.py`](src/crewpay/agent/pay_tools.py) |
 
 Controls around the money:
 
@@ -59,8 +63,9 @@ Controls around the money:
   approver, not the one who approved the plan, releases it.
 - **Only engine-costed lines are paid**: callout, service allowance and travel allowance.
   Airline costs (a positioning seat, delay costs) are listed on the payment, not paid to crew.
-- **A person approves every seat purchase in PayPal**: the server sets the amount and payee and
-  captures only an order PayPal says the payer approved; the agent can never approve one.
+- **A person confirms every approval in PayPal**: the server sets the amount and lines, and
+  captures only an order PayPal says the payer approved. Only the approver who approved the plan
+  can confirm it; the agent and MCP clients never can.
 - **Sandbox only**: the settings refuse any PayPal address other than the sandbox.
 - **Rupees are the cost of record**; payouts are made in US dollars at a fixed demo rate
   (`CREWPAY_FX_INR_PER_USD`, default 84), and both are kept on every payment.
@@ -72,15 +77,15 @@ project works on any laptop.
 
 | Job | Model (Amazon Bedrock, Converse API) | How |
 |---|---|---|
-| Planning each answer: which engine tools to call, then the reply | **Amazon Nova 2 Lite** | Tool calling over 59 typed tools, each with role checks in code |
+| Planning each answer: which engine tools to call, then the reply | **Amazon Nova 2 Lite** | Tool calling over 61 typed tools, each with role checks in code |
 | Sorting each question (absence, delay, cover, legality, change, pay, lookup) and flagging attacks on the assistant | **Amazon Nova Micro** | Structured output (a forced tool with a strict JSON schema); keyword rules take over if the model is unavailable |
 | Reading photos: sick notes, roster swaps, certificates, departures boards | **Nova 2 Lite** (vision) | Each photo fills a fixed form; code decides what happens, and a person confirms |
 | The shift brief, the message to passengers on a delayed flight, the shift handover | **Nova 2 Lite** | Structured output, then the same evidence check as every answer; a text that fails it is replaced by a template built from the same facts |
 | Spoken questions | The browser's speech recognition | Only the words heard are sent, like a typed question |
 
 The agent can **act**, not only advise: it can report an absence, start a callout, submit a plan
-and, for approvers, release a held payment or take the payment for a seat once it is approved
-in PayPal. Every action goes through the same tools, role
+and, for approvers, approve a plan (which then waits for them to confirm it with PayPal) or
+release a held payment. Every action goes through the same tools, role
 checks and four-eyes rules as the buttons in the console.
 
 ## Architecture
@@ -94,8 +99,8 @@ checks and four-eyes rules as the buttons in the console.
   │  agent: router (Nova Micro) → advisor (Nova 2 Lite, tools) → verifier     │
   │  tools: typed, role-checked; the same ones the buttons call              │
   │  rules engine: duty-time legality, cover ranking, costs (pure Python)     │
-  │  plans: submit → approve (four eyes) ──► payroll ──► PayPal Payouts       │
-  │                                  └──► seat order ──► PayPal Checkout      │
+  │  plans: submit → approve (four eyes) → confirm: PayPal Checkout           │
+  │            → roster changes → payroll → PayPal Payouts to the crew        │
   │  background loop: callouts, escalation, brief, payout status              │
   └──────────────────────────────────────────────────────────────────────────┘
                      │                                   │
@@ -105,21 +110,25 @@ checks and four-eyes rules as the buttons in the console.
 
 ## Try it
 
-**Hosted demo:** _link added after deploy_. Pick any identity on the sign-in page: no
-passwords. A quick path through it:
+**Hosted demo:** _link added after deploy_. On the sign-in page pick a role, then a person,
+and enter the demo password given in the submission's testing instructions (the same for every
+account; the server checks it and signs a session token, so nobody can skip it). Run locally
+without `CREWPAY_DEMO_PASSWORD` and no password is asked. A quick path through it:
 
 1. Sign in as **Ananya Iyer (Controller)**. On **Desk**, the watch has already found that
    Captain A. Nair's medical lapses before `T-1018`. Or ask the **Assistant**: "Captain
    C-1111 is sick for T-1018, who do I use?"
 2. Choose cover in **Find cover** and submit the plan.
-3. Sign out, sign in as **Meera Bhatt (Approver)**, open **Approvals** and approve the plan.
-4. Open **Crew pay**: the payout is already with PayPal, with its rupee lines, dollar amount and
-   PayPal batch id. Within a minute it shows **Paid**. A payment over the cap waits instead:
-   sign in as a second approver (**Karan Mehta**) to release it.
-   To see a seat bought, have the controller cover T-1015's captain (C-1140) with **S. Rao**,
-   who flies in on KF502: after approval, **Crew pay** shows the seat with the PayPal button.
+3. Sign out, sign in as **Meera Bhatt (Approver)**, open **Approvals** and approve the plan. It
+   now says **Waiting for PayPal**: click **Pay with PayPal** and pay with a sandbox personal
+   account. Only then does the roster change. (For a plan with a positioning seat, have the
+   controller cover T-1015's captain, C-1140, with **S. Rao**, who flies in on KF502.)
+4. Open **Crew pay**: the approval payment and the crew payout, with rupee lines, dollar amounts
+   and PayPal ids. Within a minute the payout shows **Paid**. A payout over the cap waits
+   instead: sign in as a second approver (**Karan Mehta**) to release it.
 5. Sign in as the crew member (**D. Reddy, Crew**): **My pay** shows the payment and **Messages**
-   has the "Paid" notice. Ask the assistant "why was I paid that much?"
+   has the "Paid" notice. Ask the assistant "why was I paid that much?" To receive a payout in
+   your own PayPal sandbox account, enter its email under **Where you are paid** first.
 
 ## Run it locally
 
@@ -140,15 +149,18 @@ unavailable, while every screen, rule and approval works.
 ### PayPal sandbox
 
 1. At [developer.paypal.com](https://developer.paypal.com/) open **Apps & Credentials**, make
-   sure **Sandbox** is selected, and create an app named **`paypal-crewpay-sandbox`**. Put its client id and secret in `.env` as
+   sure **Sandbox** is selected, and create an app named **`paypal-crewpay-sandbox`** on a
+   **United States** sandbox business account (create one under **Testing tools > Sandbox
+   accounts** if yours are in another country: some countries' accounts cannot send payouts).
+   Tick **Payouts** under the app's features. Put its client id and secret in `.env` as
    `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET`. The app's default sandbox business account
    pays the crew.
-2. Optional: under **Testing tools > Sandbox accounts**, copy a *personal* account's email into
-   `PAYPAL_SANDBOX_RECEIVER`, so every payout lands there and shows as **Paid**. Without it,
-   each crew member is paid at their own address and PayPal keeps the money as **Unclaimed**.
-3. Optional: copy a sandbox *business* account's email into `PAYPAL_SEAT_SELLER`, the airline
-   that sells positioning seats. To pay for a seat, log in to PayPal with a sandbox *personal*
-   account when the PayPal button opens.
+2. Optional: under **Testing tools > Sandbox accounts**, copy a United States *personal* account's email into
+   `PAYPAL_SANDBOX_RECEIVER`, so every payout lands there and shows as **Paid**. A crew member
+   who sets their own PayPal email on **My pay** is paid there instead. With neither, each crew
+   member is paid at a made-up crew address and PayPal keeps the money as **Unclaimed**.
+3. To confirm an approval, log in to PayPal with a sandbox *personal* account when the PayPal
+   button opens. The app's business account receives the payment and pays the crew from it.
 4. Optional, when hosted: add a webhook to the app for
    `https://<your host>/api/paypal/webhook` with the `Payment payouts-item`, `Checkout order
    approved` and `Payment capture` events, and put its id in `PAYPAL_WEBHOOK_ID`.
@@ -212,7 +224,7 @@ every name in it is made up.
 src/crewpay/
   engine/      Rules engine: duty maths, legality, cover ranking, costs, delays, gates
   agent/       Router, advisor, verifier, guard, and the typed tools (pay_tools.py for pay)
-  pay/         PayPal client (OAuth, Payouts, Orders, webhooks), the payroll, positioning seats
+  pay/         PayPal client (OAuth, Payouts, Orders, refunds, webhooks), approval payments, payroll
   ops/         Callouts, plans and approvals, reports, notices, escalation, brief
   models/      The Bedrock Converse client
   vision/      Photo intake

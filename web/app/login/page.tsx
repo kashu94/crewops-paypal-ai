@@ -3,13 +3,13 @@
 import { ArrowRight, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { RolePicker } from "@/components/role-picker";
 import { NightApproach } from "@/components/login-art";
 import { Logo } from "@/components/shell";
 import { Button, cx, Notice, Spinner } from "@/components/ui";
-import { api, hasSession, loadConfig, message, setDemoIdentity, signOut, type Config, type DemoAccount } from "@/lib/api";
+import { api, hasSession, loadConfig, message, signIn, signOut, type Config, type DemoAccount } from "@/lib/api";
 import { demoAccounts } from "@/lib/demo";
-import { initials } from "@/lib/format";
-import { homeFor, ROLE_LABEL, ROLES, type Me } from "@/lib/roles";
+import { homeFor, ROLE_LABEL, type Me } from "@/lib/roles";
 
 /** Where to go after signing in: `?next=` on this site only, else the role's home. */
 function nextPage(me: Me): string {
@@ -36,7 +36,7 @@ const MODELS = [
   ["Amazon Nova on Bedrock", "Plans every answer with tool calls, and reads photos into fixed forms"],
   ["Nova Micro router", "Routes each question and screens out attacks on the assistant"],
   ["PayPal Payouts", "Pays callout, service and travel allowance to crew the moment cover is approved"],
-  ["PayPal Checkout & webhooks", "Buys the positioning seat with an Orders API order, and tracks every payment to settled"],
+  ["PayPal Checkout & webhooks", "Every approval is confirmed by paying for the cover, and tracked to settled"],
 ] as const;
 
 // The duty rules every cover is checked against (data/seed/rules.json), in short.
@@ -73,19 +73,18 @@ export default function Login() {
     window.location.replace(nextPage(me));
   }
 
-  async function actAs(a: DemoAccount) {
+  async function actAs(a: DemoAccount, password: string) {
     setBusy(a.user);
     setError(null);
-    setDemoIdentity(a);
     try {
+      await signIn(a, password);
       await finish();
     } catch (err) {
+      signOut();
       setError(message(err));
       setBusy(null);
     }
   }
-
-  const grouped = ROLES.map((r) => [r, accounts.filter((a) => a.role === r)] as const).filter(([, list]) => list.length);
 
   return (
     <main className="grid min-h-screen flex-1 bg-surface lg:grid-cols-[1.08fr_1fr]">
@@ -110,7 +109,8 @@ export default function Login() {
           <h2 className="text-[34px] font-semibold leading-tight tracking-[-0.01em]">Crew control for three airlines</h2>
           <p className="mt-3 max-w-md text-base leading-relaxed text-[#d4dde8]">
             A sick call, a late departure or a closed gate becomes ranked, legal cover within seconds. A second person
-            approves every roster change, and the crew who step in are paid through PayPal the moment it is approved.
+            approves every roster change and confirms it by paying with PayPal, and the crew who step in are paid out the
+            moment it goes through.
           </p>
           <p className="mt-7 text-sm font-medium text-white">Every cover is checked against {RULES.length} rules</p>
           <dl className="mt-3 grid grid-cols-[7.5rem_1fr] gap-x-4 gap-y-1.5 rounded-lg bg-[#040a18]/60 p-4 text-sm ring-1 ring-white/10 backdrop-blur-[1px]">
@@ -173,38 +173,10 @@ export default function Login() {
             <>
               <h1 className="text-2xl font-semibold tracking-tight">Choose who to be</h1>
               <p className="mt-1 text-sm text-muted">
-                This server runs in demo mode: no passwords. Each account sees exactly what its role may see and do.
+                {config.password ? "Pick a role and a person, then enter the demo password (the same for everyone)." : "Demo mode: no passwords. Pick a role, then a person."} Each sees exactly what that role may see and do, and money moves only in the PayPal sandbox.
               </p>
               {error && <Notice tone="error" className="mt-4">{error}</Notice>}
-              <div className="mt-6 flex flex-col gap-5">
-                {grouped.map(([role, list]) => (
-                  <div key={role}>
-                    <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.08em] text-faint">{ROLE_LABEL[role]}</p>
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {list.map((a) => (
-                        <button
-                          key={a.user}
-                          onClick={() => actAs(a)}
-                          disabled={busy !== null}
-                          className="group flex items-center gap-3 rounded-lg border border-line bg-surface px-3 py-2.5 text-left transition-colors hover:border-control hover:bg-sunken disabled:opacity-60"
-                        >
-                          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent-soft text-xs font-semibold text-accent">
-                            {busy === a.user ? <Spinner className="h-3.5 w-3.5" /> : initials(a.label)}
-                          </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="block truncate text-sm font-medium">{a.label}</span>
-                            <span className="block font-mono text-xs text-muted">
-                              {a.user}
-                              {a.crew_id ? ` · ${a.crew_id}` : ""}
-                            </span>
-                          </span>
-                          <ArrowRight size={14} className="text-faint transition-colors group-hover:text-accent" />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <RolePicker accounts={accounts} busy={busy} onPick={actAs} needsPassword={Boolean(config.password)} />
             </>
           )}
         </div>

@@ -1,12 +1,15 @@
-"""Crew pay: PayPal payouts for the crew who cover a seat, sent when the plan is approved,
-and PayPal Checkout for the positioning seat that brings them in."""
+"""Crew pay: an approver confirms each approval by paying for the cover with PayPal Checkout;
+then the crew member who covers the seat is paid through PayPal Payouts."""
 
+from crewpay.pay.funding import Funding, FundingError, FundingStatus
 from crewpay.pay.paypal import PayPalClient, PayPalError, PayPalUnavailable
 from crewpay.pay.payroll import CREW_PAY, PayConfig, PayError, Payroll, PayStatus
-from crewpay.pay.seats import SeatError, Seats, SeatStatus
 
 __all__ = [
     "CREW_PAY",
+    "Funding",
+    "FundingError",
+    "FundingStatus",
     "PayConfig",
     "PayError",
     "PayPalClient",
@@ -14,7 +17,4 @@ __all__ = [
     "PayPalUnavailable",
     "PayStatus",
     "Payroll",
-    "SeatError",
-    "SeatStatus",
-    "Seats",
 ]

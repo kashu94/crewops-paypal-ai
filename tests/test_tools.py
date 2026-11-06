@@ -52,10 +52,11 @@ def test_each_role_sees_only_its_tools(box):
     approvals = {"confirm_resolution", "return_resolution", "reassign_disruption"}
     filing = {"report_disruption"}  # the station files; crew control works them
     # approvers act on money, not controllers
-    pay_writes = {"release_payment", "cancel_payment", "pay_seat", "cancel_seat"}
+    pay_writes = {"release_payment", "cancel_payment", "confirm_approval", "cancel_approval"}
+    payee_writes = {"set_payout_email"}  # crew themselves, or an admin
     assert (
         names[Role.CONTROLLER]
-        == {t.name for t in ALL_TOOLS} - admin_only - approvals - filing - pay_writes
+        == {t.name for t in ALL_TOOLS} - admin_only - approvals - filing - pay_writes - payee_writes
     )
     controller_writes = {
         "assign_crew",
@@ -77,8 +78,7 @@ def test_each_role_sees_only_its_tools(box):
         "report_disruption",
         "reassign_disruption",
         "cancel_payment",
-        "pay_seat",
-        "cancel_seat",
+        "set_payout_email",
     }
     assert names[Role.SUPER_ADMIN] == names[Role.ADMIN]
     assert names[Role.SPEAKER] == {"my_queue", "about_me"}
@@ -115,7 +115,8 @@ def test_each_role_sees_only_its_tools(box):
         "about_me",
         "crew_payments",
         "payment_status",
-        "positioning_seats",
+        "payout_account",
+        "set_payout_email",
     }
 
 

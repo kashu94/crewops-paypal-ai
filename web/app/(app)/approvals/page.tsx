@@ -7,6 +7,7 @@ import { useState } from "react";
 import { CalloutList, PlanList } from "@/components/ops";
 import { Part } from "@/components/part";
 import { useSession } from "@/components/session";
+import { useReturnFromPayPal } from "@/components/confirm-paypal";
 import { Handover } from "@/components/handover";
 import { Button, control, cx, Empty, Loading, Mono, Notice, PageHeader, Panel, SeverityBadge } from "@/components/ui";
 import { tool } from "@/lib/api";
@@ -67,6 +68,7 @@ function Resolution({ r, canDecide }: { r: ReportSummary; canDecide: boolean }) 
 
 export default function ApprovalsPage() {
   const { me, can } = useSession();
+  useReturnFromPayPal();
   const { data, error } = useLoad(async () => {
     const [plans, callouts, resolved] = await Promise.all([
       settle(tool<{ plans: Plan[] }>("plan_status", { waiting_only: false })),
@@ -79,8 +81,8 @@ export default function ApprovalsPage() {
   if (!data) return <Loading />;
 
   const all = data.plans.ok ? data.plans.value.plans ?? [] : [];
-  const waiting = all.filter((p) => p.status === "submitted");
-  const decided = all.filter((p) => p.status !== "submitted");
+  const waiting = all.filter((p) => p.status === "submitted" || p.status === "confirming");
+  const decided = all.filter((p) => p.status !== "submitted" && p.status !== "confirming");
   const desk = data.callouts.ok ? (data.callouts.value.callouts ?? []).filter((c) => ["needs_decision", "awaiting_approval"].includes(c.status)) : [];
   const resolutions = data.resolved?.ok ? data.resolved.value.disruptions ?? [] : [];
   const approver = me.role === "approver";
@@ -90,7 +92,7 @@ export default function ApprovalsPage() {
     <div className="animate-rise">
       <PageHeader
         title="Approvals"
-        lede="Every roster change needs two people: a controller submits it, an approver decides it. The rules are checked again at approval; a plan made against an older roster goes stale and changes nothing. A disruption is closed only when an approver confirms the desk's resolution."
+        lede="Every roster change needs two people: a controller submits it, an approver decides it. An approval of cover takes effect only once the approver confirms it by paying with PayPal: then the roster changes and the crew member is paid. The rules are checked again at approval and before payment; a plan made against an older roster goes stale and changes nothing. A disruption is closed only when an approver confirms the desk's resolution."
         actions={<Handover />}
       />
       {!approver && (

@@ -58,12 +58,14 @@ def build_server(
                         read_only_hint=not tool.writes, destructive_hint=tool.writes
                     ),
                 )
-                for tool in box.available(caller)
+                for tool in box.available(caller, agent=True)
             ]
         )
 
     async def call_tool(_ctx, params: types.CallToolRequestParams) -> types.CallToolResult:
-        result = await anyio.to_thread.run_sync(box.call, params.name, params.arguments or {}, ctx)
+        result = await anyio.to_thread.run_sync(
+            lambda: box.call(params.name, params.arguments or {}, ctx, agent=True)
+        )
         return types.CallToolResult(
             content=[types.TextContent(text=json.dumps(result, ensure_ascii=False))],
             structured_content=result,
@@ -104,6 +106,7 @@ def main() -> None:
     )
     if desk.plans is not None:
         desk.plans.listeners.append(payroll.on_plan)
+        payroll.funding.attach(desk.plans)
     server = build_server(
         store,
         caller,

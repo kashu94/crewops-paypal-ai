@@ -4,9 +4,10 @@
     POST /v1/payments/payouts                               one batch per approved plan
     GET  /v1/payments/payouts/{batch_id}                    the batch and each item's status
     POST /v1/payments/payouts-item/{item_id}/cancel         take back an unclaimed payment
-    POST /v2/checkout/orders                                buy a positioning seat
+    POST /v2/checkout/orders                                fund an approval
     GET  /v2/checkout/orders/{order_id}                     has the payer approved it?
     POST /v2/checkout/orders/{order_id}/capture             take the approved payment
+    POST /v2/payments/captures/{capture_id}/refund          give it back if the plan went stale
     POST /v1/notifications/verify-webhook-signature         is this event really from PayPal?
 
 Every request that moves money carries a ``PayPal-Request-Id``, and every batch a
@@ -179,6 +180,14 @@ class PayPalClient:
     def capture_order(self, order_id: str, request_id: str) -> dict[str, Any]:
         return self.request(
             "POST", f"/v2/checkout/orders/{order_id}/capture", {}, request_id=request_id
+        )
+
+    def refund_capture(self, capture_id: str, request_id: str, note: str) -> dict[str, Any]:
+        return self.request(
+            "POST",
+            f"/v2/payments/captures/{capture_id}/refund",
+            {"note_to_payer": note[:255]},
+            request_id=request_id,
         )
 
     # -- webhooks ---------------------------------------------------------------------------

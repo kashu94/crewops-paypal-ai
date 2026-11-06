@@ -19,12 +19,14 @@ them into one PayPal payout per plan:
   payment, so the demo works on any laptop.
 
 What the airline pays others (a positioning seat, delay costs) is listed with the payment as
-airline cost, not paid to the crew member. A positioning seat is bought separately, through
-PayPal Checkout (see :mod:`crewpay.pay.seats`).
+airline cost, not paid to the crew member. The approver pays for the whole cover (crew pay and
+the positioning seat) with PayPal Checkout to confirm the approval, before any of this happens
+(see :mod:`crewpay.pay.funding`).
 """
 
 from __future__ import annotations
 
+import re
 import threading
 import uuid
 from collections.abc import Callable
@@ -35,8 +37,12 @@ from enum import StrEnum
 from typing import Any, Protocol
 
 from crewpay.ops.notify import DESK, Notice, Outbox
+from crewpay.pay.funding import Funding, FundingConfig
 from crewpay.pay.paypal import PayPalClient, PayPalError
-from crewpay.pay.seats import SeatConfig, Seats
+
+PAYEE = "payee"
+"""Docs of this kind hold the PayPal address each crew member chose to be paid at."""
+EMAIL = re.compile(r"^[^@\s]{1,64}@[^@\s]+\.[A-Za-z]{2,}$")
 
 CREW_PAY = ("callout", "service allowance", "travel allowance")
 """The cost lines that are the crew member's pay; the rest are airline costs."""
@@ -94,8 +100,6 @@ class PayConfig:
     receiver: str = ""
     """A sandbox personal account every payout goes to; empty pays each crew member's own
     address, which PayPal keeps as unclaimed until someone signs up with it."""
-    seller: str = ""
-    """The sandbox business account paid for positioning seats (empty: the app's own)."""
     public_url: str = ""
     airlines: dict[str, str] = field(default_factory=dict)
 
@@ -123,14 +127,13 @@ class Payroll:
         self.config = config or PayConfig()
         self.clock = clock
         self._lock = threading.RLock()
-        self.seats = Seats(
+        self.funding = Funding(
             docs,
             lambda notice: self.outbox.send(notice),
             paypal,
-            SeatConfig(
+            FundingConfig(
                 currency=self.config.currency,
                 fx_inr_per_usd=self.config.fx_inr_per_usd,
-                seller=self.config.seller,
                 public_url=self.config.public_url,
                 airlines=self.config.airlines,
             ),
@@ -170,6 +173,60 @@ class Payroll:
             "by_status": {k: {**v, "amount": str(v["amount"])} for k, v in by.items()},
         }
 
+    # -- where each crew member is paid ------------------------------------------------------
+
+    def payee(self, crew_id: str) -> dict[str, Any] | None:
+        return self.docs.get_doc(PAYEE, crew_id)
+
+    def receiver_for(self, crew_id: str) -> tuple[str, str]:
+        """The address a new payout goes to, and why: the crew member's own choice first."""
+        own = self.payee(crew_id)
+        if own:
+            return own["email"], "the PayPal account the crew member chose"
+        if self.config.receiver:
+            return self.config.receiver, "the demo's sandbox account"
+        return crew_address(crew_id), "their crew address"
+
+    def set_payee(self, crew_id: str, email: str, by: str) -> dict[str, Any]:
+        """Point this crew member's future payouts at ``email``. The crew member and the desk
+        are both told, since changing where money goes is how payroll fraud starts; payouts
+        already sent are not moved."""
+        email = email.strip()
+        if not EMAIL.match(email) or len(email) > 127:
+            raise PayError(f"{email!r} is not an email address PayPal can pay")
+        before = self.payee(crew_id)
+        now = self.clock()
+        doc = {
+            "crew_id": crew_id,
+            "email": email,
+            "set_by": by,
+            "set_at": now.isoformat(),
+            "previous": before["email"] if before else None,
+        }
+        self.docs.put_doc(PAYEE, crew_id, doc)
+        changed = f"from {before['email']} " if before else ""
+        self.outbox.send(
+            Notice(
+                to=crew_id,
+                subject="Your PayPal address for pay changed",
+                body=f"Future CrewPay payouts go to {email} (changed {changed}by {by}). If this "
+                "was not you, tell crew control now.",
+                at=now,
+                ref=crew_id,
+            )
+        )
+        self.outbox.send(
+            Notice(
+                to=DESK,
+                subject=f"Payout address changed: {crew_id}",
+                body=f"{by} pointed {crew_id}'s payouts {changed}to {email}. Payments already "
+                "sent are unchanged.",
+                at=now,
+                ref=crew_id,
+            )
+        )
+        return doc
+
     # -- the plan's money -------------------------------------------------------------------
 
     def on_plan(self, plan: Any) -> dict[str, Any] | None:
@@ -177,14 +234,13 @@ class Payroll:
         if str(plan.status) != "approved" or self.for_plan(plan.plan_id) is not None:
             return None
         breakdown: dict[str, int] = dict(getattr(plan, "breakdown", {}) or {})
-        if breakdown.get("positioning"):
-            self.seats.on_plan(plan, breakdown["positioning"])
         lines = [{"label": k, "inr": v} for k, v in breakdown.items() if k in CREW_PAY and v]
         airline = [{"label": k, "inr": v} for k, v in breakdown.items() if k not in CREW_PAY and v]
         total = sum(line["inr"] for line in lines)
         if total <= 0:
             return None
         now = self.clock()
+        receiver, receiver_is = self.receiver_for(plan.crew_id)
         amount = to_usd(total, self.config.fx_inr_per_usd)
         held = Decimal(amount) > Decimal(str(self.config.cap))
         payment = {
@@ -203,7 +259,8 @@ class Payroll:
             "fx_inr_per_usd": self.config.fx_inr_per_usd,
             "amount": amount,
             "currency": self.config.currency,
-            "receiver": self.config.receiver or crew_address(plan.crew_id),
+            "receiver": receiver,
+            "receiver_is": receiver_is,
             "mode": self.mode,
             "status": str(PayStatus.HELD if held else PayStatus.QUEUED),
             "batch_id": None,
@@ -306,9 +363,9 @@ class Payroll:
     # -- keeping up with PayPal -------------------------------------------------------------
 
     def sync(self, payment_id: str | None = None) -> int:
-        """Ask PayPal how each sent payment, and each open seat order, stands. Returns how many
-        changed."""
-        changed = 0 if payment_id else self.seats.sync()
+        """Ask PayPal how each sent payment, and each open approval payment, stands. Returns
+        how many changed."""
+        changed = 0 if payment_id else self.funding.sync()
         with self._lock:
             rows = [self.get(payment_id)] if payment_id else self.docs.docs(KIND)
             for payment in rows:
@@ -351,7 +408,7 @@ class Payroll:
         """Apply a PayPal webhook event about a payout item. Returns the payment it moved."""
         kind = event.get("event_type", "")
         if kind.startswith(("CHECKOUT.ORDER.", "PAYMENT.CAPTURE.")):
-            return self.seats.webhook(event)
+            return self.funding.webhook(event)
         if not kind.startswith("PAYMENT.PAYOUTS-ITEM."):
             return None
         resource = event.get("resource") or {}

@@ -5,9 +5,12 @@ rate, the amount PayPal was asked to pay and what PayPal says happened. Crew see
 payments. Releasing a held payment is for an approver who did not approve the plan; cancelling
 an unclaimed one is for approvers and admins, with a reason.
 
-Positioning seats are bought with PayPal Checkout. The agent can find the seat and hand over
-the order's approve link, and take the payment once the payer has approved it in PayPal; it can
-never approve a payment itself.
+Crew choose the PayPal account they are paid at; only they, or an admin, can change it, and
+both they and the desk are told when it changes.
+
+Approving cover takes effect only once the approver pays for it with PayPal Checkout. The agent
+can approve, list the payment and hand over its PayPal link, but confirming is console-only:
+always a person in PayPal.
 """
 
 from __future__ import annotations
@@ -26,10 +29,9 @@ from crewpay.agent.tools import (
     Tool,
     ToolError,
 )
-from crewpay.pay import PayError, SeatError
+from crewpay.pay import FundingError, PayError
 
 PAYMENT_ID = r"^PAY-[0-9a-f]{8}$"
-SEAT_ID = r"^SEAT-[0-9a-f]{8}$"
 EVERYONE_WITH_PAY = frozenset(
     {
         Role.CREW,
@@ -68,6 +70,7 @@ def _view(p: dict[str, Any], full: bool = False) -> dict[str, Any]:
     if full:
         out |= {
             "receiver": p["receiver"],
+            "receiver_is": p.get("receiver_is"),
             "approved_by": p.get("approved_by"),
             "released_by": p.get("released_by"),
             "paypal_item_id": p.get("item_id"),
@@ -157,73 +160,136 @@ def cancel_payment(ctx: Context, args: CancelPayment) -> dict[str, Any]:
         raise ToolError(str(err)) from err
 
 
-def _seat_view(s: dict[str, Any]) -> dict[str, Any]:
+def _funding_view(f: dict[str, Any]) -> dict[str, Any]:
     return {
-        "seat_id": s["seat_id"],
-        "status": s["status"],
-        "crew_id": s["crew_id"],
-        "name": s["name"],
-        "trip_id": s["trip_id"],
-        "plan_id": s["plan_id"],
-        "flight": f"{s['flight_no']} {s['origin']}-{s['destination']}",
-        "departs": s["departs"],
-        "airline": s["airline"],
-        "amount": s["amount"],
-        "currency": s["currency"],
-        "inr": s["inr"],
+        "funding_id": f["funding_id"],
+        "status": f["status"],
+        "plan_id": f["plan_id"],
+        "trip_id": f["trip_id"],
+        "crew_id": f["crew_id"],
+        "name": f["name"],
+        "approver": f["approver"],
+        "lines": [
+            {"what": line["label"], "inr": line["inr"], "amount": line["amount"]}
+            for line in f["lines"]
+        ],
+        "total_inr": f["total_inr"],
+        "amount": f["amount"],
+        "currency": f["currency"],
         "paid_with": "PayPal Checkout"
-        + (" (simulated)" if s["mode"] == "simulated" else " sandbox"),
-        "paypal_order_id": s.get("order_id"),
-        "paypal_approve_link": s.get("approve_url") if s["status"] == "to pay" else None,
-        "paypal_capture_id": s.get("capture_id"),
-        "paid_by": s.get("paid_by"),
-        "error": s.get("error"),
+        + (" (simulated)" if f["mode"] == "simulated" else " sandbox"),
+        "paypal_order_id": f.get("order_id"),
+        "paypal_approve_link": f.get("approve_url") if f["status"] == "to pay" else None,
+        "paypal_capture_id": f.get("capture_id"),
+        "paypal_refund_id": f.get("refund_id"),
+        "error": f.get("error"),
     }
 
 
-class PositioningSeats(BaseModel):
-    crew_id: str | None = Field(None, pattern=CREW_ID, description="Only this crew member's")
-    trip_id: str | None = Field(None, pattern=TRIP_ID, description="Only seats for this trip")
+STAFF_WITH_PAY = EVERYONE_WITH_PAY - {Role.CREW}
+
+
+class ApprovalPayments(BaseModel):
+    plan_id: str | None = Field(None, pattern=r"^PL-[0-9a-f]{8}$", description="Only this plan's")
     status: Literal["to pay", "pending", "paid", "failed", "cancelled", "refunded"] | None = None
+    refresh: bool = Field(False, description="Ask PayPal for the latest first")
 
 
-def positioning_seats(ctx: Context, args: PositioningSeats) -> dict[str, Any]:
-    seats = _payroll(ctx).seats
-    rows = seats.all()
-    if ctx.caller.role is Role.CREW:
-        rows = [s for s in rows if s["crew_id"] == ctx.caller.crew_id]
-    if args.crew_id:
-        ctx.own(args.crew_id)
-        rows = [s for s in rows if s["crew_id"] == args.crew_id]
-    if args.trip_id:
-        rows = [s for s in rows if s["trip_id"] == args.trip_id]
+def approval_payments(ctx: Context, args: ApprovalPayments) -> dict[str, Any]:
+    funding = _payroll(ctx).funding
+    rows = funding.all()
+    if args.plan_id:
+        rows = [f for f in rows if f["plan_id"] == args.plan_id]
+    if args.refresh:
+        for f in rows[:5]:
+            funding.sync(f["funding_id"])
+        rows = [funding.get(f["funding_id"]) for f in rows]
     if args.status:
-        rows = [s for s in rows if s["status"] == args.status]
-    return {"mode": seats.mode, "count": len(rows), "seats": [_seat_view(s) for s in rows[:25]]}
+        rows = [f for f in rows if f["status"] == args.status]
+    return {
+        "mode": funding.mode,
+        "how_it_works": "An approval of cover takes effect only after the approver who "
+        "approved it pays for the cover with PayPal. Until then the plan is 'confirming'.",
+        "count": len(rows),
+        "payments": [_funding_view(f) for f in rows[:20]],
+    }
 
 
-class PaySeat(BaseModel):
-    seat_id: str = Field(pattern=SEAT_ID)
+FUNDING_ID = r"^FUND-[0-9a-f]{8}(-\d+)?$"
+
+
+class ConfirmApproval(BaseModel):
+    funding_id: str = Field(pattern=FUNDING_ID)
     order_id: str | None = Field(None, max_length=40, description="The PayPal order approved")
 
 
-def pay_seat(ctx: Context, args: PaySeat) -> dict[str, Any]:
+def confirm_approval(ctx: Context, args: ConfirmApproval) -> dict[str, Any]:
     try:
-        return _seat_view(_payroll(ctx).seats.capture(args.seat_id, ctx.caller.user, args.order_id))
-    except SeatError as err:
+        funding = _payroll(ctx).funding.capture(args.funding_id, ctx.caller.user, args.order_id)
+    except FundingError as err:
         raise ToolError(str(err)) from err
+    plan = ctx.plans().get(funding["plan_id"])
+    return {**_funding_view(funding), "plan_status": str(plan.status)}
 
 
-class CancelSeat(BaseModel):
-    seat_id: str = Field(pattern=SEAT_ID)
-    reason: str = Field(min_length=3, max_length=300)
+class CancelApproval(BaseModel):
+    funding_id: str = Field(pattern=FUNDING_ID)
+    reason: str = Field("", max_length=300)
 
 
-def cancel_seat(ctx: Context, args: CancelSeat) -> dict[str, Any]:
+def cancel_approval(ctx: Context, args: CancelApproval) -> dict[str, Any]:
     try:
-        return _seat_view(_payroll(ctx).seats.cancel(args.seat_id, ctx.caller.user, args.reason))
-    except SeatError as err:
+        funding = _payroll(ctx).funding.cancel(
+            args.funding_id, ctx.caller.user, args.reason.strip() or "PayPal step cancelled"
+        )
+    except FundingError as err:
         raise ToolError(str(err)) from err
+    return {**_funding_view(funding), "plan_status": "submitted (waiting for a decision again)"}
+
+
+class PayoutAccount(BaseModel):
+    crew_id: str | None = Field(None, pattern=CREW_ID, description="Whose; crew: themselves")
+
+
+def payout_account(ctx: Context, args: PayoutAccount) -> dict[str, Any]:
+    payroll = _payroll(ctx)
+    crew_id = args.crew_id or ctx.caller.crew_id
+    if crew_id is None:
+        raise ToolError("say whose payout account")
+    ctx.own(crew_id)
+    email, why = payroll.receiver_for(crew_id)
+    own = payroll.payee(crew_id)
+    return {
+        "crew_id": crew_id,
+        "next_payout_goes_to": email,
+        "because_it_is": why,
+        "set_by": own["set_by"] if own else None,
+        "set_at": own["set_at"] if own else None,
+    }
+
+
+class SetPayoutEmail(BaseModel):
+    email: str = Field(min_length=6, max_length=127, description="A PayPal account's email")
+    crew_id: str | None = Field(None, pattern=CREW_ID, description="Admins only: whose")
+
+
+def set_payout_email(ctx: Context, args: SetPayoutEmail) -> dict[str, Any]:
+    crew_id = args.crew_id or ctx.caller.crew_id
+    if crew_id is None:
+        raise ToolError("say whose payout account")
+    if ctx.caller.role is Role.CREW and crew_id != ctx.caller.crew_id:
+        raise Forbidden("crew members can only change where they themselves are paid")
+    try:
+        doc = _payroll(ctx).set_payee(crew_id, args.email, ctx.caller.user)
+    except PayError as err:
+        raise ToolError(str(err)) from err
+    return {
+        "crew_id": crew_id,
+        "next_payout_goes_to": doc["email"],
+        "previous": doc["previous"],
+        "told": [crew_id, "crew control"],
+        "note": "payouts already sent are not moved",
+    }
 
 
 PAY_TOOLS = (
@@ -263,29 +329,48 @@ PAY_TOOLS = (
         writes=True,
     ),
     Tool(
-        "positioning_seats",
-        "Seats bought for crew who fly in to cover a trip, paid with PayPal Checkout: flight, "
-        "amount, state, the PayPal order id and, while unpaid, the link to approve the payment "
-        "in PayPal. Crew see only their own.",
-        PositioningSeats,
-        positioning_seats,
-        EVERYONE_WITH_PAY,
+        "approval_payments",
+        "PayPal payments that confirm approvals of cover: what the approver pays (the crew's "
+        "callout, service and travel allowance, and any positioning seat), its state, and while "
+        "unpaid the link to pay it in PayPal.",
+        ApprovalPayments,
+        approval_payments,
+        STAFF_WITH_PAY,
     ),
     Tool(
-        "pay_seat",
-        "Take the payment for a positioning seat once the payer has approved its PayPal order "
-        "(approvers and admins). If it is not approved yet, give them the approve link.",
-        PaySeat,
-        pay_seat,
-        frozenset({Role.APPROVER}) | ADMINS,
+        "confirm_approval",
+        "Confirm an approval once its approver has paid for it in PayPal: the cover then takes "
+        "effect. Only at the console, by the approver who approved it.",
+        ConfirmApproval,
+        confirm_approval,
+        frozenset({Role.APPROVER}),
+        writes=True,
+        console_only=True,
+    ),
+    Tool(
+        "cancel_approval",
+        "Back out of an approval still waiting for PayPal: the plan waits for a decision again "
+        "(the approver who approved it).",
+        CancelApproval,
+        cancel_approval,
+        frozenset({Role.APPROVER}),
         writes=True,
     ),
     Tool(
-        "cancel_seat",
-        "Cancel an unpaid positioning seat, with a reason (approvers and admins).",
-        CancelSeat,
-        cancel_seat,
-        frozenset({Role.APPROVER}) | ADMINS,
+        "payout_account",
+        "Where a crew member's next PayPal payout goes, and whether they chose it. Crew: only "
+        "their own.",
+        PayoutAccount,
+        payout_account,
+        EVERYONE_WITH_PAY,
+    ),
+    Tool(
+        "set_payout_email",
+        "Change the PayPal account a crew member is paid at, for future payouts. Crew change "
+        "only their own; admins anyone's. The crew member and crew control are both told.",
+        SetPayoutEmail,
+        set_payout_email,
+        frozenset({Role.CREW}) | ADMINS,
         writes=True,
     ),
 )

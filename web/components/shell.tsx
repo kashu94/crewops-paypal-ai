@@ -4,7 +4,6 @@ import {
   Activity,
   CalendarClock,
   CalendarDays,
-  ChevronDown,
   DoorOpen,
   Gauge,
   Inbox,
@@ -27,8 +26,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
-import { authMode, demoIdentity, setDemoIdentity, signOut, type DemoAccount } from "@/lib/api";
-import { demoAccounts } from "@/lib/demo";
+import { signOut } from "@/lib/api";
 import { initials, words } from "@/lib/format";
 import { homeFor, navFor, ROLE_LABEL, type NavItem } from "@/lib/roles";
 
@@ -126,12 +124,6 @@ function Nav({ onPick }: { onPick?: () => void }) {
 
 function Account() {
   const { me } = useSession();
-  const [accounts, setAccounts] = useState<DemoAccount[]>([]);
-  const demo = authMode() === "demo";
-  useEffect(() => {
-    if (demo) demoAccounts().then(setAccounts);
-  }, [demo]);
-  const current = demoIdentity();
 
   async function leave() {
     await forgetDesktopAlerts().catch(() => undefined);
@@ -155,31 +147,6 @@ function Account() {
           <LogOut size={16} />
         </button>
       </div>
-      {demo && accounts.length > 0 && (
-        <label className="mt-2.5 block px-1.5">
-          <span className="text-[11px] font-medium uppercase tracking-[0.08em] text-faint">Demo: act as</span>
-          <span className="relative mt-1 block">
-            <select
-              aria-label="Demo identity"
-              value={current?.user ?? me.user}
-              onChange={(e) => {
-                const a = accounts.find((x) => x.user === e.target.value);
-                if (!a) return;
-                setDemoIdentity(a);
-                window.location.assign(homeFor(a.role));
-              }}
-              className="h-8 w-full appearance-none rounded-md border border-control bg-surface pl-2 pr-7 text-[13px]"
-            >
-              {accounts.map((a) => (
-                <option key={a.user} value={a.user}>
-                  {a.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown size={14} className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-muted" />
-          </span>
-        </label>
-      )}
     </div>
   );
 }

@@ -65,11 +65,13 @@ class Settings:
     """The demo exchange rate: costs are in rupees, payouts in ``paypal_currency``."""
     sandbox_receiver: str
     """A sandbox personal account every payout goes to (empty: each crew member's address)."""
-    seat_seller: str
-    """A sandbox business account that sells positioning seats (empty: the app's own account)."""
     public_url: str
     """Where the console is served, for PayPal to send a payer back to after approving."""
     # -- the app ----------------------------------------------------------------------------
+    demo_password: str
+    """One password every demo account signs in with; empty leaves the demo open (laptops)."""
+    session_secret: str
+    """Signs session tokens; empty uses a new random key each start."""
     stage: str
     auth: str
     """Always ``demo``: callers pick a demo identity."""
@@ -101,7 +103,9 @@ class Settings:
 
 
 def load_settings(env: dict[str, str] | None = None) -> Settings:
-    merged = {**_read_dotenv(ROOT / ".env"), **(env if env is not None else os.environ)}
+    # Given ``env`` (tests, tools) is all there is: the .env file, with its real sandbox and
+    # Bedrock keys, applies only when the app runs from the environment.
+    merged = dict(env) if env is not None else {**_read_dotenv(ROOT / ".env"), **os.environ}
 
     def get(key: str, default: str = "") -> str:
         return merged.get(key) or default
@@ -131,8 +135,9 @@ def load_settings(env: dict[str, str] | None = None) -> Settings:
         pay_cap=float(get("CREWPAY_PAY_CAP", "500")),
         fx_inr_per_usd=float(get("CREWPAY_FX_INR_PER_USD", "84")),
         sandbox_receiver=get("PAYPAL_SANDBOX_RECEIVER"),
-        seat_seller=get("PAYPAL_SEAT_SELLER"),
         public_url=get("CREWPAY_PUBLIC_URL", get("RENDER_EXTERNAL_URL")).rstrip("/"),
+        demo_password=get("CREWPAY_DEMO_PASSWORD"),
+        session_secret=get("CREWPAY_SESSION_SECRET"),
         stage=get("CREWPAY_STAGE", "dev"),
         auth="demo",
         store="memory",

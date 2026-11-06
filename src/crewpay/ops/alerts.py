@@ -7,7 +7,6 @@ notices themselves reach people in the console, on the board and as desktop aler
 
 from __future__ import annotations
 
-import contextlib
 import re
 from datetime import UTC, datetime
 from typing import Any
@@ -22,18 +21,8 @@ class AlertError(ValueError):
 
 
 class AlertAddresses:
-    def __init__(self, docs: Any, sns: Any = None, topic_arn: str = "") -> None:
-        self.docs, self.sns, self.topic_arn = docs, sns, topic_arn
-
-    def _status(self, row: dict) -> str:
-        if self.sns is None or not row.get("subscription"):
-            return "kept (no email on this server)"
-        try:
-            attrs = self.sns.get_subscription_attributes(SubscriptionArn=row["subscription"])
-        except Exception:  # deleted by its owner, or the topic was rebuilt
-            return "not subscribed"
-        pending = attrs["Attributes"].get("PendingConfirmation") == "true"
-        return "waiting for confirmation" if pending else "confirmed"
+    def __init__(self, docs: Any) -> None:
+        self.docs = docs
 
     def list(self) -> list[dict]:
         rows = sorted(self.docs.docs("alert_address"), key=lambda r: (r["group"], r["address"]))
@@ -44,7 +33,7 @@ class AlertAddresses:
                 "team_title": ALERT_GROUPS.get(r["group"], r["group"]),
                 "added_by": r["added_by"],
                 "at": r["at"],
-                "status": self._status(r),
+                "status": "kept (no email on this server)",
             }
             for r in rows
         ]
@@ -63,27 +52,12 @@ class AlertAddresses:
             "group": group,
             "added_by": by,
             "at": datetime.now(UTC).isoformat(),
-            "subscription": None,
         }
-        if self.sns is not None and self.topic_arn:
-            reply = self.sns.subscribe(
-                TopicArn=self.topic_arn,
-                Protocol="email",
-                Endpoint=address,
-                Attributes={"FilterPolicy": f'{{"group": ["{group}"]}}'},
-                ReturnSubscriptionArn=True,
-            )
-            row["subscription"] = reply["SubscriptionArn"]
         self.docs.put_doc("alert_address", key, row)
         return next(r for r in self.list() if (r["team"], r["address"]) == (group, address))
 
     def remove(self, address: str, group: str) -> None:
         key = f"{group}:{address.strip().lower()}"
-        row = self.docs.get_doc("alert_address", key)
-        if row is None:
+        if self.docs.get_doc("alert_address", key) is None:
             raise AlertError(f"{address} is not subscribed to {group}")
-        if self.sns is not None and row.get("subscription"):
-            # Already gone, perhaps; the record goes either way.
-            with contextlib.suppress(Exception):
-                self.sns.unsubscribe(SubscriptionArn=row["subscription"])
         self.docs.delete_doc("alert_address", key)

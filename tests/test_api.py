@@ -20,13 +20,8 @@ from crewpay.settings import load_settings
 from crewpay.store import MemoryStore
 
 BASE = {
-    "MODEL_API_KEY": "",
-    "OPEN_MODEL_API_KEY": "",
     "PROMPT_GUARD_URL": "",
     "CREWPAY_SEED_DIR": str(SEED_DIR),
-    "CREWPAY_STORE": "memory",
-    "CREWPAY_AUTH": "demo",
-    "CREWPAY_BUCKET": "",
 }
 CONTROLLER = {"X-Demo-User": "ananya.iyer", "X-Demo-Role": "controller"}
 VIEWER = {"X-Demo-User": "board", "X-Demo-Role": "auditor"}
@@ -238,9 +233,14 @@ def test_an_approval_needs_an_approver_through_the_api(client):
     assert "only an approver" in refused["error"]
     nair = {"X-Demo-User": "meera.bhatt", "X-Demo-Role": "approver"}
     done = client.post("/api/tools/review_plan", json=review, headers=nair).json()
-    assert done["status"] == "approved"
+    assert done["status"] == "confirming" and "PayPal" in done["next_step"]
+    confirm = {"funding_id": done["funding_id"]}
+    other = client.post("/api/tools/confirm_approval", json=confirm, headers=reddy).json()
+    assert "cannot use" in other["error"]
+    paid = client.post("/api/tools/confirm_approval", json=confirm, headers=nair).json()
+    assert paid["status"] == "paid" and paid["plan_status"] == "approved"
     log = client.get("/api/log/activity", headers=CONTROLLER).json()["entries"]
-    assert [e["action"] for e in log[:2]] == ["review_plan", "assign_crew"]
+    assert [e["action"] for e in log[:3]] == ["confirm_approval", "review_plan", "assign_crew"]
 
 
 def test_only_an_admin_reads_the_security_log(client):

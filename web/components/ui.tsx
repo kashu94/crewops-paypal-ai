@@ -157,6 +157,7 @@ const STATUS_TONE: Record<string, PillTone> = {
   blocked: "critical",
   cancelled: "neutral",
   "to pay": "pending",
+  confirming: "pending",
   pending: "accent",
   refunded: "critical",
 };
@@ -167,6 +168,7 @@ const STATUS_LABEL: Record<string, string> = {
   awaiting_approval: "Awaiting approval",
   held: "Held for release",
   sent: "With PayPal",
+  confirming: "Waiting for PayPal",
 };
 
 export function StatusPill({ value }: { value: string }) {

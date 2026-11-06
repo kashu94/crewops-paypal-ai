@@ -28,7 +28,7 @@ from crewpay.agent.advisor import Advisor, Answer
 from crewpay.agent.build import build_advisor
 from crewpay.agent.memory import Conversations
 from crewpay.agent.tools import Caller, Context, Role, ToolBox
-from crewpay.api.auth import caller_from
+from crewpay.api.auth import Throttle, caller_from, issue, password_ok
 from crewpay.engine.clock import IST
 from crewpay.engine.severity import for_issue
 from crewpay.engine.watch import scan
@@ -107,13 +107,13 @@ class Services:
                 fx_inr_per_usd=config.fx_inr_per_usd,
                 cap=config.pay_cap,
                 receiver=config.sandbox_receiver,
-                seller=config.seat_seller,
                 public_url=config.public_url,
                 airlines=_airline_names(config.seed_dir),
             ),
         )
         if self.desk.plans is not None:
             self.desk.plans.listeners.append(self.payroll.on_plan)
+            self.payroll.funding.attach(self.desk.plans)
         self.accounts = StoreAccounts(self.store)
         self.conversations = Conversations(docs=self.store)
         self.toolbox = ToolBox()
@@ -197,6 +197,12 @@ def _airline_names(seed_dir: Path) -> dict[str, str]:
     except (OSError, ValueError):
         return {}
     return {a["code"]: a["name"] for a in rows if "code" in a and "name" in a}
+
+
+def _payout_account(s: Services, crew_id: str) -> dict[str, Any]:
+    email, why = s.payroll.receiver_for(crew_id)
+    own = s.payroll.payee(crew_id)
+    return {"email": email, "is": why, "set_at": own["set_at"] if own else None}
 
 
 def answer_json(answer: Answer, conversation_id: str) -> dict[str, Any]:
@@ -467,6 +473,7 @@ def create_app(config: Settings | None = None, services: Services | None = None)
             "stage": config.stage,
             "models": config.has_bedrock,
             "paypal": config.has_paypal,
+            "password": bool(config.demo_password),
             # The client id is public: the PayPal button in the browser needs it.
             "paypal_client_id": config.paypal_client_id or None,
             "currency": config.paypal_currency,
@@ -492,6 +499,30 @@ def create_app(config: Settings | None = None, services: Services | None = None)
             "tools": [t.name for t in s.toolbox.available(who)],
             "push": s.push.subscribed(who.user),
         }
+
+    throttle = Throttle()
+
+    @app.post("/api/login")
+    async def login(request: Request) -> dict[str, Any]:
+        """Sign in as one of the demo accounts with the shared demo password."""
+        try:
+            body = await request.json()
+        except ValueError as err:
+            raise HTTPException(400, "not JSON") from err
+        user = str(body.get("user", "")).strip()
+        account = next((a for a in DEMO_ACCOUNTS if a.user == user), None)
+        if account is None:
+            raise HTTPException(404, f"no account {user!r}")
+        if not config.demo_password:
+            return {"token": None, "user": user}
+        where = request.client.host if request.client else "unknown"
+        throttle.check(where)
+        if not password_ok(config, str(body.get("password", ""))):
+            throttle.miss(where)
+            log(svc().store, "security", by=user, role=str(account.role), action="wrong password")
+            raise HTTPException(401, "That is not the demo password.")
+        log(svc().store, "activity", by=user, role=str(account.role), action="signed in")
+        return {"token": issue(config, account.user, account.role, account.crew_id), "user": user}
 
     @app.get("/api/accounts/demo")
     def demo_accounts() -> dict[str, Any]:
@@ -875,16 +906,17 @@ def create_app(config: Settings | None = None, services: Services | None = None)
             raise HTTPException(403, f"the {who.role} role cannot see crew pay")
         s = svc()
         rows = s.payroll.all()
-        seats = s.payroll.seats.all()
+        approvals = s.payroll.funding.all()
         if who.role is Role.CREW:
             rows = [p for p in rows if p["crew_id"] == who.crew_id]
-            seats = [x for x in seats if x["crew_id"] == who.crew_id]
+            approvals = []
         return {
             **s.payroll.totals(),
             "cap": s.payroll.config.cap,
             "fx_inr_per_usd": s.payroll.config.fx_inr_per_usd,
             "payments": rows,
-            "seats": seats,
+            "approvals": approvals,
+            "payout_account": _payout_account(s, who.crew_id) if who.crew_id else None,
         }
 
     @app.post("/api/payments/sync")
@@ -895,8 +927,8 @@ def create_app(config: Settings | None = None, services: Services | None = None)
 
     @app.post("/api/paypal/webhook")
     async def paypal_webhook(request: Request) -> dict[str, Any]:
-        """PayPal's notices about payout items and seat orders. Each is checked with PayPal
-        before it counts."""
+        """PayPal's notices about payout items and approval payments. Each is checked with
+        PayPal before it counts."""
         s = svc()
         try:
             event = await request.json()

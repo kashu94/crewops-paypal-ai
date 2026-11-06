@@ -11,6 +11,8 @@ export type Config = {
   models?: boolean;
   /** Whether the server has PayPal sandbox credentials (off: payments are simulated). */
   paypal?: boolean;
+  /** Whether signing in needs the shared demo password. */
+  password?: boolean;
   /** The PayPal app's public client id, for the PayPal button in the browser. */
   paypal_client_id?: string | null;
   currency?: string;
@@ -19,6 +21,7 @@ export type Config = {
 export type DemoAccount = { user: string; role: Role; crew_id: string | null; label: string };
 
 const IDENTITY = "crewpay.demo";
+const SESSION = "crewpay.session";
 
 export const saved = {
   get(k: string): string | null {
@@ -75,8 +78,16 @@ export function demoIdentity(): DemoAccount | null {
     return null;
   }
 }
-export function setDemoIdentity(a: DemoAccount) {
+export function setDemoIdentity(a: DemoAccount, token?: string | null) {
   saved.set(IDENTITY, JSON.stringify(a));
+  if (token) saved.set(SESSION, token);
+  else saved.del(SESSION);
+}
+
+/** Sign in as a demo account, with the shared password when the server asks for one. */
+export async function signIn(a: DemoAccount, password: string): Promise<void> {
+  const r = await api<{ token: string | null }>("/api/login", { method: "POST", json: { user: a.user, password }, auth: false });
+  setDemoIdentity(a, r.token);
 }
 
 /** Signed in, as far as this browser knows: a chosen demo identity. */
@@ -86,10 +97,16 @@ export function hasSession(): boolean {
 
 export function signOut() {
   saved.del(IDENTITY);
+  saved.del(SESSION);
 }
 
 export function headers(): Record<string, string> {
   const h: Record<string, string> = {};
+  const token = saved.get(SESSION);
+  if (token) {
+    h["Authorization"] = `Bearer ${token}`;
+    return h;
+  }
   const id = demoIdentity();
   if (id) {
     h["X-Demo-User"] = id.user;
@@ -140,6 +157,10 @@ export async function api<T = unknown>(
     throw new ApiError("The CrewPay server cannot be reached.", 0);
   }
   const body = await res.json().catch(() => null);
+  if (res.status === 401 && opts.auth !== false && typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+    signOut();
+    toSignIn();
+  }
   if (!res.ok) throw new ApiError(detail(body, res.status), res.status);
   return body as T;
 }

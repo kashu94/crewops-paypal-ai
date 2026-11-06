@@ -9,6 +9,7 @@ import { hhmm, inr, plural, short, words } from "@/lib/format";
 import type { Callout, DelayResult, DeskLoad, GateChangeResult, GatePlan, HoldResult, Notice as NoticeT, Plan, ReportSummary, Risk } from "@/lib/types";
 import { useAction } from "@/lib/use-load";
 
+import { ConfirmWithPayPal } from "./confirm-paypal";
 import { useSession } from "./session";
 import { Button, control, cx, Empty, Mono, Notice, Pill, SeverityBadge, StatusPill, Table, type PillTone } from "./ui";
 
@@ -186,7 +187,12 @@ export function PlanRow({ p }: { p: Plan }) {
     return run(
       `${p.plan_id}|${action}`,
       () => tool<Plan>("review_plan", { plan_id: p.plan_id, action, note: note.trim() }),
-      (r) => (r.status === "stale" ? `Not applied: ${r.decision_note ?? "the trip changed"}` : `${p.plan_id} ${words(r.status)}.`),
+      (r) =>
+        r.status === "stale"
+          ? `Not applied: ${r.decision_note ?? "the trip changed"}`
+          : r.status === "confirming"
+            ? { text: "Approved. Now confirm it with PayPal: nothing changes until you pay.", tone: "pending" as const }
+            : `${p.plan_id} ${words(r.status)}.`,
     );
   };
   return (
@@ -212,7 +218,15 @@ export function PlanRow({ p }: { p: Plan }) {
         {p.note_from_submitter ? `: “${p.note_from_submitter}”` : ""}
       </p>
       {p.to_arrange && <p className="mt-1 text-xs text-pending-ink">To arrange: {p.to_arrange.join("; ")}</p>}
-      {p.decided_by && (
+      {p.status === "confirming" &&
+        (me.user === p.decided_by && can("confirm_approval") ? (
+          <ConfirmWithPayPal planId={p.plan_id} />
+        ) : (
+          <p className="mt-1 text-xs text-pending-ink">
+            Approved by {p.decided_by}; it takes effect once they confirm it with PayPal.
+          </p>
+        ))}
+      {p.decided_by && p.status !== "confirming" && (
         <p className="mt-1 text-xs">
           {words(p.status)} by {p.decided_by}
           {p.decision_note ? `: ${p.decision_note}` : ""}

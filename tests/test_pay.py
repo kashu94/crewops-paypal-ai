@@ -289,3 +289,34 @@ def test_the_webhook_endpoint_needs_paypal_to_vouch_for_each_event(seed):
         "/api/payments", headers={"X-Demo-User": "imran.sheikh", "X-Demo-Role": "reporter"}
     )
     assert station.status_code == 403
+
+
+def test_crew_choose_where_they_are_paid_and_everyone_is_told(mem, outbox):
+    desk, payroll = wired(mem, outbox, receiver="demo-crew@personal.example")
+    box = ToolBox()
+
+    def ctx(caller):
+        return Context(mem, caller, desk=desk, payroll=payroll)
+
+    me = ctx(Caller("c", Role.CREW, FIRST))
+    before = box.call("payout_account", {}, me)
+    assert before["next_payout_goes_to"] == "demo-crew@personal.example"
+
+    bad = box.call("set_payout_email", {"email": "not an email"}, me)
+    assert "not an email" in bad["error"]
+    other = box.call("set_payout_email", {"email": "x@y.example", "crew_id": SECOND}, me)
+    assert "themselves" in other["error"]
+    controller = ctx(Caller("ananya.iyer", Role.CONTROLLER))
+    refused = box.call("set_payout_email", {"email": "x@y.example", "crew_id": FIRST}, controller)
+    assert "cannot use" in refused["error"]
+
+    done = box.call("set_payout_email", {"email": "Ravi.K@personal.example"}, me)
+    assert done["next_payout_goes_to"] == "Ravi.K@personal.example"
+    assert outbox.sent(FIRST)[-1].subject == "Your PayPal address for pay changed"
+    assert any(n.subject == f"Payout address changed: {FIRST}" for n in outbox.sent(DESK))
+    peek = box.call("payout_account", {"crew_id": FIRST}, ctx(Caller("c", Role.CREW, SECOND)))
+    assert "own record" in peek["error"]
+
+    payment = payroll.for_plan(approve(desk).plan_id)
+    assert payment["receiver"] == "Ravi.K@personal.example"
+    assert payment["receiver_is"] == "the PayPal account the crew member chose"
