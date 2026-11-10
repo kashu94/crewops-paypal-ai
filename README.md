@@ -110,7 +110,8 @@ checks and four-eyes rules as the buttons in the console.
 
 ## Try it
 
-**Hosted demo:** _link added after deploy_. On the sign-in page pick a role, then a person,
+**Hosted demo:** https://paypal-crewpay-console.onrender.com (free hosting: the first visit after
+a quiet spell takes about a minute to wake it, and the demo starts fresh each time it wakes). On the sign-in page pick a role, then a person,
 and enter the demo password given in the submission's testing instructions (the same for every
 account; the server checks it and signs a session token, so nobody can skip it). Run locally
 without `CREWPAY_DEMO_PASSWORD` and no password is asked. A quick path through it:
@@ -121,7 +122,9 @@ without `CREWPAY_DEMO_PASSWORD` and no password is asked. A quick path through i
 2. Choose cover in **Find cover** and submit the plan.
 3. Sign out, sign in as **Meera Bhatt (Approver)**, open **Approvals** and approve the plan. It
    now says **Waiting for PayPal**: click **Pay with PayPal** and pay with a sandbox personal
-   account. Only then does the roster change. (For a plan with a positioning seat, have the
+   account. Only then does the roster change. The **flight payout conduit** at the top of the page
+   follows it live: the plan is checked, PayPal confirms the approval, a payment pulse runs to the
+   crew card, and the payout receipt opens with its PayPal ids (**Replay payout** plays it again). (For a plan with a positioning seat, have the
    controller cover T-1015's captain, C-1140, with **S. Rao**, who flies in on KF502.)
 4. Open **Crew pay**: the approval payment and the crew payout, with rupee lines, dollar amounts
    and PayPal ids. Within a minute the payout shows **Paid**. A payout over the cap waits

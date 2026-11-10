@@ -9,6 +9,7 @@ import { Part } from "@/components/part";
 import { useSession } from "@/components/session";
 import { useReturnFromPayPal } from "@/components/confirm-paypal";
 import { Handover } from "@/components/handover";
+import { PayoutConduit } from "@/components/payout-conduit";
 import { Button, control, cx, Empty, Loading, Mono, Notice, PageHeader, Panel, SeverityBadge } from "@/components/ui";
 import { tool } from "@/lib/api";
 import { plural } from "@/lib/format";
@@ -105,6 +106,7 @@ export default function ApprovalsPage() {
           Nothing is waiting for a second pair of eyes.
         </Notice>
       )}
+      {data.plans.ok && <PayoutConduit plans={all} />}
       <div className="grid gap-5 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <div className="flex min-w-0 flex-col gap-5">
           <Panel flush title="Plans waiting for an approver" icon={<ListChecks size={15} />} action={plural(waiting.length, "plan")}>

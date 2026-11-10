@@ -937,6 +937,9 @@ def create_app(config: Settings | None = None, services: Services | None = None)
         paypal = s.payroll.paypal
         if paypal is None or not config.paypal_webhook_id:
             raise HTTPException(404, "PayPal webhooks are not set up on this server")
+        signed = ("paypal-transmission-id", "paypal-transmission-sig", "paypal-cert-url")
+        if not all(request.headers.get(h) for h in signed):
+            raise HTTPException(400, "not signed by PayPal")
         try:
             genuine = paypal.verify_webhook(dict(request.headers), event, config.paypal_webhook_id)
         except PayPalError as err:

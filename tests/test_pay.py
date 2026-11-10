@@ -270,12 +270,15 @@ def test_the_webhook_endpoint_needs_paypal_to_vouch_for_each_event(seed):
     client = TestClient(create_app(config, s))
 
     event = {"event_type": "PAYMENT.PAYOUTS-ITEM.SUCCEEDED", "resource": {}}
+    sent = {"paypal-transmission-id": "T-1", "paypal-cert-url": "https://api.paypal.com/c"}
+    unsigned = client.post("/api/paypal/webhook", json=event)
+    assert unsigned.status_code == 400 and not fake.requests
     forged = client.post(
-        "/api/paypal/webhook", json=event, headers={"paypal-transmission-sig": "x"}
+        "/api/paypal/webhook", json=event, headers={**sent, "paypal-transmission-sig": "x"}
     )
     assert forged.status_code == 400
     genuine = client.post(
-        "/api/paypal/webhook", json=event, headers={"paypal-transmission-sig": "good"}
+        "/api/paypal/webhook", json=event, headers={**sent, "paypal-transmission-sig": "good"}
     )
     assert genuine.status_code == 200 and genuine.json()["payment_id"] is None
     verify = json.loads(fake.requests[-1].content)

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 import { loadConfig, tool, type Config } from "@/lib/api";
 import { inr } from "@/lib/format";
+import { announcePaid } from "@/lib/paid-event";
 import { useAction, useLoad } from "@/lib/use-load";
 
 import { PayPalButton } from "./paypal-button";
@@ -50,7 +51,7 @@ export function ConfirmWithPayPal({ planId }: { planId: string }) {
   if (!f) return null;
 
   const confirm = (orderId?: string) =>
-    run("confirm", () => tool<{ plan_status: string }>("confirm_approval", { funding_id: f.funding_id, ...(orderId ? { order_id: orderId } : {}) }), (r) =>
+    run("confirm", () => tool<{ plan_status: string }>("confirm_approval", { funding_id: f.funding_id, ...(orderId ? { order_id: orderId } : {}) }).then(paid(f.plan_id)), (r) =>
       r.plan_status === "approved" ? { text: `Approved and paid with PayPal: ${f.name} is rostered on ${f.trip_id} and paid.`, tone: "ok" as const } : { text: `Paid, but the plan is ${r.plan_status}: the payment is refunded.`, tone: "critical" as const },
     );
   const live = data.mode === "paypal" && config?.paypal_client_id && f.paypal_order_id;
@@ -126,6 +127,14 @@ export function useReturnFromPayPal() {
     if (!fundingId) return;
     window.history.replaceState(null, "", window.location.pathname);
     if (!orderId) return;
-    run("confirm", () => tool<{ plan_status: string }>("confirm_approval", { funding_id: fundingId, order_id: orderId }), (r) => `Approval ${r.plan_status}.`);
+    run("confirm", () => tool<{ plan_status: string; plan_id: string }>("confirm_approval", { funding_id: fundingId, order_id: orderId }).then((r) => paid(r.plan_id)(r)), (r) => `Approval ${r.plan_status}.`);
   }, [can, run]);
+}
+
+/** Passes a confirm_approval result on, and tells the page when the approval went through. */
+function paid(planId: string) {
+  return <R extends { plan_status: string }>(r: R): R => {
+    if (r.plan_status === "approved" && planId) announcePaid(planId);
+    return r;
+  };
 }
