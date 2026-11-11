@@ -1,6 +1,6 @@
 "use client";
 
-import { BadgeCheck, CalendarDays, Check, Gauge, Inbox, ListChecks, Mic, Plane, Radio, Square, Timer, UserX, X } from "lucide-react";
+import { BadgeCheck, CalendarDays, Check, Gauge, Inbox, ListChecks, Mic, Plane, Radio, Square, Timer, UserX, Wallet, X } from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
 
 import { Modal } from "@/components/modal";
@@ -11,10 +11,10 @@ import { useSession } from "@/components/session";
 import { Button, Chips, cx, Empty, Input, Loading, Meter, Mono, Notice, PageHeader, Panel, Pill, Spinner, StatusPill, Table } from "@/components/ui";
 import { api, message, missing, tool } from "@/lib/api";
 import { addDays, opDay, workDay } from "@/lib/clock";
-import { plural, short, words } from "@/lib/format";
+import { inr, plural, short, words } from "@/lib/format";
 import { settle } from "@/lib/settle";
 import { ANY_LANGUAGE, Recorder, transcribe } from "@/lib/voice";
-import type { Callout, Notice as NoticeT, Profile, Report, ReportSummary, Trip } from "@/lib/types";
+import type { Notice as NoticeT, Profile, Report, ReportSummary, Trip } from "@/lib/types";
 import { useAction, useLoad } from "@/lib/use-load";
 
 const DAYS = 14;
@@ -88,8 +88,27 @@ function Calendar({ trips, p, today, start }: { trips: Trip[]; p: Profile; today
   );
 }
 
+/** A seat offered to me, as crew control shows it to me: what I would be paid, never who
+ * else was asked. */
+type MyOffer = {
+  callout_id: string;
+  trip_id: string;
+  seat: string;
+  status: string;
+  way: string;
+  reports: string;
+  answer_by?: string;
+  pay_lines: { label: string; inr: number }[];
+  pay_inr: number;
+  pay?: string;
+  currency?: string;
+  paid_through?: string;
+};
+
+const money = (amount: string, currency = "USD") => (currency === "USD" ? `$${Number(amount).toFixed(2)}` : `${amount} ${currency}`);
+
 /** A seat crew control is asking this person to fly, answered here with an optional remark. */
-function OfferCard({ c, busy, answer }: { c: Callout; busy: boolean; answer: (accept: boolean, note: string) => void }) {
+function OfferCard({ c, busy, answer }: { c: MyOffer; busy: boolean; answer: (accept: boolean, note: string) => void }) {
   const [note, setNote] = useState("");
   return (
     <section className="mb-5 overflow-hidden rounded-xl border border-[#f6dc9c] bg-pending-soft">
@@ -102,9 +121,29 @@ function OfferCard({ c, busy, answer }: { c: Callout; busy: boolean; answer: (ac
             Callout: fly <Mono>{c.trip_id}</Mono> as {c.seat}
           </p>
           <p className="text-[13px] text-pending-ink/80">
-            Crew control asks you to cover this seat{c.answer_by ? <>; please answer by <b>{short(c.answer_by)}</b>, after that it goes to the next crew member</> : ""}.
+            Reports {short(c.reports)}. Crew control asks you to cover this seat{c.answer_by ? <>; please answer by <b>{short(c.answer_by)}</b>, after that it goes to the next crew member</> : ""}.
           </p>
         </div>
+      </div>
+      <div className="border-t border-[#f6dc9c] bg-surface px-4 py-3 sm:px-5">
+        <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-muted">
+          <Wallet size={13} /> You would be paid
+        </p>
+        <p className="mt-1 flex flex-wrap items-baseline gap-x-2">
+          <span className="text-2xl font-semibold tracking-tight text-ok">{c.pay ? money(c.pay, c.currency) : inr(c.pay_inr)}</span>
+          {c.pay && <span className="font-mono text-sm text-muted">{inr(c.pay_inr)}</span>}
+        </p>
+        {c.pay_lines.length > 0 && (
+          <ul className="mt-1.5 text-[13px] text-muted">
+            {c.pay_lines.map((l) => (
+              <li key={l.label} className="flex justify-between gap-4">
+                <span>{l.label.charAt(0).toUpperCase() + l.label.slice(1)}</span>
+                <span className="font-mono">{inr(l.inr)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {c.paid_through && <p className="mt-1.5 text-xs text-faint">Through {c.paid_through}.</p>}
       </div>
       <div className="flex flex-wrap items-end gap-2 border-t border-[#f6dc9c] bg-surface/70 px-4 py-3 sm:px-5">
         <Input
@@ -197,7 +236,8 @@ function Unavailable({ crewId, today, onDone }: { crewId: string; today: string;
           ...(f.since ? { since: f.since } : {}),
           ...(f.note ? { note: f.note } : {}),
         });
-        onDone(`Crew control has been told (${r.report_id}, ${r.desk?.name ?? "a desk"}).`);
+        const level = (r as Report & { severity?: { level?: string } }).severity?.level;
+        onDone(`Crew control has been told (${r.report_id}, ${r.desk?.name ?? "a desk"}${level ? `, ${level} severity` : ""}).`);
       } catch (err) {
         if (!missing(err)) throw err;
         const r = await tool<{ own_trips_now_short: string[] }>("report_unavailable", { first_day: f.first_day, last_day: f.last_day, reason: f.note || kind, kind, ...(f.since ? { since: f.since } : {}) });
@@ -253,7 +293,7 @@ export default function CrewPage() {
     const [p, trips, offers, inbox, reports] = await Promise.all([
       tool<Profile>("crew_profile", { crew_id: id }),
       settle(tool<{ trips: Trip[] }>("find_trips", { crew_id: id, limit: 30 })),
-      settle(tool<{ offers_to_me: Callout[]; earlier_offers?: Earlier[] }>("callout_status", {})),
+      settle(tool<{ offers_to_me: MyOffer[]; earlier_offers?: Earlier[] }>("callout_status", {})),
       settle(api<{ notices: NoticeT[] }>("/api/notices?limit=10")),
       settle(tool<{ disruptions: ReportSummary[] }>("my_reports")),
     ]);

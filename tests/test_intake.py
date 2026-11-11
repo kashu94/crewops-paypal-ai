@@ -85,7 +85,7 @@ def note(**changes):
         readable="clear",
         patient_name="A. Nair",
         unfit_from="2026-11-05",
-        unfit_to="2026-11-08",
+        unfit_until="2026-11-08",
         issued_by="Dr Rao",
     )
     return SickNote(**{**base, **changes})
@@ -230,6 +230,16 @@ def test_a_sick_note_that_is_not_one_or_names_nobody_clear_is_not_acted_on(op):
     assert nobody.status is Status.CONFIRM and "not in the roster" in nobody.message
     undated = read_photo(op, Kind.SICK_NOTE, SHARP, "image/jpeg", Reader(note(unfit_from="")))
     assert undated.status is Status.CONFIRM and undated.proposal is None
+
+
+def test_a_note_that_puts_a_title_before_the_name_still_finds_the_person(op):
+    for name in ("Capt. Arjun Nair", "Captain Arjun Nair", "Dr Arjun Nair", "Capt. A. Nair"):
+        found = read_photo(op, Kind.SICK_NOTE, SHARP, "image/jpeg", Reader(note(patient_name=name)))
+        assert [c["crew_id"] for c in found.crew] == ["C-1111"], name
+    both = read_photo(
+        op, Kind.SICK_NOTE, SHARP, "image/jpeg", Reader(note(patient_name="Capt. Nair"))
+    )
+    assert len(both.crew) > 1 and both.proposal is None
 
 
 def test_swaps_and_certificates_are_checked_against_the_roster(op):

@@ -136,8 +136,9 @@ How to answer:
   2. Why, in one or two sentences: only the deciding rule ids and numbers. Do not list rules
      that passed unless asked.
   3. Up to two alternatives, each with its cost.
-- Plain sentences or a short list. Never paste JSON, brackets or tool field names. IST times,
-  amounts as INR with the tools' figures.
+- Plain sentences or a short list. Never paste JSON, brackets, tool names or tool field
+  names: say what a person does next ("an approver decides it"), not which tool does it. IST
+  times, amounts as INR with the tools' figures.
 
 Duty rules (the engine applies them; cite them by id):
 {rule_lines}

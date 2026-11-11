@@ -88,9 +88,11 @@ class SickNote(Draft):
     readable: Clarity
     patient_name: str
     unfit_from: str
-    """YYYY-MM-DD, or empty if not written."""
-    unfit_to: str
+    """The first day the person is unfit for duty: YYYY-MM-DD, or empty if not written."""
+    unfit_until: str
+    """The last day the person is unfit for duty: YYYY-MM-DD, or empty if not written."""
     issued_by: str
+    """The doctor or clinic who signed the note."""
 
 
 class RosterSwap(Draft):
@@ -200,7 +202,8 @@ PROMPTS: dict[Kind, tuple[type[BaseModel], str]] = {
     Kind.SICK_NOTE: (
         SickNote,
         "This should be a doctor's note that a crew member is unfit to fly. Fill the form only "
-        "from what is written; leave a field empty if it is not there. Dates as YYYY-MM-DD.",
+        "from what is written; leave a field empty if it is not there. Dates as YYYY-MM-DD; a "
+        "date written with slashes is day first, as in India (05/11/2026 is 5 November).",
     ),
     Kind.ROSTER_SWAP: (
         RosterSwap,
@@ -349,9 +352,19 @@ def measure(image: bytes, paper: bool = False, screen: bool = False) -> Quality:
     return Quality(width, height, round(sharpness, 1), round(brightness, 1), tuple(problems))
 
 
+TITLES = frozenset(
+    {"capt", "captain", "fo", "first", "officer", "mr", "mrs", "ms", "miss", "dr", "shri", "smt"}
+)
+"""Words before a name on a note or a form ("Capt. Arjun Nair"), never part of the name."""
+
+
 def _crew_named(op: Operation, name: str) -> list[dict[str, str]]:
     from crewpay.agent.tools import name_matches
 
+    tokens = name.replace(".", ". ").split()
+    while len(tokens) > 1 and tokens[0].lower().rstrip(".") in TITLES:
+        tokens = tokens[1:]
+    name = " ".join(tokens)
     words = [w for w in name.lower().replace(".", " ").split() if len(w) > 1]
     if not words:
         return []
@@ -452,7 +465,7 @@ def _sick_note(op: Operation, form: SickNote, result: Intake) -> Intake:
     person = _one_person(op, form.patient_name, result, "note")
     if person is None:
         return result
-    first, last = _date(form.unfit_from), _date(form.unfit_to)
+    first, last = _date(form.unfit_from), _date(form.unfit_until)
     if first is None:
         result.status = Status.CONFIRM
         result.message = f"Note for {person['name']}: the dates cannot be read. Which days?"

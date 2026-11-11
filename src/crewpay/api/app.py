@@ -95,7 +95,19 @@ class Services:
         self.days = {"first": meta.get("first_day"), "last": meta.get("last_day")}
         self.push = Push(self.store)
         self.outbox = PushingOutbox(StoreOutbox(self.store), self.push)
-        self.desk = CalloutDesk(self.store, self.outbox, docs=self.store, four_eyes=True)
+        # On the wall clock (as hosted) offers and plans run on real time. On the demo's own
+        # clock, they run from the moment the demo data was taken, moving on with real time
+        # since the server started, so an offer's "answer by" fits the trips it is for.
+        started = datetime.now(UTC)
+        as_of = datetime.fromisoformat(self.store.meta()["as_of"])
+        clock = (
+            (lambda: datetime.now(UTC))
+            if config.live_clock
+            else (lambda: as_of + (datetime.now(UTC) - started))
+        )
+        self.desk = CalloutDesk(
+            self.store, self.outbox, clock=clock, docs=self.store, four_eyes=True
+        )
         self.reports = ReportDesk(self.store, self.outbox, config.seed_dir)
         self.alerts = AlertAddresses(self.store)
         self.payroll = Payroll(

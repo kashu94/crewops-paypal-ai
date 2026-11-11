@@ -295,6 +295,13 @@ def test_a_callout_runs_through_the_tools_and_never_cancels_by_itself(box, mem):
     me = Caller("crew", Role.CREW, first)
     mine = box.call("callout_status", {}, ctx(me))["offers_to_me"]
     assert [c["callout_id"] for c in mine] == [callout_id]
+    # They see what they would be paid, and nothing about anyone else asked.
+    assert "asked" not in mine[0] and mine[0]["pay_inr"] == opened["asked"][0]["cost_inr"]
+    assert {line["label"] for line in mine[0]["pay_lines"]} <= {
+        "callout",
+        "service allowance",
+        "travel allowance",
+    }
 
     status = box.call("answer_callout", {"callout_id": callout_id, "accept": False}, ctx(me))
     while status["status"] == "offered":

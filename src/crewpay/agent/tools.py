@@ -267,6 +267,35 @@ def _plan(p: Plan) -> dict[str, Any]:
     return out
 
 
+def _offer_to_me(ctx: Context, c: Callout) -> dict[str, Any]:
+    """An open offer as the crew member asked sees it: the seat, when to answer, and what they
+    would be paid for it. Never who else was asked, or what they were offered."""
+    from crewpay.pay.payroll import CREW_PAY, to_usd
+
+    offer = c.current
+    assert offer is not None
+    op = ctx.operation()
+    lines = [{"label": k, "inr": v} for k, v in offer.breakdown.items() if k in CREW_PAY and v]
+    total = sum(line["inr"] for line in lines) if lines else offer.cost
+    out: dict[str, Any] = {
+        "callout_id": c.callout_id,
+        "trip_id": c.trip_id,
+        "seat": str(c.rank),
+        "status": str(c.status),
+        "way": offer.way,
+        "reports": _when(op.days_of(c.trip_id)[0].report),
+        "answer_by": _when(offer.expires_at),
+        "pay_lines": lines,
+        "pay_inr": total,
+    }
+    if ctx.payroll is not None:
+        cfg = ctx.payroll.config
+        out["pay"] = to_usd(total, cfg.fx_inr_per_usd)
+        out["currency"] = cfg.currency
+        out["paid_through"] = "PayPal Payouts, once an approver approves the cover"
+    return out
+
+
 def _callout(c: Callout) -> dict[str, Any]:
     out: dict[str, Any] = {
         "callout_id": c.callout_id,
@@ -846,7 +875,7 @@ def callout_status(ctx: Context, args: CalloutStatus) -> dict[str, Any]:
     if ctx.caller.role is Role.CREW:
         mine = ctx.caller.crew_id or ""
         return {
-            "offers_to_me": [_callout(c) for c in desk.offers_for(mine)],
+            "offers_to_me": [_offer_to_me(ctx, c) for c in desk.offers_for(mine)],
             "earlier_offers": [
                 {
                     "callout_id": c.callout_id,

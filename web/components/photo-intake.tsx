@@ -16,6 +16,7 @@ export type Intake = {
   evidence_id?: string;
   suggestion?: { severity: "low" | "medium" | "high"; description: string } | null;
   crew?: { crew_id: string; name: string }[];
+  proposal?: { tool: string; arguments: Record<string, string> } | null;
   signals?: { label?: string; tail_seen?: string | null; gate_seen?: string | null };
 };
 

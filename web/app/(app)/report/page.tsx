@@ -95,6 +95,8 @@ export default function ReportPage() {
   const [severity, setSeverity] = useState("");
   const [description, setDescription] = useState("");
   const [written, setWritten] = useState(false);
+  /** The days a sick note gives, once it is read: they replace the default dates. */
+  const [noteDays, setNoteDays] = useState<{ from: string; until: string } | null>(null);
   const typing = useRef<number | null>(null);
   /** Type text into the description quickly, so it is plain that it was just written for
    * them: under a second whatever its length. Typing in the box stops it. */
@@ -242,7 +244,7 @@ export default function ReportPage() {
               {kind === "crew_unavailable" && (
                 <>
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <FromUntil fromLabel="From" untilLabel="Until" from={from ?? today} until={addDays(from ?? today, 1)} />
+                    <FromUntil key={noteDays ? `${noteDays.from}|${noteDays.until}` : "default"} fromLabel="From" untilLabel="Until" from={noteDays?.from ?? from ?? today} until={noteDays?.until ?? addDays(from ?? today, 1)} />
                   </div>
                   <Chips
                     label="Reason"
@@ -411,6 +413,12 @@ export default function ReportPage() {
                   onChange={(p) => {
                     setPhoto(p);
                     const s = p.result?.suggestion;
+                    // A note that names one person and their days fills in who and when,
+                    // unless someone is already chosen: the reporter checks it before filing.
+                    const days = p.result?.proposal?.tool === "report_unavailable" ? p.result.proposal.arguments : null;
+                    const one = p.status === "kept" && p.result?.crew?.length === 1 ? p.result.crew[0] : null;
+                    if (one && crew.length === 0) setCrew([{ crew_id: one.crew_id, name: one.name }]);
+                    if (p.status === "kept" && days?.first_day) setNoteDays({ from: days.first_day, until: days.last_day || days.first_day });
                     if (p.status === "kept" && s) {
                       setSeverity(s.severity);
                       writeOut(s.description ?? "");

@@ -74,6 +74,9 @@ class Offer:
     answered_at: datetime | None = None
     note: str = ""
     """What the crew member said with their answer."""
+    breakdown: dict[str, int] = field(default_factory=dict)
+    """The cost lines of this cover, from the engine: what the crew member would be paid
+    is the pay lines among them."""
 
 
 @dataclass
@@ -297,6 +300,7 @@ class CalloutDesk:
             name=choice.name or choice.crew_id,
             way=choice.way.label,
             cost=choice.cost,
+            breakdown=dict(choice.breakdown),
             offered_at=now,
             expires_at=now + self.respond_within,
         )
