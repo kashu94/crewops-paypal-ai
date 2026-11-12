@@ -40,3 +40,17 @@ services:
         value: "84"
       - key: CREWPAY_PAY_CAP
         value: "500"
+      - key: CREWPAY_ALEXA_SKILL_ID
+        sync: false
+      - key: CREWPAY_ALEXA_CLIENT_ID
+        value: paypal-crewpay-alexa
+      - key: CREWPAY_ALEXA_CLIENT_SECRET
+        sync: false
+      - key: CREWPAY_ALEXA_REDIRECT_URLS
+        sync: false
+      - key: CREWPAY_ALEXA_MESSAGING_CLIENT_ID
+        sync: false
+      - key: CREWPAY_ALEXA_MESSAGING_CLIENT_SECRET
+        sync: false
+      - key: CREWPAY_ALEXA_EVENTS_STAGE
+        value: development

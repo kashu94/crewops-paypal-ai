@@ -1,0 +1,15 @@
+{
+  "accountLinkingRequest": {
+    "type": "AUTH_CODE",
+    "authorizationUrl": "https://paypal-crewpay-console.onrender.com/api/alexa/link",
+    "accessTokenUrl": "https://paypal-crewpay-console.onrender.com/api/alexa/token",
+    "clientId": "paypal-crewpay-alexa",
+    "clientSecret": "REPLACE_WITH_CREWPAY_ALEXA_CLIENT_SECRET",
+    "accessTokenScheme": "HTTP_BASIC",
+    "scopes": [
+      "crewpay"
+    ],
+    "domains": [],
+    "skipOnEnablement": false
+  }
+}

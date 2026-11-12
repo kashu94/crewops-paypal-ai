@@ -1,0 +1,94 @@
+{
+  "manifest": {
+    "manifestVersion": "1.0",
+    "publishingInformation": {
+      "locales": {
+        "en-IN": {
+          "name": "CrewPay",
+          "summary": "Airline crew control that pays its crew: what is waiting for you, legal cover for a sick call, and whether you've been paid.",
+          "description": "CrewPay answers crew-control questions with legal, cost-ranked cover checked against duty-time rules, tells you what is waiting for your approval, and lets crew ask about their callout pay. A linked Echo chimes when something reaches you.",
+          "examplePhrases": [
+            "Alexa, open crew pay",
+            "Alexa, ask crew pay what's waiting",
+            "Alexa, ask crew pay who covers T 1018"
+          ],
+          "keywords": [
+            "airline",
+            "crew",
+            "payments"
+          ]
+        },
+        "en-US": {
+          "name": "CrewPay",
+          "summary": "Airline crew control that pays its crew: what is waiting for you, legal cover for a sick call, and whether you've been paid.",
+          "description": "CrewPay answers crew-control questions with legal, cost-ranked cover checked against duty-time rules, tells you what is waiting for your approval, and lets crew ask about their callout pay. A linked Echo chimes when something reaches you.",
+          "examplePhrases": [
+            "Alexa, open crew pay",
+            "Alexa, ask crew pay what's waiting",
+            "Alexa, ask crew pay who covers T 1018"
+          ],
+          "keywords": [
+            "airline",
+            "crew",
+            "payments"
+          ]
+        }
+      },
+      "isAvailableWorldwide": false,
+      "distributionCountries": [
+        "IN",
+        "US"
+      ],
+      "category": "BUSINESS_AND_FINANCE"
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "https://paypal-crewpay-console.onrender.com/api/alexa",
+          "sslCertificateType": "Wildcard"
+        }
+      }
+    },
+    "permissions": [
+      {
+        "name": "alexa::devices:all:notifications:write"
+      },
+      {
+        "name": "alexa::alerts:reminders:skill:readwrite"
+      }
+    ],
+    "events": {
+      "publications": [
+        {
+          "eventName": "AMAZON.MessageAlert.Activated"
+        }
+      ],
+      "endpoint": {
+        "uri": "https://paypal-crewpay-console.onrender.com/api/alexa",
+        "sslCertificateType": "Wildcard"
+      },
+      "subscriptions": [
+        {
+          "eventName": "SKILL_PROACTIVE_SUBSCRIPTION_CHANGED"
+        },
+        {
+          "eventName": "SKILL_ACCOUNT_LINKED"
+        },
+        {
+          "eventName": "SKILL_DISABLED"
+        }
+      ]
+    },
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "usesPersonalInfo": false,
+      "isChildDirected": false,
+      "isExportCompliant": true,
+      "containsAds": false,
+      "locales": {
+        "en-IN": {},
+        "en-US": {}
+      }
+    }
+  }
+}

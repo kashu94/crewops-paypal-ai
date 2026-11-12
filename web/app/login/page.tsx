@@ -131,7 +131,12 @@ export default function Login() {
               </li>
             ))}
           </ul>
-          <span className="text-xs text-[#8ea3ba]">A demo operation: every name in it is made up.</span>
+          <span className="text-xs text-[#8ea3ba]">
+            A demo operation: every name in it is made up.{" "}
+            <a href="/evaluation/" className="underline decoration-white/30 underline-offset-2 hover:text-white">
+              How the assistant scores
+            </a>
+          </span>
         </div>
       </section>
 

@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import concurrent.futures as cf
 import json
+import os
 import statistics
 import sys
 import time
@@ -71,17 +72,23 @@ def examples() -> str:
 
 
 def ask(client: ModelClient, prompt: str, question: str) -> dict:
-    t = time.time()
-    try:
-        choice, reply = client.parse(
-            [{"role": "system", "content": prompt}, {"role": "user", "content": question}],
-            RouteChoice,
-            purpose="route",
-            effort="minimal",
-            max_tokens=2000,
-        )
-    except ModelError as err:
-        return {"error": str(err), "seconds": round(time.time() - t, 2), "tokens": 0}
+    # A throttled call says nothing about routing: wait for the quota and ask again, and time
+    # only the attempt that was answered.
+    for wait in (10, 20, 40, 60, 60, None):
+        t = time.time()
+        try:
+            choice, reply = client.parse(
+                [{"role": "system", "content": prompt}, {"role": "user", "content": question}],
+                RouteChoice,
+                purpose="route",
+                effort="minimal",
+                max_tokens=2000,
+            )
+            break
+        except ModelError as err:
+            if "Throttling" not in str(err) or wait is None:
+                return {"error": str(err), "seconds": round(time.time() - t, 2), "tokens": 0}
+            time.sleep(wait)
     u = reply.usage
     return {
         "intent": str(choice.intent),
@@ -92,7 +99,8 @@ def ask(client: ModelClient, prompt: str, question: str) -> dict:
 
 
 def run(name: str, client: ModelClient, prompt: str, tests: list[dict]) -> dict:
-    with cf.ThreadPoolExecutor(6) as pool:
+    # Few at a time: Bedrock throttles bursts, and a throttled call is not a routing answer.
+    with cf.ThreadPoolExecutor(int(os.environ.get("ROUTER_EVAL_WORKERS", "2"))) as pool:
         got = list(pool.map(lambda r: ask(client, prompt, r["question"]), tests))
     rows = []
     for r, g in zip(tests, got, strict=True):

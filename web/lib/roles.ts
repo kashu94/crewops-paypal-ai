@@ -77,6 +77,7 @@ const I = {
   myPay: { href: "/pay/", label: "My pay", hint: "What you were paid for cover, through PayPal", icon: "pay" },
   board: { href: "/board/", label: "TV board", hint: "The ops-room wall", icon: "board", external: true },
   speaker: { href: "/speaker/", label: "Speaker", hint: "The ops-room speaker", icon: "speaker", external: true },
+  evaluation: { href: "/evaluation/", label: "Evaluation", hint: "How the assistant scores, failures included", icon: "evaluation", external: true },
 } satisfies Record<string, NavItem>;
 
 const OPS_ROOM: NavGroup = { group: "Ops room", items: [I.board, I.speaker] };
@@ -94,14 +95,14 @@ export function navFor(role: Role): NavGroup[] {
     case "auditor":
       return [
         { group: "Read only", items: [I.transactions, I.pay, I.approvals, I.disruptions, I.assistant] },
-        { group: "Oversight", items: [I.activity, I.limits] },
+        { group: "Oversight", items: [I.activity, I.limits, I.evaluation] },
         OPS_ROOM,
       ];
     case "admin":
     case "super_admin":
       return [
         { group: "Administration", items: [I.admin, I.disruptions, I.pay, I.transactions, I.leave, I.limits] },
-        { group: "Oversight", items: [I.activity, I.assistant] },
+        { group: "Oversight", items: [I.activity, I.assistant, I.evaluation] },
         OPS_ROOM,
       ];
     default:

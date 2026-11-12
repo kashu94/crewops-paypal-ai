@@ -103,6 +103,58 @@ and, for approvers, approve a plan (which then waits for them to confirm it with
 Every action goes through the same tools, role checks and four-eyes rules as the buttons in the
 console; anything that moves money is left to a person at the console.
 
+## Alexa
+
+CrewPay has its own Alexa skill, **CrewPay** (invocation name "crew pay"), served by the same
+server at `/api/alexa`:
+
+- **"Alexa, ask crew pay what's waiting."** Reads what waits on the person who linked the
+  skill: plans to approve and approvals waiting for PayPal for an approver, new disruptions for
+  a controller, a callout offer for a crew member.
+- **"Alexa, ask crew pay who covers T 1018?"** Any question goes through the same assistant,
+  tools and checks as the console, so every figure comes from the engine.
+- **The Echo speaks up on its own.** When a notice reaches a linked person (a new disruption
+  for the desk, a plan to approve, a callout offer or a payout for a crew member), their Echo
+  chimes and, if they allowed reminders, says what happened a few seconds later.
+
+How it is built:
+
+| Piece | How |
+|---|---|
+| Request checks | Every request must be signed by Alexa: the certificate URL, the chain (to `echo-api.amazon.com`), the signature of the raw body, a timestamp within 150 s and this skill's id are checked before the body is read ([`src/crewpay/alexa/verify.py`](src/crewpay/alexa/verify.py)) |
+| Account linking | CrewPay's own sign-in as an OAuth 2.0 authorization code grant (`/api/alexa/link`, `/api/alexa/token`): the person picks their account and gives the demo password; the codes and tokens are signed, so a link survives a restart ([`src/crewpay/alexa/linking.py`](src/crewpay/alexa/linking.py)) |
+| The skill | Launch, "what's waiting", free questions, help, permission changes, skill disabled ([`src/crewpay/alexa/skill.py`](src/crewpay/alexa/skill.py)); the interaction model is in [`alexa/skill-package`](alexa/skill-package) |
+| Notifications | Alexa Proactive Events (`AMAZON.MessageAlert.Activated`) for the chime, and Skill Messaging so the skill sets a reminder with the words ([`src/crewpay/alexa/notifier.py`](src/crewpay/alexa/notifier.py)) |
+
+Linked, it answers as that person, with their role's access. An Echo nobody has linked (or the
+developer console's Test tab) speaks for the ops room, like the speaker page: what waits for the
+desk, never anyone's pay or PayPal address, and it can change nothing.
+
+### Setting up the skill
+
+1. In the [Alexa developer console](https://developer.amazon.com/alexa/console/ask), signed in
+   with the Amazon account your Alexa app uses, create a **Custom** skill named **CrewPay**
+   (English (IN) or English (US)), **Provision your own** backend, **Start from scratch**.
+2. **Interaction model > JSON Editor**: paste
+   [`alexa/skill-package/interactionModels/custom/en-IN.json`](alexa/skill-package/interactionModels/custom/en-IN.json)
+   (or `en-US.json`), then **Save** and **Build**.
+3. **Endpoint**: **HTTPS**, `https://<your host>/api/alexa`, certificate type "My development
+   endpoint is a sub-domain of a domain that has a wildcard certificate". Copy the **skill id**
+   into `CREWPAY_ALEXA_SKILL_ID`.
+4. **Account linking**: on, **Auth Code Grant**; Web Authorization URI
+   `https://<your host>/api/alexa/link`; Access Token URI `https://<your host>/api/alexa/token`;
+   Client ID `paypal-crewpay-alexa`; Client Secret: a long random string, also put in
+   `CREWPAY_ALEXA_CLIENT_SECRET`; Authentication Scheme **HTTP Basic**; scope `crewpay`. Put the
+   page's **Alexa Redirect URLs** in `CREWPAY_ALEXA_REDIRECT_URLS`, comma-separated.
+5. Optional, for the chime: on **Permissions**, switch on **Alexa Notifications** and
+   **Reminders**, and copy the **Alexa Skill Messaging** client id and secret into
+   `CREWPAY_ALEXA_MESSAGING_CLIENT_ID` and `CREWPAY_ALEXA_MESSAGING_CLIENT_SECRET`. The
+   notification event is declared in [`alexa/skill-package/skill.json`](alexa/skill-package/skill.json)
+   (`ask deploy`, or paste it under **Build > Skill manifest**).
+6. In the Alexa app: **More > Skills & Games > Your Skills > Dev > CrewPay**, enable it, link
+   your CrewPay account, allow notifications and reminders. Then "Alexa, open crew pay". The
+   **Test** tab in the developer console works too.
+
 ## Architecture
 
 ```
@@ -215,6 +267,18 @@ uv run ruff check .
 [`render.yaml`](render.yaml) describes one Docker web service, `paypal-crewpay-console`. In Render choose **New >
 Blueprint**, point it at this repository, and fill in the secrets it asks for.
 
+## Evaluation
+
+The assistant is measured, and the results are published as they came out, failures included,
+at **`/evaluation/`** (open to anyone, like the TV board):
+
+- **Scorecard**: scripted crew-desk questions run against the live models, each scored by code
+  (the kind of question, the tools it had to use, what the answer must name, whether it had to
+  be refused). `uv run python -m crewpay.eval.scorecard` writes `docs/scorecard.json` and `.md`.
+- **Router**: the question sorter on held-out questions it has never seen, as it is, on the
+  larger model, and tuned with worked examples. `uv run python scripts/router_eval.py` writes
+  `docs/router_eval.json` and `.md`.
+
 ## The rules
 
 Nine rules, modelled on Indian flight duty time limitations and simplified for a demo. Each
@@ -247,8 +311,12 @@ src/crewpay/
   models/      The Bedrock Converse client
   vision/      Photo intake
   api/         FastAPI server, background loop
+  alexa/       The Alexa skill: request checks, account linking, Echo notifications
+  eval/        The scorecard
   store/       The operation in memory
 web/           The console (Next.js, exported as static files)
+alexa/         The Alexa skill package (manifest, interaction models) and account linking
+docs/          The published evaluation results
 data/seed/     The demo operation
 tests/         Unit and API tests
 ```

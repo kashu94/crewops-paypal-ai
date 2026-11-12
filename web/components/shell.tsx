@@ -8,6 +8,7 @@ import {
   Gauge,
   Inbox,
   LayoutDashboard,
+  LineChart,
   ListChecks,
   LogOut,
   Menu,
@@ -51,6 +52,7 @@ const ICONS: Record<string, LucideIcon> = {
   admin: Settings,
   board: Tv,
   speaker: Volume2,
+  evaluation: LineChart,
   pay: Wallet,
   transactions: Receipt,
 };

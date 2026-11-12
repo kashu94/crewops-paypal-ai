@@ -29,3 +29,4 @@ Thumbs.db
 
 # Git bundles used to move commits between laptops
 *.bundle
+alexa/account-linking.json

@@ -12,7 +12,10 @@ so a public demo cannot run through the credits.
 
 from __future__ import annotations
 
+import base64
+import html
 import json
+import logging
 import re
 import threading
 import uuid
@@ -20,6 +23,7 @@ from dataclasses import asdict
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote_plus, urlencode, urlparse
 
 from fastapi import Body, Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response
@@ -29,6 +33,11 @@ from crewpay.agent.advisor import Advisor, Answer
 from crewpay.agent.build import build_advisor
 from crewpay.agent.memory import Conversations
 from crewpay.agent.tools import ADMINS, Caller, Context, Role, ToolBox
+from crewpay.alexa.linking import AMAZON_REDIRECT_HOSTS, Linked, LinkError, Links
+from crewpay.alexa.notifier import AlexaNotifier, AlexaOutbox
+from crewpay.alexa.notifier import sender as alexa_sender
+from crewpay.alexa.skill import AlexaLinks, Skill
+from crewpay.alexa.verify import NotFromAlexa, verified
 from crewpay.api.auth import Throttle, caller_from, issue, password_ok
 from crewpay.engine.clock import IST, use_clock
 from crewpay.engine.clock import now as clock_now
@@ -97,7 +106,19 @@ class Services:
         meta = self.store.meta()
         self.days = {"first": meta.get("first_day"), "last": meta.get("last_day")}
         self.push = Push(self.store)
-        self.outbox = PushingOutbox(StoreOutbox(self.store), self.push)
+        # Alexa: linked Echoes chime when a notice reaches the person they belong to.
+        self.alexa_links = AlexaLinks(self.store)
+        self.alexa = AlexaNotifier(
+            self.alexa_links,
+            alexa_sender(
+                config.alexa_messaging_client_id,
+                config.alexa_messaging_client_secret,
+                config.alexa_events_stage,
+            )
+            if config.alexa_messaging_client_id and config.alexa_messaging_client_secret
+            else None,
+        )
+        self.outbox = AlexaOutbox(PushingOutbox(StoreOutbox(self.store), self.push), self.alexa)
         # On the wall clock (as hosted) offers and plans run on real time. On the demo's own
         # clock, they run from the moment the demo data was taken, moving on with real time
         # since the server started, so an offer's "answer by" fits the trips it is for.
@@ -389,6 +410,20 @@ CSP = "; ".join(
     ]
 )
 """PayPal's documented sources for the JS SDK and Checkout; everything else is CrewPay's own."""
+
+
+LINK_STYLE = (
+    "body{margin:0;font:16px/1.5 system-ui,sans-serif;background:#0b1630;color:#eef3fa;"
+    "display:grid;place-items:center;min-height:100vh}"
+    "main{width:min(420px,calc(100% - 32px));background:#13213f;border-radius:16px;padding:28px}"
+    "h1{font-size:22px;margin:0 0 6px}p{color:#b8c6dc;margin:0 0 18px}"
+    "label{display:block;font-size:14px;color:#b8c6dc;margin:0 0 14px}"
+    "select,input{display:block;width:100%;box-sizing:border-box;margin-top:6px;padding:10px;"
+    "border-radius:10px;border:1px solid #2d4064;background:#0b1630;color:#eef3fa;font:inherit}"
+    "button{width:100%;padding:12px;border:0;border-radius:10px;background:#2563b8;color:#fff;"
+    "font:600 16px system-ui,sans-serif;cursor:pointer}.bad{color:#ff8a8a}"
+)
+"""The Alexa account-linking page's look: plain CSS, no script."""
 
 
 async def _read_at_most(upload: UploadFile, limit: int) -> bytes:
@@ -1070,6 +1105,191 @@ def create_app(config: Settings | None = None, services: Services | None = None)
         if not SCORECARD.is_file():
             raise HTTPException(404, "no scorecard yet")
         return json.loads(SCORECARD.read_text(encoding="utf-8"))
+
+    # -- Alexa ----------------------------------------------------------------------------
+
+    links = Links(config.alexa_client_id, config.alexa_client_secret, config.alexa_redirect_urls)
+
+    def alexa_caller(token: str) -> Caller:
+        who = links.who(token)
+        account = next((a for a in DEMO_ACCOUNTS if a.user == who.user), None)
+        if account is None:
+            raise LinkError("invalid_grant", "that account is gone")
+        return Caller(account.user, account.role, account.crew_id)
+
+    def alexa_skill(s: Services) -> Skill:
+        def ask(who: Caller, question: str) -> str:
+            s.spend("alexa")
+            _conversation, answer = s.conversations.ask(s.advisor, question, who, None)
+            # The room's Echo is heard by everyone in it: no one's pay or PayPal address.
+            return _aloud(answer.text) if who.role is Role.SPEAKER else answer.text
+
+        def waiting(who: Caller) -> list[str]:
+            if who.role is Role.SPEAKER:
+                return [_aloud(line) for line in waiting_lines(s)]
+            found = s.toolbox.call("my_queue", {"limit": 10}, s.context(who))
+            return [
+                f"{item['title']}{', ' + item['detail'] if item.get('detail') else ''}."
+                for item in found.get("items", [])
+            ]
+
+        room = Caller("ops.speaker", Role.SPEAKER)
+        return Skill(
+            s.alexa_links, alexa_caller, ask, waiting, clock=lambda: datetime.now(UTC), room=room
+        )
+
+    @app.post("/api/alexa")
+    async def alexa(request: Request) -> Any:
+        """The Alexa skill's endpoint. Anything not signed by Alexa, for this skill, within
+        the last 150 seconds is refused before it is read."""
+        body = await request.body()
+        try:
+            envelope = verified(body, dict(request.headers), config.alexa_skill_id)
+        except NotFromAlexa as err:
+            log(svc().store, "security", by="alexa", role="skill", action=f"refused: {err}")
+            return JSONResponse({"error": "not a valid Alexa request"}, status_code=400)
+        try:
+            return alexa_skill(svc()).handle(envelope)
+        except Exception:
+            logging.getLogger(__name__).exception("Alexa request failed")
+            return {
+                "version": "1.0",
+                "response": {
+                    "outputSpeech": {
+                        "type": "PlainText",
+                        "text": "Sorry, CrewPay couldn't answer that just now. Please try again.",
+                    },
+                    "shouldEndSession": True,
+                },
+            }
+
+    def link_page(fields: dict[str, str], problem: str = "", status: int = 200) -> Response:
+        """CrewPay's sign-in for Alexa account linking: plain HTML, no script."""
+        options = "".join(
+            f'<option value="{html.escape(a.user)}">{html.escape(a.label)} '
+            f"({html.escape(str(a.role).replace('_', ' '))})</option>"
+            for a in DEMO_ACCOUNTS
+            if a.role is not Role.SPEAKER
+        )
+        hidden = "".join(
+            f'<input type="hidden" name="{k}" value="{html.escape(v)}">' for k, v in fields.items()
+        )
+        password = (
+            '<label>Demo password<input type="password" name="password" required '
+            'autocomplete="current-password"></label>'
+            if config.demo_password
+            else ""
+        )
+        note = f'<p class="bad">{html.escape(problem)}</p>' if problem else ""
+        page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Link CrewPay to Alexa</title>
+<style>{LINK_STYLE}</style>
+</head><body><main><h1>Link CrewPay to Alexa</h1>
+<p>Pick your CrewPay account. Alexa will answer as you, with your role's access, and can tell
+you when something reaches you.</p>{note}
+<form method="post" action="/api/alexa/link">{hidden}
+<label>Account<select name="user">{options}</select></label>{password}
+<button type="submit">Link with Alexa</button></form></main></body></html>"""
+        response = Response(page, status_code=status, media_type="text/html")
+        hosts = {f"https://{urlparse(u).netloc}" for u in links.redirect_urls}
+        allowed = " ".join(sorted(hosts | set(AMAZON_REDIRECT_HOSTS)))
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'none'; style-src 'unsafe-inline'; "
+            f"form-action 'self' {allowed}; frame-ancestors 'none'; base-uri 'none'"
+        )
+        return response
+
+    def _link_fields(source: Any) -> dict[str, str]:
+        return {
+            k: str(source.get(k) or "")
+            for k in ("client_id", "redirect_uri", "state", "response_type", "scope")
+        }
+
+    @app.get("/api/alexa/link")
+    def alexa_link_form(request: Request) -> Response:
+        fields = _link_fields(request.query_params)
+        try:
+            links.check_request(
+                fields["client_id"], fields["redirect_uri"], fields["response_type"]
+            )
+        except LinkError as err:
+            return Response(
+                f"Alexa account linking refused: {html.escape(str(err))}",
+                status_code=400,
+                media_type="text/plain",
+            )
+        return link_page(fields)
+
+    @app.post("/api/alexa/link")
+    async def alexa_link_submit(request: Request) -> Response:
+        form = await request.form()
+        fields = _link_fields(form)
+        try:
+            links.check_request(
+                fields["client_id"], fields["redirect_uri"], fields["response_type"]
+            )
+        except LinkError as err:
+            return Response(
+                f"Alexa account linking refused: {html.escape(str(err))}",
+                status_code=400,
+                media_type="text/plain",
+            )
+        user = str(form.get("user") or "")
+        account = next((a for a in DEMO_ACCOUNTS if a.user == user), None)
+        if account is None:
+            return link_page(fields, "Pick one of the accounts.", 400)
+        if config.demo_password:
+            where = f"{request.client.host if request.client else 'unknown'}:{user}"
+            try:
+                throttle.check(where)
+            except HTTPException as err:
+                return link_page(fields, str(err.detail), 429)
+            if not password_ok(config, str(form.get("password") or "")):
+                throttle.miss(where)
+                log(
+                    svc().store,
+                    "security",
+                    by=user,
+                    role=str(account.role),
+                    action="wrong password (Alexa linking)",
+                )
+                return link_page(fields, "That is not the demo password.", 401)
+        code = links.code(
+            Linked(account.user, account.role.value, account.crew_id), fields["redirect_uri"]
+        )
+        log(svc().store, "activity", by=user, role=str(account.role), action="linked Alexa")
+        query = urlencode({"state": fields["state"], "code": code})
+        joiner = "&" if "?" in fields["redirect_uri"] else "?"
+        return Response(
+            status_code=302, headers={"Location": f"{fields['redirect_uri']}{joiner}{query}"}
+        )
+
+    @app.post("/api/alexa/token")
+    async def alexa_token(request: Request) -> Any:
+        """The token step of account linking: a code or a refresh token for new tokens."""
+        form = await request.form()
+        client_id = str(form.get("client_id") or "")
+        client_secret = str(form.get("client_secret") or "")
+        basic = request.headers.get("authorization", "")
+        if basic.lower().startswith("basic "):
+            try:
+                pair = base64.b64decode(basic[6:].strip()).decode()
+                client_id, _, client_secret = pair.partition(":")
+                client_id, client_secret = unquote_plus(client_id), unquote_plus(client_secret)
+            except ValueError:
+                return JSONResponse({"error": "invalid_client"}, status_code=401)
+        if not links.client_ok(client_id, client_secret):
+            return JSONResponse({"error": "invalid_client"}, status_code=401)
+        grant = str(form.get("grant_type") or "")
+        value = str(form.get("code") or form.get("refresh_token") or "")
+        try:
+            tokens = links.exchange(grant, value, str(form.get("redirect_uri") or ""))
+        except LinkError as err:
+            return JSONResponse(
+                {"error": err.error, "error_description": str(err)}, status_code=400
+            )
+        return JSONResponse(tokens, headers={"Cache-Control": "no-store", "Pragma": "no-cache"})
 
     # -- the pages ------------------------------------------------------------------------
 

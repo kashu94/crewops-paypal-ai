@@ -88,6 +88,20 @@ class Settings:
     """How often the background loop moves callouts on, escalates and syncs payments; 0 off."""
     prompt_guard_url: str
     prompt_guard_token: str
+    # -- Alexa --------------------------------------------------------------------------------
+    alexa_skill_id: str
+    """The skill's id (``amzn1.ask.skill...``): requests for any other skill are refused."""
+    alexa_client_id: str
+    alexa_client_secret: str
+    """What the skill's account linking presents to CrewPay's sign-in; the secret also signs
+    the linked tokens, so a link survives a restart."""
+    alexa_redirect_urls: tuple[str, ...]
+    """The redirect URLs the skill's account linking page lists; no other is sent a code."""
+    alexa_messaging_client_id: str
+    alexa_messaging_client_secret: str
+    """The skill's own Login with Amazon credentials (Permissions page): they let CrewPay chime
+    a linked Echo when something reaches that person."""
+    alexa_events_stage: str
 
     @property
     def has_bedrock(self) -> bool:
@@ -148,6 +162,15 @@ def load_settings(env: dict[str, str] | None = None) -> Settings:
         ticker_seconds=int(get("CREWPAY_TICKER_SECONDS", "60")),
         prompt_guard_url=get("PROMPT_GUARD_URL"),
         prompt_guard_token=get("PROMPT_GUARD_TOKEN"),
+        alexa_skill_id=get("CREWPAY_ALEXA_SKILL_ID"),
+        alexa_client_id=get("CREWPAY_ALEXA_CLIENT_ID", "paypal-crewpay-alexa"),
+        alexa_client_secret=get("CREWPAY_ALEXA_CLIENT_SECRET"),
+        alexa_redirect_urls=tuple(
+            u.strip() for u in get("CREWPAY_ALEXA_REDIRECT_URLS").split(",") if u.strip()
+        ),
+        alexa_messaging_client_id=get("CREWPAY_ALEXA_MESSAGING_CLIENT_ID"),
+        alexa_messaging_client_secret=get("CREWPAY_ALEXA_MESSAGING_CLIENT_SECRET"),
+        alexa_events_stage=get("CREWPAY_ALEXA_EVENTS_STAGE", "development"),
     )
 
 
