@@ -212,7 +212,8 @@ export default function SpeakerPage() {
   }
 
   const w = (feed?.waiting ?? { plans: 0, decisions: 0 }) as Waiting;
-  const count = w.plans + w.decisions + (w.resolutions ?? 0) + (w.proposals ?? 0);
+  // An open disruption waits on the desk as much as a plan does: it needs cover.
+  const count = w.plans + w.decisions + (w.resolutions ?? 0) + (w.proposals ?? 0) + (w.disruptions ?? 0);
   const critical = (feed?.items ?? []).some((i) => i.tone === "critical" && unack.has(i.id));
   const ring = !on ? "off" : speaking ? "speaking" : critical || w.decisions ? "critical" : count ? "pending" : "ok";
   const ringColor = { off: "#2a3542", speaking: "#6fb6ff", critical: "#ff6b6b", pending: "#f5b94a", ok: "#4fd18b" }[ring];

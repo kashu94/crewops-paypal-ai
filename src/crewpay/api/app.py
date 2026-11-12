@@ -289,6 +289,7 @@ def answer_json(answer: Answer, conversation_id: str) -> dict[str, Any]:
 OPEN = ("offered", "accepted", "needs_decision", "awaiting_approval")
 
 TONES = (
+    ("New disruption", "critical"),
     ("Escalated", "critical"),
     ("Decision needed", "critical"),
     ("Watch", "critical"),
