@@ -1215,7 +1215,7 @@ you when something reaches you.</p>{note}
             )
         except LinkError as err:
             return Response(
-                f"Alexa account linking refused: {html.escape(str(err))}",
+                f"Alexa account linking refused: {err}",
                 status_code=400,
                 media_type="text/plain",
             )
@@ -1231,7 +1231,7 @@ you when something reaches you.</p>{note}
             )
         except LinkError as err:
             return Response(
-                f"Alexa account linking refused: {html.escape(str(err))}",
+                f"Alexa account linking refused: {err}",
                 status_code=400,
                 media_type="text/plain",
             )
