@@ -87,6 +87,5 @@ async def test_a_crew_member_sees_only_their_own_tools_and_record(mem):
         "crew_payments",
         "payment_status",
         "payout_account",
-        "set_payout_email",
     }
     assert other.is_error

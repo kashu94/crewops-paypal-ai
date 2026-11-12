@@ -15,6 +15,7 @@ always a person in PayPal.
 
 from __future__ import annotations
 
+from decimal import Decimal
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field
@@ -30,6 +31,7 @@ from crewpay.agent.tools import (
     ToolError,
 )
 from crewpay.pay import FundingError, PayError
+from crewpay.pay.payroll import masked
 
 PAYMENT_ID = r"^PAY-[0-9a-f]{8}$"
 EVERYONE_WITH_PAY = frozenset(
@@ -50,7 +52,7 @@ def _payroll(ctx: Context) -> Any:
     return ctx.payroll
 
 
-def _view(p: dict[str, Any], full: bool = False) -> dict[str, Any]:
+def _view(p: dict[str, Any], full: bool = False, ctx: Context | None = None) -> dict[str, Any]:
     out = {
         "payment_id": p["payment_id"],
         "status": p["status"],
@@ -69,7 +71,9 @@ def _view(p: dict[str, Any], full: bool = False) -> dict[str, Any]:
     }
     if full:
         out |= {
-            "receiver": p["receiver"],
+            "receiver": p["receiver"]
+            if ctx is not None and sees_address(ctx, p["crew_id"])
+            else masked(p["receiver"]),
             "receiver_is": p.get("receiver_is"),
             "approved_by": p.get("approved_by"),
             "released_by": p.get("released_by"),
@@ -80,6 +84,11 @@ def _view(p: dict[str, Any], full: bool = False) -> dict[str, Any]:
             "history": p["history"][-6:],
         }
     return out
+
+
+def sees_address(ctx: Context, crew_id: str) -> bool:
+    """Only the crew member and the admins see the PayPal address a crew member is paid at."""
+    return ctx.caller.role in ADMINS or ctx.caller.crew_id == crew_id
 
 
 def _mine(ctx: Context, p: dict[str, Any]) -> None:
@@ -132,7 +141,7 @@ def payment_status(ctx: Context, args: PaymentStatus) -> dict[str, Any]:
         _mine(ctx, payroll.get(args.payment_id))
         if args.refresh:
             payroll.sync(args.payment_id)
-        return _view(payroll.get(args.payment_id), full=True)
+        return _view(payroll.get(args.payment_id), full=True, ctx=ctx)
     except PayError as err:
         raise ToolError(str(err)) from err
 
@@ -143,7 +152,7 @@ class ReleasePayment(BaseModel):
 
 def release_payment(ctx: Context, args: ReleasePayment) -> dict[str, Any]:
     try:
-        return _view(_payroll(ctx).release(args.payment_id, ctx.caller.user), full=True)
+        return _view(_payroll(ctx).release(args.payment_id, ctx.caller.user), full=True, ctx=ctx)
     except PayError as err:
         raise ToolError(str(err)) from err
 
@@ -155,7 +164,9 @@ class CancelPayment(BaseModel):
 
 def cancel_payment(ctx: Context, args: CancelPayment) -> dict[str, Any]:
     try:
-        return _view(_payroll(ctx).cancel(args.payment_id, ctx.caller.user, args.reason), full=True)
+        return _view(
+            _payroll(ctx).cancel(args.payment_id, ctx.caller.user, args.reason), full=True, ctx=ctx
+        )
     except PayError as err:
         raise ToolError(str(err)) from err
 
@@ -215,6 +226,132 @@ def approval_payments(ctx: Context, args: ApprovalPayments) -> dict[str, Any]:
     }
 
 
+class Transactions(BaseModel):
+    kind: Literal["checkout", "refund", "payout"] | None = Field(
+        None, description="Only approvals paid with Checkout, refunds, or payouts to crew"
+    )
+    crew_id: str | None = Field(None, pattern=CREW_ID, description="Only this crew member's")
+    trip_id: str | None = Field(None, pattern=TRIP_ID, description="Only this trip's")
+    limit: int = Field(100, ge=1, le=500)
+
+
+def _when(history: list[dict[str, Any]], *statuses: str) -> str | None:
+    """When a record first reached one of ``statuses``."""
+    return next((h["at"] for h in history if h["status"] in statuses), None)
+
+
+def transactions(ctx: Context, args: Transactions) -> dict[str, Any]:
+    """Every movement of money through PayPal, newest first: what approvers paid with Checkout
+    to confirm approvals, what was refunded, and what was paid out to crew."""
+    payroll = _payroll(ctx)
+    rows: list[dict[str, Any]] = []
+    for f in payroll.funding.all():
+        taken = _when(f["history"], "paid", "pending")
+        if f.get("capture_id") or taken:
+            rows.append(
+                {
+                    "at": taken or f["updated_at"],
+                    "kind": "checkout",
+                    "what": "Approval paid with PayPal Checkout",
+                    "direction": "in",
+                    "amount": f["amount"],
+                    "currency": f["currency"],
+                    "inr": f["total_inr"],
+                    "by": f["approver"],
+                    "for": f"{f['name']} ({f['crew_id']}) covering {f['trip_id']}",
+                    "plan_id": f["plan_id"],
+                    "trip_id": f["trip_id"],
+                    "crew_id": f["crew_id"],
+                    "status": f["status"],
+                    "mode": f["mode"],
+                    "paypal": {"order_id": f.get("order_id"), "capture_id": f.get("capture_id")},
+                }
+            )
+        if f.get("refund_id"):
+            back = next((h for h in f["history"] if h["status"] == "refunded"), None)
+            rows.append(
+                {
+                    "at": back["at"] if back else f["updated_at"],
+                    "kind": "refund",
+                    "what": "Refunded to the approver",
+                    "direction": "out",
+                    "amount": f["amount"],
+                    "currency": f["currency"],
+                    "inr": f["total_inr"],
+                    "by": back["by"] if back else "payroll",
+                    "for": back["note"] if back else f["plan_id"],
+                    "plan_id": f["plan_id"],
+                    "trip_id": f["trip_id"],
+                    "crew_id": f["crew_id"],
+                    "status": "refunded",
+                    "mode": f["mode"],
+                    "paypal": {"refund_id": f.get("refund_id"), "capture_id": f.get("capture_id")},
+                }
+            )
+    for p in payroll.all():
+        if not p.get("batch_id"):
+            continue  # held, queued or cancelled before it reached PayPal: no money moved
+        to = p["receiver"] if sees_address(ctx, p["crew_id"]) else masked(p["receiver"])
+        rows.append(
+            {
+                "at": _when(p["history"], "sent", "paid") or p["created_at"],
+                "kind": "payout",
+                "what": "Paid out to crew with PayPal Payouts",
+                "direction": "out",
+                "amount": p["amount"],
+                "currency": p["currency"],
+                "inr": p["total_inr"],
+                "fee": p.get("fee"),
+                "by": p.get("released_by") or p.get("approved_by"),
+                "for": f"{p['name']} ({p['crew_id']}) at {to}",
+                "plan_id": p["plan_id"],
+                "trip_id": p["trip_id"],
+                "crew_id": p["crew_id"],
+                "status": p["status"],
+                "mode": p["mode"],
+                "paypal": {
+                    "batch_id": p.get("batch_id"),
+                    "item_id": p.get("item_id"),
+                    "transaction_id": p.get("transaction_id"),
+                },
+            }
+        )
+    if ctx.caller.role is Role.CREW:
+        rows = [r for r in rows if r["crew_id"] == ctx.caller.crew_id]
+    if args.kind:
+        rows = [r for r in rows if r["kind"] == args.kind]
+    if args.crew_id:
+        rows = [r for r in rows if r["crew_id"] == args.crew_id]
+    if args.trip_id:
+        rows = [r for r in rows if r["trip_id"] == args.trip_id]
+    rows.sort(key=lambda r: r["at"], reverse=True)
+
+    def total(kind: str, settled: tuple[str, ...]) -> str:
+        return str(
+            sum(
+                (
+                    Decimal(r["amount"])
+                    for r in rows
+                    if r["kind"] == kind and r["status"] in settled
+                ),
+                Decimal(0),
+            )
+        )
+
+    return {
+        "currency": payroll.config.currency,
+        "count": len(rows),
+        "totals": {
+            "taken_with_checkout": total("checkout", ("paid", "pending", "refunded")),
+            "refunded": total("refund", ("refunded",)),
+            "paid_out": total("payout", ("paid",)),
+            "on_its_way": total("payout", ("sent", "unclaimed")),
+            "paypal_fees": str(sum((Decimal(r["fee"]) for r in rows if r.get("fee")), Decimal(0))),
+        },
+        "transactions": rows[: args.limit],
+    }
+
+
 FUNDING_ID = r"^FUND-[0-9a-f]{8}(-\d+)?$"
 
 
@@ -261,7 +398,7 @@ def payout_account(ctx: Context, args: PayoutAccount) -> dict[str, Any]:
     own = payroll.payee(crew_id)
     return {
         "crew_id": crew_id,
-        "next_payout_goes_to": email,
+        "next_payout_goes_to": email if sees_address(ctx, crew_id) else masked(email),
         "because_it_is": why,
         "set_by": own["set_by"] if own else None,
         "set_at": own["set_at"] if own else None,
@@ -318,6 +455,7 @@ PAY_TOOLS = (
         release_payment,
         frozenset({Role.APPROVER}),
         writes=True,
+        console_only=True,
     ),
     Tool(
         "cancel_payment",
@@ -327,6 +465,15 @@ PAY_TOOLS = (
         cancel_payment,
         frozenset({Role.APPROVER}) | ADMINS,
         writes=True,
+        console_only=True,
+    ),
+    Tool(
+        "transactions",
+        "Every movement of money through PayPal, newest first, with its PayPal ids: approvals "
+        "paid with Checkout, refunds, and payouts to crew; with totals. For audit.",
+        Transactions,
+        transactions,
+        STAFF_WITH_PAY,
     ),
     Tool(
         "approval_payments",
@@ -355,6 +502,7 @@ PAY_TOOLS = (
         cancel_approval,
         frozenset({Role.APPROVER}),
         writes=True,
+        console_only=True,
     ),
     Tool(
         "payout_account",
@@ -372,5 +520,6 @@ PAY_TOOLS = (
         set_payout_email,
         frozenset({Role.CREW}) | ADMINS,
         writes=True,
+        console_only=True,
     ),
 )

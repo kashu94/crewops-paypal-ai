@@ -323,3 +323,94 @@ def test_crew_choose_where_they_are_paid_and_everyone_is_told(mem, outbox):
     payment = payroll.for_plan(approve(desk).plan_id)
     assert payment["receiver"] == "Ravi.K@personal.example"
     assert payment["receiver_is"] == "the PayPal account the crew member chose"
+
+
+def test_a_replayed_payout_notice_never_undoes_a_returned_payment(mem, outbox):
+    desk, payroll = wired(mem, outbox)
+    payment = payroll.for_plan(approve(desk).plan_id)
+
+    def event(status):
+        return {
+            "event_type": f"PAYMENT.PAYOUTS-ITEM.{status}",
+            "resource": {
+                "payout_item_id": "ITEM-7",
+                "transaction_status": status,
+                "payout_item": {"sender_item_id": payment["payment_id"]},
+            },
+        }
+
+    payroll.webhook(event("SUCCESS"))
+    payroll.webhook(event("RETURNED"))
+    assert payroll.get(payment["payment_id"])["status"] == PayStatus.RETURNED
+    paid_notices = len([n for n in outbox.sent(FIRST) if n.subject.startswith("Paid")])
+    payroll.webhook(event("SUCCESS"))
+    assert payroll.get(payment["payment_id"])["status"] == PayStatus.RETURNED
+    assert len([n for n in outbox.sent(FIRST) if n.subject.startswith("Paid")]) == paid_notices
+
+
+def test_each_paypal_event_counts_once(seed):
+    fake = FakePayPal()
+    config = load_settings(
+        {
+            "CREWPAY_SEED_DIR": str(SEED_DIR),
+            "PAYPAL_CLIENT_ID": "id",
+            "PAYPAL_CLIENT_SECRET": "secret",
+            "PAYPAL_WEBHOOK_ID": "WH-1",
+        }
+    )
+    store = MemoryStore()
+    store.load(seed, read_meta(SEED_DIR))
+    s = Services(config, store)
+    s.payroll.paypal = client_for(fake)
+    client = TestClient(create_app(config, s))
+    event = {"id": "WH-EVT-1", "event_type": "PAYMENT.PAYOUTS-ITEM.SUCCEEDED", "resource": {}}
+    signed = {
+        "paypal-transmission-id": "T-1",
+        "paypal-cert-url": "https://api.paypal.com/c",
+        "paypal-transmission-sig": "good",
+    }
+    first = client.post("/api/paypal/webhook", json=event, headers=signed)
+    again = client.post("/api/paypal/webhook", json=event, headers=signed)
+    assert first.status_code == again.status_code == 200
+    assert "duplicate" not in first.json() and again.json()["duplicate"] is True
+
+
+def test_staff_see_a_masked_payout_address_and_the_crew_member_the_whole_one(mem, outbox):
+    desk, payroll = wired(mem, outbox, receiver="demo-crew@personal.example")
+    payment = payroll.for_plan(approve(desk).plan_id)
+    box = ToolBox()
+
+    def seen(caller):
+        ctx = Context(mem, caller, desk=desk, payroll=payroll)
+        return box.call("payment_status", {"payment_id": payment["payment_id"]}, ctx)["receiver"]
+
+    assert seen(Caller("c", Role.CREW, FIRST)) == "demo-crew@personal.example"
+    assert seen(Caller("vikram.rao", Role.APPROVER)) == "d***@personal.example"
+
+
+def test_a_payout_paypal_never_answered_is_retried_not_marked_failed(mem, outbox):
+    """No answer means PayPal may already have the batch: it stays queued and the status check
+    sends it again under the same batch id, which PayPal never pays twice."""
+    fake = FakePayPal()
+    down = {"on": True}
+
+    def flaky(request):
+        if down["on"] and request.url.path == "/v1/payments/payouts" and request.method == "POST":
+            raise httpx.ConnectError("timed out")
+        return fake(request)
+
+    paypal = PayPalClient(
+        "id",
+        "secret",
+        "https://api-m.sandbox.paypal.com",
+        http=httpx.Client(transport=httpx.MockTransport(flaky)),
+        sleep=lambda s: None,
+    )
+    desk, payroll = wired(mem, outbox, paypal)
+    payment = payroll.for_plan(approve(desk).plan_id)
+    assert payment["status"] == PayStatus.QUEUED and payment["retry"]
+    down["on"] = False
+    payroll.sync()
+    sent = payroll.get(payment["payment_id"])
+    assert sent["status"] in (PayStatus.SENT, PayStatus.PAID) and "retry" not in sent
+    assert fake.sent["sender_batch_header"]["sender_batch_id"] == payment["payment_id"]

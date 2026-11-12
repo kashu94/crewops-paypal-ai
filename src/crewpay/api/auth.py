@@ -113,7 +113,12 @@ class Throttle:
 
     def miss(self, who: str) -> None:
         with self._lock:
-            self._misses.setdefault(who, []).append(time.monotonic())
+            now = time.monotonic()
+            if len(self._misses) > 10_000:  # forget addresses whose misses have all expired
+                self._misses = {
+                    k: v for k, v in self._misses.items() if v and now - v[-1] < self.window
+                }
+            self._misses.setdefault(who, []).append(now)
 
 
 def caller_from(request: Request, config: Settings) -> Caller:

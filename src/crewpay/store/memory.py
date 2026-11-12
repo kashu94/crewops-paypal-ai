@@ -16,6 +16,7 @@ from typing import Any
 from crewpay.domain import Rule, Seat, Trip, Unavailability
 from crewpay.domain.dataset import Dataset
 from crewpay.engine import NotFound
+from crewpay.engine.clock import now as clock_now
 from crewpay.store.roster import (
     KINDS,
     OperationCache,
@@ -78,7 +79,7 @@ class MemoryStore(OperationCache):
         reason: str,
         at: datetime | None = None,
     ) -> int:
-        at = (at or datetime.now(UTC)).astimezone(UTC)
+        at = (at or clock_now()).astimezone(UTC)
         seats = _seats.validate_python(list(crew))
         with self._write_lock:
             before, current = self.trip(trip_id)

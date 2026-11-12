@@ -8,9 +8,9 @@ notices themselves reach people in the console, on the board and as desktop aler
 from __future__ import annotations
 
 import re
-from datetime import UTC, datetime
 from typing import Any
 
+from crewpay.engine.clock import now as clock_now
 from crewpay.ops.teams import ALERT_GROUPS
 
 EMAIL = re.compile(r"^[^@\s]{1,64}@[^@\s]{1,190}\.[A-Za-z]{2,}$")
@@ -51,7 +51,7 @@ class AlertAddresses:
             "address": address,
             "group": group,
             "added_by": by,
-            "at": datetime.now(UTC).isoformat(),
+            "at": clock_now().isoformat(),
         }
         self.docs.put_doc("alert_address", key, row)
         return next(r for r in self.list() if (r["team"], r["address"]) == (group, address))

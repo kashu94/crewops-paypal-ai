@@ -49,6 +49,14 @@ CREW_PAY = ("callout", "service allowance", "travel allowance")
 KIND = "payment"
 
 
+def masked(email: str | None) -> str | None:
+    """A PayPal address as shown to anyone but its owner and the admins: ``r***@example.com``."""
+    if not email or "@" not in email:
+        return email
+    name, domain = email.split("@", 1)
+    return f"{name[:1]}***@{domain}"
+
+
 class PayStatus(StrEnum):
     HELD = "held"
     QUEUED = "queued"
@@ -329,9 +337,19 @@ class Payroll:
                 )
             except PayPalError as err:
                 payment["error"] = str(err)
+                if err.status is None or err.status >= 500:
+                    # No answer, or PayPal's own fault: the batch may or may not exist. It
+                    # stays queued and the status check sends it again; the same batch id
+                    # and request id make PayPal return the first batch, never a second.
+                    payment["retry"] = True
+                    self._note(payment, payment["status"], "paypal", f"will retry: {err}")
+                    self._save(payment)
+                    self._tell_desk(payment, "Payment delayed", f"{err}; it will be retried")
+                    return payment
                 self._move(payment, PayStatus.FAILED, "paypal", str(err))
                 self._tell_desk(payment, "Payment failed", str(err))
                 return payment
+            payment.pop("retry", None)
             header = reply.get("batch_header", {})
             payment["batch_id"] = header.get("payout_batch_id")
             payment["paypal_status"] = header.get("batch_status")
@@ -369,6 +387,9 @@ class Payroll:
         with self._lock:
             rows = [self.get(payment_id)] if payment_id else self.docs.docs(KIND)
             for payment in rows:
+                if payment["status"] == PayStatus.QUEUED and payment.get("retry"):
+                    changed += int(self.send(payment)["status"] != PayStatus.QUEUED)
+                    continue
                 if payment["status"] not in WATCHED:
                     continue
                 if self.paypal is None:
@@ -439,6 +460,14 @@ class Payroll:
         payment["paypal_status"] = paypal_status
         status = PAYPAL_STATUS.get(paypal_status.upper())
         if status is None or status == payment["status"]:
+            self._save(payment)
+            return 0
+        was = payment["status"]
+        # One-way: a late or replayed notice never takes a returned or cancelled payout back,
+        # and a paid one can only come back (returned, refunded or reversed).
+        if was in (PayStatus.RETURNED, PayStatus.CANCELLED) or (
+            was == PayStatus.PAID and status is not PayStatus.RETURNED
+        ):
             self._save(payment)
             return 0
         self._move(payment, status, "paypal", why)

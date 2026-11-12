@@ -12,6 +12,7 @@ import {
   LogOut,
   Menu,
   MessageSquareText,
+  Receipt,
   Settings,
   ShieldCheck,
   TriangleAlert,
@@ -51,6 +52,7 @@ const ICONS: Record<string, LucideIcon> = {
   board: Tv,
   speaker: Volume2,
   pay: Wallet,
+  transactions: Receipt,
 };
 
 export function Logo({ size = 28 }: { size?: number }) {

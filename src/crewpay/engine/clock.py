@@ -12,12 +12,32 @@ here and nowhere else:
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, replace
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import UTC, date, datetime, time, timedelta, timezone
 
 from crewpay.domain import AircraftType
 
 IST = timezone(timedelta(hours=5, minutes=30), "IST")
+
+
+def _wall() -> datetime:
+    return datetime.now(UTC)
+
+
+_clock: Callable[[], datetime] = _wall
+
+
+def now() -> datetime:
+    """The operation's present moment, for every record CrewPay stamps (a report, a payment, a
+    log line): the wall clock when hosted, and on a laptop the demo's own clock, which starts
+    when the demo data was taken and moves on in real time. The server sets it once."""
+    return _clock()
+
+
+def use_clock(clock: Callable[[], datetime]) -> None:
+    global _clock
+    _clock = clock
 
 
 def hours_between(start: datetime, end: datetime) -> float:

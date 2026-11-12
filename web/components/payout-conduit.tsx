@@ -546,7 +546,8 @@ function PlanDoc({ plan, stage, fx, reduce }: { plan: Plan | null; stage: Stage;
       </p>
       <dl className="mt-2 grid grid-cols-[3.4rem_1fr] gap-x-2 gap-y-1 text-[12px]">
         <Row k="Out">
-          <span className="font-mono">{plan.replacing}</span>
+          {plan.replacing_name ? <>{plan.replacing_name} </> : null}
+          <span className={plan.replacing_name ? "font-mono text-[#8ea3ba]" : "font-mono"}>{plan.replacing}</span>
         </Row>
         <Row k="In">
           {plan.name} <span className="font-mono text-[#8ea3ba]">{plan.crew_id}</span>

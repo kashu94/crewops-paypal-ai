@@ -38,6 +38,8 @@ class FakeOrders:
         self.approved = False
         self.captured = False
         self.body = None
+        self.took = None
+        """What PayPal says it captured, when it is not what was ordered."""
 
     def __call__(self, request):
         self.requests.append(request)
@@ -82,7 +84,21 @@ class FakeOrders:
             "id": "5O190127TN364715T",
             "status": "COMPLETED",
             "purchase_units": [
-                {"payments": {"captures": [{"id": "3C679366HH908993F", "status": "COMPLETED"}]}}
+                {
+                    "payments": {
+                        "captures": [
+                            {
+                                "id": "3C679366HH908993F",
+                                "status": "COMPLETED",
+                                "amount": self.took
+                                or {
+                                    k: self.body["purchase_units"][0]["amount"][k]
+                                    for k in ("currency_code", "value")
+                                },
+                            }
+                        ]
+                    }
+                }
             ],
         }
 
@@ -275,3 +291,93 @@ def test_the_agent_can_approve_but_never_confirm(mem):
 
     done = box.call("confirm_approval", {"funding_id": funding_id}, ctx)  # the console
     assert done["plan_status"] == "approved"
+
+
+def test_a_late_capture_notice_never_undoes_a_refund(mem):
+    fake = FakeOrders()
+    desk, payroll, _ = wired(mem, paypal_for(fake))
+    plan = approve(desk)
+    funding = payroll.funding.for_plan(plan.plan_id)
+    fake.approved = True
+    payroll.funding.capture(funding["funding_id"], APPROVER)
+    payroll.funding._refund(payroll.funding.get(funding["funding_id"]), "test")
+    late = {
+        "event_type": "PAYMENT.CAPTURE.COMPLETED",
+        "resource": {
+            "id": "CAP-1",
+            "status": "COMPLETED",
+            "supplementary_data": {"related_ids": {"order_id": funding["order_id"]}},
+        },
+    }
+    payroll.webhook(late)
+    assert payroll.funding.get(funding["funding_id"])["status"] == FundingStatus.REFUNDED
+
+
+def test_an_old_approval_paid_in_paypal_is_settled_not_dropped(mem):
+    """A capture whose reply was lost leaves the approval waiting; the status check must find
+    the money before it gives up on the approval."""
+    from datetime import timedelta
+
+    fake = FakeOrders()
+    desk, payroll, _ = wired(mem, paypal_for(fake))
+    plan = approve(desk)
+    funding = payroll.funding.for_plan(plan.plan_id)
+    fake.approved = fake.captured = True
+    doc = payroll.funding.get(funding["funding_id"])
+    doc["created_at"] = (payroll.funding.clock() - timedelta(hours=5)).isoformat()
+    payroll.funding._save(doc)
+    payroll.sync()
+    assert payroll.funding.get(funding["funding_id"])["status"] == FundingStatus.PAID
+    assert desk.plans.get(plan.plan_id).status is PlanStatus.APPROVED
+
+
+def test_a_declined_payment_sends_the_plan_back_for_a_decision(mem):
+    fake = FakeOrders()
+    desk, payroll, _ = wired(mem, paypal_for(fake))
+    plan = approve(desk)
+    funding = payroll.funding.for_plan(plan.plan_id)
+    declined = {
+        "event_type": "PAYMENT.CAPTURE.DECLINED",
+        "resource": {
+            "id": "CAP-2",
+            "status": "DECLINED",
+            "supplementary_data": {"related_ids": {"order_id": funding["order_id"]}},
+        },
+    }
+    payroll.webhook(declined)
+    assert payroll.funding.get(funding["funding_id"])["status"] == FundingStatus.FAILED
+    assert desk.plans.get(plan.plan_id).status is not PlanStatus.CONFIRMING
+
+
+def test_an_approval_never_goes_through_on_a_payment_that_is_not_the_one_asked_for(mem):
+    fake = FakeOrders()
+    desk, payroll, _ = wired(mem, paypal_for(fake))
+    plan = approve(desk)
+    funding = payroll.funding.for_plan(plan.plan_id)
+    fake.approved = True
+    fake.took = {"currency_code": "USD", "value": "0.01"}
+    payroll.funding.capture(funding["funding_id"], APPROVER)
+    after = payroll.funding.get(funding["funding_id"])
+    assert after["status"] == FundingStatus.REFUNDED and "0.01" in after["error"]
+    assert desk.plans.get(plan.plan_id).status is not PlanStatus.APPROVED
+
+
+def test_the_auditor_sees_every_paypal_transaction_with_its_ids(mem):
+    fake = FakeOrders()
+    desk, payroll, _ = wired(mem, paypal_for(fake))
+    plan = approve(desk)
+    funding = payroll.funding.for_plan(plan.plan_id)
+    fake.approved = True
+    payroll.funding.capture(funding["funding_id"], APPROVER)
+    box = ToolBox()
+    auditor = Context(mem, Caller("nikhil.agarwal", Role.AUDITOR), desk=desk, payroll=payroll)
+    ledger = box.call("transactions", {}, auditor)
+    kinds = {r["kind"] for r in ledger["transactions"]}
+    assert {"checkout", "payout"} <= kinds
+    checkout = next(r for r in ledger["transactions"] if r["kind"] == "checkout")
+    assert checkout["paypal"]["capture_id"] and checkout["by"] == APPROVER
+    payout = next(r for r in ledger["transactions"] if r["kind"] == "payout")
+    assert payout["paypal"]["batch_id"] and "***@" in payout["for"]
+    assert ledger["totals"]["taken_with_checkout"] == checkout["amount"]
+    crew = Context(mem, Caller("c", Role.CREW, IN), desk=desk, payroll=payroll)
+    assert "cannot use" in box.call("transactions", {}, crew)["error"]

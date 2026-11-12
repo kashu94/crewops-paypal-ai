@@ -15,10 +15,11 @@ from __future__ import annotations
 import time
 import uuid
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Any, Literal
 
 from crewpay.domain import Rule
+from crewpay.engine.clock import now as clock_now
 
 Direction = Literal["lower", "higher"]
 
@@ -43,7 +44,7 @@ def _key(at: datetime) -> str:
 
 
 def log(docs: Any, kind: Literal["activity", "security"], **entry: Any) -> None:
-    at = datetime.now(UTC)
+    at = clock_now()
     docs.put_doc(kind, _key(at), {"at": at.isoformat(), **entry})
 
 
@@ -128,7 +129,7 @@ def set_limit(
             "value": value,
             "by": by,
             "reason": reason.strip(),
-            "at": datetime.now(UTC).isoformat(),
+            "at": clock_now().isoformat(),
         },
     )
     log(

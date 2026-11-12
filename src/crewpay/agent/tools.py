@@ -38,6 +38,7 @@ from pydantic import BaseModel, Field, ValidationError
 from crewpay.domain import Rank, Seat, Trip, Unavailability
 from crewpay.engine import Finding, NotFound, Operation, assess
 from crewpay.engine.clock import IST, window
+from crewpay.engine.clock import now as clock_now
 from crewpay.engine.cover import Choice, TripStarted, arrangements, find_cover
 from crewpay.engine.disruption import Disruption, aircraft_out, station_closure
 from crewpay.engine.fatigue import fatigue_flags
@@ -238,13 +239,19 @@ def _unavailability(u: Unavailability) -> dict[str, Any]:
     }
 
 
-def _plan(p: Plan) -> dict[str, Any]:
+def _crew_names(ctx: Context) -> dict[str, str]:
+    """Crew id to name, for showing who a plan replaces as well as who it puts in."""
+    return {crew_id: c.name for crew_id, c in ctx.operation().crew.items()}
+
+
+def _plan(p: Plan, names: dict[str, str] | None = None) -> dict[str, Any]:
     out: dict[str, Any] = {
         "plan_id": p.plan_id,
         "status": str(p.status),
         "trip_id": p.trip_id,
         "seat": str(p.rank),
         "replacing": p.replacing,
+        **({"replacing_name": names[p.replacing]} if names and p.replacing in names else {}),
         "crew_id": p.crew_id,
         "name": p.name,
         "summary": p.summary,
@@ -784,7 +791,7 @@ def assign_crew(ctx: Context, args: AssignCrew) -> dict[str, Any]:
         if args.report_id:
             ctx.reports.link(args.report_id, ctx.caller.user, plan_id=plan.plan_id)
         return {
-            **_plan(plan),
+            **_plan(plan, _crew_names(ctx)),
             "note": "Submitted, not yet applied: an approver must approve it.",
         }
     crew = [
@@ -874,6 +881,7 @@ def callout_status(ctx: Context, args: CalloutStatus) -> dict[str, Any]:
     desk = ctx.callouts()
     if ctx.caller.role is Role.CREW:
         mine = ctx.caller.crew_id or ""
+        op = ctx.operation()
         return {
             "offers_to_me": [_offer_to_me(ctx, c) for c in desk.offers_for(mine)],
             "earlier_offers": [
@@ -884,6 +892,14 @@ def callout_status(ctx: Context, args: CalloutStatus) -> dict[str, Any]:
                     "offered_at": _when(o.offered_at),
                     "answer_by": _when(o.expires_at),
                     "outcome": o.answer,
+                    # The trip's days, in India time, so the calendar can mark them: yellow
+                    # while the accepted seat waits for an approver, then a normal duty.
+                    "days": [
+                        d.report.astimezone(IST).date().isoformat() for d in op.days_of(c.trip_id)
+                    ],
+                    "waiting_for_approval": o.answer == "accepted"
+                    and c.filled_by is None
+                    and c.status is not Status.CLOSED,
                     **({"answered_at": _when(o.answered_at)} if o.answered_at else {}),
                     **({"your_remark": o.note} if o.note else {}),
                     "seat_now": "filled by you"
@@ -1055,7 +1071,7 @@ def _back_on_duty(ctx: Context, cleared: Unavailability) -> list[str]:
                 body=f"{name} ({cleared.crew_id}) withdrew the report that they could not fly "
                 f"{cleared.first_day:%d %b} to {cleared.last_day:%d %b}."
                 + (f" Closed or withdrawn: {', '.join(done)}." if done else ""),
-                at=datetime.now(UTC),
+                at=clock_now(),
                 ref=cleared.report_id,
             )
         )
@@ -1071,8 +1087,10 @@ class Tool:
     roles: frozenset[Role]
     writes: bool = False
     console_only: bool = False
-    """Only a person at the console may use it, never the agent or an MCP client: confirming an
-    approval with PayPal."""
+    """Only a person at the console may use it, never the agent or an MCP client: anything that
+    moves money or changes where it goes (confirming or backing out of an approval, releasing or
+    cancelling a payout, changing a payout account). Text the model reads, such as a crew
+    member's remark, could otherwise talk it into one."""
 
     def parameters(self) -> dict[str, Any]:
         return _untitled(self.args.model_json_schema())
@@ -1105,9 +1123,10 @@ class PlanStatusArgs(BaseModel):
 def plan_status(ctx: Context, args: PlanStatusArgs) -> dict[str, Any]:
     plans = ctx.plans()
     if args.plan_id:
-        return _plan(plans.get(args.plan_id))
+        return _plan(plans.get(args.plan_id), _crew_names(ctx))
     found = plans.waiting() if args.waiting_only else plans.all()[:20]
-    return {"plans": [_plan(p) for p in found]}
+    names = _crew_names(ctx)
+    return {"plans": [_plan(p, names) for p in found]}
 
 
 class ReviewPlan(BaseModel):
@@ -1134,7 +1153,7 @@ def review_plan(ctx: Context, args: ReviewPlan) -> dict[str, Any]:
                 plan = plans.withdraw(args.plan_id, by)
     except PlanError as err:
         raise ToolError(str(err)) from err
-    out = _plan(plan)
+    out = _plan(plan, _crew_names(ctx))
     if plan.status is PlanStatus.CONFIRMING and ctx.payroll is not None:
         funding = ctx.payroll.funding.for_plan(plan.plan_id)
         out["next_step"] = (
@@ -1634,7 +1653,7 @@ class ToolBox:
         if ctx.caller.role not in tool.roles:
             return {"error": f"the {ctx.caller.role} role cannot use {name}"}
         if agent and tool.console_only:
-            return {"error": f"{name} needs a person at the console, in PayPal"}
+            return {"error": f"{name} moves money, so it needs a person at the console"}
         try:
             raw = json.loads(arguments or "{}") if isinstance(arguments, str) else arguments
             args = tool.args.model_validate(raw)

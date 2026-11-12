@@ -234,6 +234,7 @@ def test_an_approval_needs_an_approver_through_the_api(client):
     nair = {"X-Demo-User": "meera.bhatt", "X-Demo-Role": "approver"}
     done = client.post("/api/tools/review_plan", json=review, headers=nair).json()
     assert done["status"] == "confirming" and "PayPal" in done["next_step"]
+    assert done["replacing_name"], "the approver sees who is replaced by name, not only id"
     confirm = {"funding_id": done["funding_id"]}
     other = client.post("/api/tools/confirm_approval", json=confirm, headers=reddy).json()
     assert "cannot use" in other["error"]
@@ -342,6 +343,23 @@ def test_a_note_that_does_not_match_the_report_is_flagged(client, services):
     assert other["error"].startswith(f"The photo names {crew_id}")
 
 
+def test_a_certificate_that_names_the_person_reported_is_kept_not_refused():
+    from datetime import date
+
+    from crewpay.agent.desk_tools import NOT_ON_REPORT, FileReport, Kind, _photo_matches
+
+    lapse = FileReport(
+        kind=Kind.CERTIFICATION_LAPSE,
+        crew_ids=["C-1302"],
+        cert="recurrent_training",
+        first_day=date(2026, 11, 9),
+    )
+    same = _photo_matches(lapse, {"crew_ids": ["C-1302"]})
+    assert same == "The photo names the person reported." and not same.endswith(NOT_ON_REPORT)
+    other = _photo_matches(lapse, {"crew_ids": ["C-1157"]})
+    assert other is not None and other.endswith(NOT_ON_REPORT)
+
+
 def test_a_passenger_message_names_the_flights_and_new_times(client):
     delay = {"kind": "flight_delay", "trip_id": "T-1018", "hours": 2}
     report = client.post("/api/tools/report_disruption", json=delay, headers=STATION).json()
@@ -418,3 +436,64 @@ def test_a_super_admin_resets_the_demo_to_a_clean_slate(client, services):
     assert [
         e["action"] for e in client.get("/api/log/activity", headers=CONTROLLER).json()["entries"]
     ] == ["reset the demo"]
+
+
+def test_paying_and_approving_share_one_lock(services):
+    """An approval opens a PayPal funding while holding the plans; a capture confirms the plan
+    while holding the funding. Two locks taken in opposite orders could deadlock the server."""
+    assert services.payroll.funding._lock is services.desk.plans._lock
+
+
+def test_the_open_ops_room_feeds_never_show_anyones_pay_or_paypal_address(client):
+    from crewpay.api.app import _aloud, _on_the_wall
+
+    assert _aloud("x pointed C-1111's payouts to ravi.k@personal.example.") == (
+        "x pointed C-1111's payouts to a new PayPal address."
+    )
+    assert "an amount" in _aloud("A. Nair is owed 335.43 USD for T-1018")
+    assert _on_the_wall({"name": "D. Reddy", "cost_inr": 28000, "remark": "x", "answer": "no"}) == {
+        "name": "D. Reddy",
+        "answer": "no",
+    }
+    board = client.get("/api/board")
+    assert board.status_code == 200
+    for c in board.json()["callouts"]:
+        assert all("cost_inr" not in o for o in c["asked"])
+
+
+def test_every_response_carries_browser_protections(client):
+    r = client.get("/api/config")
+    assert r.headers["x-content-type-options"] == "nosniff"
+    assert "frame-ancestors 'self'" in r.headers["content-security-policy"]
+    assert "https://*.paypal.com" in r.headers["content-security-policy"]
+
+
+def test_an_accepted_seat_shows_as_waiting_for_approval_until_it_goes_through(client):
+    """The crew member who says yes sees the trip's days as waiting for an approver; once the
+    approval is paid for, the seat is theirs and the days are an ordinary duty."""
+    opened = client.post(
+        "/api/tools/start_callout",
+        json={"trip_id": "T-1001", "replace_crew_id": "C-1123"},
+        headers=CONTROLLER,
+    ).json()
+    first = opened["waiting_for"]
+    crew = {"X-Demo-User": "c", "X-Demo-Role": "crew", "X-Demo-Crew-Id": first}
+    said = client.post(
+        "/api/tools/answer_callout",
+        json={"callout_id": opened["callout_id"], "accept": True},
+        headers=crew,
+    ).json()
+    mine = client.post("/api/tools/callout_status", json={}, headers=crew).json()
+    earlier = mine["earlier_offers"][0]
+    assert earlier["outcome"] == "accepted" and earlier["waiting_for_approval"] is True
+    assert earlier["days"] and all(len(d) == 10 for d in earlier["days"])
+
+    nair = {"X-Demo-User": "meera.bhatt", "X-Demo-Role": "approver"}
+    review = {"plan_id": said["plan_id"], "action": "approve"}
+    done = client.post("/api/tools/review_plan", json=review, headers=nair).json()
+    client.post(
+        "/api/tools/confirm_approval", json={"funding_id": done["funding_id"]}, headers=nair
+    )
+    after = client.post("/api/tools/callout_status", json={}, headers=crew).json()
+    assert after["earlier_offers"][0]["waiting_for_approval"] is False
+    assert after["earlier_offers"][0]["seat_now"] == "filled by you"

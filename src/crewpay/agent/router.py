@@ -40,7 +40,7 @@ LOOKUPS = ("search_crew", "find_trips", "trip_details")
 
 CALLOUTS = ("start_callout", "callout_status")
 
-PAYMENTS = ("crew_payments", "payment_status", "approval_payments")
+PAYMENTS = ("crew_payments", "payment_status", "approval_payments", "transactions")
 
 TOOLS_FOR: dict[Intent, tuple[str, ...]] = {
     Intent.ABSENCE: (

@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import threading
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass, replace
 from datetime import UTC, date, datetime
 from typing import Any
@@ -32,6 +33,7 @@ from crewpay.domain import (
 )
 from crewpay.domain.dataset import Dataset
 from crewpay.engine import Operation, build_operation
+from crewpay.engine.clock import now as clock_now
 
 TRIP = "TRIP"
 CHANGE = "CHANGE"
@@ -56,7 +58,7 @@ def new_report(
         last_day=last_day,
         reason=reason,
         reported_by=by,
-        reported_at=(at or datetime.now(UTC)),
+        reported_at=(at or clock_now()),
         kind=kind,
         since=since,
     )
@@ -156,6 +158,8 @@ class OperationCache:
         self._cached: tuple[int, Operation] | None = None
         self.live = False
         """Judge the roster at the wall clock when no moment is given."""
+        self.clock: Callable[[], datetime] | None = None
+        """Or at this clock: the demo's own, so the header, offers and payments agree."""
 
     def roster_version(self) -> int:
         raise NotImplementedError
@@ -188,7 +192,9 @@ class OperationCache:
                 )
                 self._cached = (version, op)
             op = self._cached[1]
-        if now is None and self.live:
+        if now is None and self.clock is not None:
+            now = self.clock()
+        elif now is None and self.live:
             now = datetime.now(UTC)
         if now is not None and now > op.now:
             op = replace(op, now=now)

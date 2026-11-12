@@ -38,7 +38,7 @@ export const HOME: Record<Role, string> = {
   reporter: "/operations/",
   controller: "/desk/",
   approver: "/approvals/",
-  auditor: "/disruptions/",
+  auditor: "/transactions/",
   admin: "/admin/",
   super_admin: "/admin/",
   speaker: "/speaker/",
@@ -73,6 +73,7 @@ const I = {
   messages: { href: "/messages/", label: "Messages", hint: "Offers and roster changes sent to you", icon: "messages" },
   admin: { href: "/admin/", label: "Admin", hint: "Accounts, alerts, roster upload and limits", icon: "admin" },
   pay: { href: "/pay/", label: "Crew pay", hint: "PayPal payouts for approved cover", icon: "pay" },
+  transactions: { href: "/transactions/", label: "Transactions", hint: "Every PayPal payment, refund and payout, with its ids", icon: "transactions" },
   myPay: { href: "/pay/", label: "My pay", hint: "What you were paid for cover, through PayPal", icon: "pay" },
   board: { href: "/board/", label: "TV board", hint: "The ops-room wall", icon: "board", external: true },
   speaker: { href: "/speaker/", label: "Speaker", hint: "The ops-room speaker", icon: "speaker", external: true },
@@ -92,14 +93,14 @@ export function navFor(role: Role): NavGroup[] {
       return [{ group: "Second pair of eyes", items: [I.approvals, I.pay, I.disruptions, I.assistant] }, OPS_ROOM];
     case "auditor":
       return [
-        { group: "Read only", items: [I.disruptions, I.approvals, I.pay, I.assistant] },
+        { group: "Read only", items: [I.transactions, I.pay, I.approvals, I.disruptions, I.assistant] },
         { group: "Oversight", items: [I.activity, I.limits] },
         OPS_ROOM,
       ];
     case "admin":
     case "super_admin":
       return [
-        { group: "Administration", items: [I.admin, I.disruptions, I.pay, I.leave, I.limits] },
+        { group: "Administration", items: [I.admin, I.disruptions, I.pay, I.transactions, I.leave, I.limits] },
         { group: "Oversight", items: [I.activity, I.assistant] },
         OPS_ROOM,
       ];

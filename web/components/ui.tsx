@@ -167,7 +167,7 @@ const STATUS_LABEL: Record<string, string> = {
   needs_decision: "Decision needed",
   awaiting_approval: "Awaiting approval",
   held: "Held for release",
-  sent: "With PayPal",
+  sent: "On its way",
   confirming: "Waiting for PayPal",
 };
 

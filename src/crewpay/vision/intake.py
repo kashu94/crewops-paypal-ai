@@ -39,6 +39,7 @@ from pydantic import BaseModel
 from crewpay.engine.clock import IST
 from crewpay.engine.gates import check_gate
 from crewpay.engine.operation import NotFound, Operation
+from crewpay.models.client import ModelUnavailable
 from crewpay.models.media import Box
 
 MAX_BYTES = 8 * 1024 * 1024
@@ -115,7 +116,17 @@ class CertificateForm(Draft):
 class Damage(BaseModel):
     part: str
     kind: Literal[
-        "dent", "crack", "scratch", "hole", "tear", "bent", "leak", "burn", "missing", "other"
+        "dent",
+        "crack",
+        "scratch",
+        "hole",
+        "tear",
+        "bent",
+        "leak",
+        "burn",
+        "missing",
+        "flat_tyre",
+        "other",
     ]
     where: str
 
@@ -287,6 +298,7 @@ class ModelReader:
             purpose="intake",
             effort="low",
             max_tokens=4000,
+            temperature=0,
         )
         return parsed
 
@@ -537,6 +549,33 @@ def _certificate(op: Operation, form: CertificateForm, result: Intake) -> Intake
     return result
 
 
+def _locate(locator: Locator, image: bytes, mime: str, phrase: str) -> list[Box]:
+    """Boxes for ``phrase``, or none when no segmentation model is configured: the photo is
+    still read for its fields, it just carries no box."""
+    try:
+        return locator.segment(image, mime, phrase)
+    except ModelUnavailable:
+        return []
+
+
+def _subject(said: str) -> str:
+    """What a photo shows, as the model put it, fit to follow "This shows"."""
+    said = said.strip().rstrip(".")
+    if not said or said.lower().startswith(("no ", "not ", "nothing")):
+        return "something else"
+    first = said.split()[0]
+    return said if len(first) > 1 and first.isupper() else said[0].lower() + said[1:]
+
+
+DAMAGE_WORDS = {
+    "other": "damage",
+    "bent": "bending",
+    "missing": "a missing piece",
+    "burn": "burn marks",
+}
+"""Damage kinds that do not read as a noun on their own."""
+
+
 def _defect(
     op: Operation,
     form: DefectForm,
@@ -549,7 +588,7 @@ def _defect(
     if not form.shows_aircraft:
         result.status = Status.REJECTED
         result.message = (
-            f"This shows {form.subject or 'something else'}, not an aircraft. "
+            f"This shows {_subject(form.subject)}, not an aircraft. "
             "Please photograph the affected area."
         )
         return result
@@ -575,7 +614,7 @@ def _defect(
     box = None
     if form.damage and locator is not None:
         tried = dict.fromkeys(p for p in (form.damage_phrase, "damage", form.damage[0].kind) if p)
-        boxes = [b for phrase in tried for b in locator.segment(image, mime, phrase)]
+        boxes = [b for phrase in tried for b in _locate(locator, image, mime, phrase)]
         usable = [
             b for b in boxes if b.confidence >= MIN_SAM_CONFIDENCE and b.share <= MAX_BOX_SHARE
         ]
@@ -613,9 +652,16 @@ def _defect(
         result.confidence = "low"
     first = form.damage[0]
     on = tail or seen or "the aircraft"
-    what = "damage" if first.kind == "other" else first.kind
+    what = DAMAGE_WORDS.get(first.kind, first.kind)
+    if first.kind == "flat_tyre":
+        part = first.part.lower()
+        found = f"flat {part}" if "tyre" in part or "tire" in part else f"flat tyre on the {part}"
+    else:
+        found = f"{what} on the {first.part}"
     result.message = (
-        f"Draft defect report for {on}: {what} on the {first.part} ({first.where}). "
+        f"Draft defect report for {on}: {found}"
+        + ("" if first.where.strip().lower() in found.lower() else f" ({first.where})")
+        + ". "
         f"Confidence {result.confidence}. Needs engineer confirmation before anything changes."
     )
     if result.confidence == "low":
@@ -653,7 +699,7 @@ def _scene(
     if not form.shows_airport:
         result.status = Status.REJECTED
         result.message = (
-            f"This shows {form.subject or 'something else'}, not an airport. Please photograph "
+            f"This shows {_subject(form.subject)}, not an airport. Please photograph "
             "the conditions, gate or area affected."
         )
         return result
@@ -692,7 +738,7 @@ def _scene(
         return result
     box = None
     if locator is not None and image:
-        boxes = locator.segment(image, mime, SCENE_PHRASES[form.condition])
+        boxes = _locate(locator, image, mime, SCENE_PHRASES[form.condition])
         usable = [
             b for b in boxes if b.confidence >= MIN_SAM_CONFIDENCE and b.share <= MAX_SCENE_SHARE
         ]

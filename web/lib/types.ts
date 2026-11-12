@@ -49,6 +49,7 @@ export type Plan = {
   trip_id: string;
   seat: string;
   replacing: string;
+  replacing_name?: string;
   crew_id: string;
   name: string;
   summary: string;

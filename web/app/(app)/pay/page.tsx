@@ -57,7 +57,8 @@ type Ledger = {
 const money = (amount: string | number, currency: string) =>
   `${currency === "USD" ? "$" : ""}${Number(amount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${currency === "USD" ? "" : ` ${currency}`}`;
 
-const when = (iso: string) => new Date(iso).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", hour12: false });
+const when = (iso: string) =>
+  new Date(iso).toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kolkata" });
 
 function Actions({ p }: { p: Payment }) {
   const { me, can, flash } = useSession();
@@ -387,7 +388,7 @@ export default function PayPage() {
 
       <Kpis>
         <Kpi icon={<CircleCheck size={13} />} label="Paid" value={money(s("paid").amount, data.currency)} sub={plural(s("paid").count, "payment")} tone="ok" />
-        <Kpi icon={<Clock3 size={13} />} label="With PayPal" value={money(inFlight, data.currency)} sub={plural(s("sent").count + s("queued").count, "payment")} />
+        <Kpi icon={<Clock3 size={13} />} label="On its way" value={money(inFlight, data.currency)} sub={plural(s("sent").count + s("queued").count, "payment")} />
         <Kpi icon={<Hourglass size={13} />} label="Held for release" value={s("held").count} sub={money(s("held").amount, data.currency)} tone={s("held").count ? "pending" : undefined} />
         <Kpi icon={<Wallet size={13} />} label="Need attention" value={attention} sub="held, unclaimed or failed" tone={attention ? "critical" : undefined} />
       </Kpis>

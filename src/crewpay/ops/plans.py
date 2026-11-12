@@ -272,8 +272,19 @@ class PlanDesk:
         for listener in self.listeners:
             try:
                 listener(plan)
-            except Exception:  # paying must never undo or block a roster decision
+            except Exception as err:  # paying must never undo or block a roster decision
                 logging.getLogger("crewpay.plans").exception("plan listener failed")
+                # ...but nobody may be left unpaid without the desk knowing.
+                self.outbox.send(
+                    Notice(
+                        to=DESK,
+                        subject=f"Needs a person: {plan.plan_id}",
+                        body=f"{plan.plan_id} is {status}, but its payment step failed "
+                        f"({type(err).__name__}). Check the crew member's pay.",
+                        at=self.clock(),
+                        ref=plan.plan_id,
+                    )
+                )
         return plan
 
     def _stale_reason(self, plan: Plan) -> str | None:

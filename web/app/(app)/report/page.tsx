@@ -97,6 +97,8 @@ export default function ReportPage() {
   const [written, setWritten] = useState(false);
   /** The days a sick note gives, once it is read: they replace the default dates. */
   const [noteDays, setNoteDays] = useState<{ from: string; until: string } | null>(null);
+  /** What a photo of a board, a gate screen or a certificate fills in besides. */
+  const [fromPhoto, setFromPhoto] = useState<{ hours?: string; day?: string; cert?: string; lapses?: string } | null>(null);
   const typing = useRef<number | null>(null);
   /** Type text into the description quickly, so it is plain that it was just written for
    * them: under a second whatever its length. Typing in the box stops it. */
@@ -275,14 +277,14 @@ export default function ReportPage() {
               )}
               {kind === "certification_lapse" && (
                 <div className="grid gap-4 sm:grid-cols-3">
-                  <Select label="Certificate" name="cert" defaultValue="medical">
+                  <Select key={`cert-${fromPhoto?.cert ?? ""}`} label="Certificate" name="cert" defaultValue={fromPhoto?.cert ?? "medical"}>
                     {CERTS.map(([v, l]) => (
                       <option key={v} value={v}>
                         {l}
                       </option>
                     ))}
                   </Select>
-                  <FromUntil fromLabel="Not valid from" untilLabel="Renewed by (optional)" from={today} untilRequired={false} />
+                  <FromUntil key={`lapse-${fromPhoto?.lapses ?? ""}`} fromLabel="Not valid from" untilLabel="Renewed by (optional)" from={fromPhoto?.lapses ?? today} untilRequired={false} />
                 </div>
               )}
               {kind === "flight_delay" && (
@@ -295,8 +297,8 @@ export default function ReportPage() {
                     placeholder="Trip, flight route or aircraft"
                     options={(cat?.trips ?? []).map((t) => ({ value: t.trip_id, label: `${t.trip_id} · ${t.route}`, hint: `${t.tail} · ${short(t.reports)}`, search: `${t.airline} ${t.tail}` }))}
                   />
-                  <Input label="Hours late" type="number" step="0.25" min="0.25" max="24" name="hours" defaultValue="3" required />
-                  <Input label="Day (multi-day trips)" type="date" name="day" defaultValue={params.get("day") ?? undefined} />
+                  <Input key={`hours-${fromPhoto?.hours ?? ""}`} label="Hours late" type="number" step="0.25" min="0.25" max="24" name="hours" defaultValue={fromPhoto?.hours ?? "3"} required />
+                  <Input key={`day-${fromPhoto?.day ?? ""}`} label="Day (multi-day trips)" type="date" name="day" defaultValue={fromPhoto?.day ?? params.get("day") ?? undefined} />
                 </div>
               )}
               {kind === "aircraft_technical" && (
@@ -418,7 +420,25 @@ export default function ReportPage() {
                     const days = p.result?.proposal?.tool === "report_unavailable" ? p.result.proposal.arguments : null;
                     const one = p.status === "kept" && p.result?.crew?.length === 1 ? p.result.crew[0] : null;
                     if (one && crew.length === 0) setCrew([{ crew_id: one.crew_id, name: one.name }]);
-                    if (p.status === "kept" && days?.first_day) setNoteDays({ from: days.first_day, until: days.last_day || days.first_day });
+                    if (p.status === "kept" && days?.first_day) setNoteDays({ from: String(days.first_day), until: String(days.last_day || days.first_day) });
+                    // A departures board, a gate screen or a certificate fills in what it shows.
+                    const proposal = p.status === "kept" ? p.result?.proposal : null;
+                    if (proposal?.tool === "delay_impact") {
+                      setTrip(String(proposal.arguments.trip_id));
+                      setFromPhoto({ hours: String(proposal.arguments.hours), day: proposal.arguments.day ? String(proposal.arguments.day) : undefined });
+                    }
+                    if (proposal?.tool === "gate_change") {
+                      setLeg(String(proposal.arguments.leg_id));
+                      setNewGate(String(proposal.arguments.gate));
+                    }
+                    const form = p.result?.form;
+                    if (kind === "certification_lapse" && p.status === "kept" && form) {
+                      const expires = typeof form.expires === "string" ? form.expires : "";
+                      setFromPhoto({
+                        cert: CERTS.some(([v]) => v === form.kind) ? String(form.kind) : undefined,
+                        lapses: /^\d{4}-\d{2}-\d{2}$/.test(expires) ? addDays(expires, 1) : undefined,
+                      });
+                    }
                     if (p.status === "kept" && s) {
                       setSeverity(s.severity);
                       writeOut(s.description ?? "");

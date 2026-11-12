@@ -13,6 +13,7 @@ so a public demo cannot run through the credits.
 from __future__ import annotations
 
 import json
+import re
 import threading
 import uuid
 from dataclasses import asdict
@@ -27,9 +28,10 @@ from fastapi.staticfiles import StaticFiles
 from crewpay.agent.advisor import Advisor, Answer
 from crewpay.agent.build import build_advisor
 from crewpay.agent.memory import Conversations
-from crewpay.agent.tools import Caller, Context, Role, ToolBox
+from crewpay.agent.tools import ADMINS, Caller, Context, Role, ToolBox
 from crewpay.api.auth import Throttle, caller_from, issue, password_ok
-from crewpay.engine.clock import IST
+from crewpay.engine.clock import IST, use_clock
+from crewpay.engine.clock import now as clock_now
 from crewpay.engine.severity import for_issue
 from crewpay.engine.watch import scan
 from crewpay.models import Endpoint, ModelClient, ModelError
@@ -52,6 +54,7 @@ from crewpay.ops.push import Push, PushingOutbox
 from crewpay.ops.reports import ReportDesk, ReportStatus
 from crewpay.ops.roster_upload import MAX_BYTES as ROSTER_LIMIT
 from crewpay.pay import PayConfig, PayPalClient, PayPalError, Payroll
+from crewpay.pay.payroll import masked
 from crewpay.seed import load_dataset, read_meta, shifted
 from crewpay.settings import ROOT, Settings, settings
 from crewpay.store import MemoryStore, Store, open_store
@@ -105,10 +108,15 @@ class Services:
             if config.live_clock
             else (lambda: as_of + (datetime.now(UTC) - started))
         )
+        # Everything reads this one clock: the header, offers, plans, PayPal payments, reports
+        # and the logs, so every date and time in the console agrees.
+        self.clock = clock
+        use_clock(clock)
+        self.store.clock = clock
         self.desk = CalloutDesk(
             self.store, self.outbox, clock=clock, docs=self.store, four_eyes=True
         )
-        self.reports = ReportDesk(self.store, self.outbox, config.seed_dir)
+        self.reports = ReportDesk(self.store, self.outbox, config.seed_dir, clock=clock)
         self.alerts = AlertAddresses(self.store)
         self.payroll = Payroll(
             self.store,
@@ -122,12 +130,13 @@ class Services:
                 public_url=config.public_url,
                 airlines=_airline_names(config.seed_dir),
             ),
+            clock=clock,
         )
         if self.desk.plans is not None:
             self.desk.plans.listeners.append(self.payroll.on_plan)
             self.payroll.funding.attach(self.desk.plans)
         self.accounts = StoreAccounts(self.store)
-        self.conversations = Conversations(docs=self.store)
+        self.conversations = Conversations(clock=clock, docs=self.store)
         self.toolbox = ToolBox()
         self.media = MediaClient(config)
         self.reader = ModelReader(ModelClient(Endpoint.vision(config), config=config))
@@ -360,6 +369,49 @@ def ops_room(s: Services, op: Any, issues: list[Any], callouts: list[Any]) -> di
     }
 
 
+PAYPAL = "https://*.paypal.com https://*.paypalobjects.com"
+CSP = "; ".join(
+    [
+        "default-src 'self'",
+        # The static console's pages carry inline boot scripts; PayPal's JS SDK and its frames.
+        f"script-src 'self' 'unsafe-inline' {PAYPAL}",
+        "style-src 'self' 'unsafe-inline'",
+        f"img-src 'self' data: blob: {PAYPAL}",
+        "font-src 'self' data:",
+        f"connect-src 'self' {PAYPAL}",
+        f"frame-src {PAYPAL}",
+        f"form-action 'self' {PAYPAL}",
+        "worker-src 'self'",
+        "media-src 'self' blob: data:",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "frame-ancestors 'self'",
+    ]
+)
+"""PayPal's documented sources for the JS SDK and Checkout; everything else is CrewPay's own."""
+
+
+async def _read_at_most(upload: UploadFile, limit: int) -> bytes:
+    """An upload's bytes, reading no more than one past ``limit``: the handler's own size check
+    then refuses it, without a large file ever being held in memory."""
+    return await upload.read(limit + 1)
+
+
+EMAIL = re.compile(r"\b[\w.+-]+@[\w-]+(\.[\w-]+)+\b")
+AMOUNT = re.compile(r"\b\d[\d,]*(\.\d+)?\s?(USD|INR)\b|(₹|\$)\s?\d[\d,]*(\.\d+)?")
+
+
+def _aloud(text: str) -> str:
+    """A notice as the open ops-room speaker may say it: no one's PayPal address or pay."""
+    return AMOUNT.sub("an amount", EMAIL.sub("a new PayPal address", text))
+
+
+def _on_the_wall(offer: dict[str, Any]) -> dict[str, Any]:
+    """One crew member asked in a callout, as the open TV board shows it: who and what they
+    answered, not what they would be paid or what they wrote back."""
+    return {k: v for k, v in offer.items() if k not in ("cost_inr", "remark")}
+
+
 def desk_notices(s: Services) -> list[Any]:
     """The desk's and the supervisor's notices, newest first."""
     found = s.outbox.sent(DESK) + s.outbox.sent(SUPERVISOR)
@@ -456,6 +508,23 @@ def refresh_brief(s: Services, force: bool = False) -> bool:
 def create_app(config: Settings | None = None, services: Services | None = None) -> FastAPI:
     config = config or settings()
     app = FastAPI(title="CrewPay", docs_url="/api/docs", openapi_url="/api/openapi.json")
+
+    @app.middleware("http")
+    async def secure_headers(request: Request, call_next: Any) -> Response:
+        """Browser protections on every response: only PayPal may add scripts, frames and
+        calls besides CrewPay itself; nobody may frame the console; no type sniffing."""
+        response = await call_next(request)
+        h = response.headers
+        h.setdefault("X-Content-Type-Options", "nosniff")
+        h.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+        h.setdefault("X-Frame-Options", "SAMEORIGIN")
+        h.setdefault("Permissions-Policy", "camera=(self), microphone=(self), geolocation=()")
+        if not request.url.path.startswith("/api/docs"):  # Swagger UI loads from a CDN
+            h.setdefault("Content-Security-Policy", CSP)
+        if request.headers.get("x-forwarded-proto", request.url.scheme) == "https":
+            h.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+        return response
+
     state: dict[str, Services] = {}
     if services is not None:
         state["services"] = services
@@ -527,7 +596,9 @@ def create_app(config: Settings | None = None, services: Services | None = None)
             raise HTTPException(404, f"no account {user!r}")
         if not config.demo_password:
             return {"token": None, "user": user}
-        where = request.client.host if request.client else "unknown"
+        # Per address and account: behind a proxy many people can share one address, and one
+        # of them guessing must not lock everyone else out.
+        where = f"{request.client.host if request.client else 'unknown'}:{user}"
         throttle.check(where)
         if not password_ok(config, str(body.get("password", ""))):
             throttle.miss(where)
@@ -600,7 +671,7 @@ def create_app(config: Settings | None = None, services: Services | None = None)
         languages: str = Form("English"),
         _who: Caller = Depends(caller),
     ) -> dict[str, Any]:
-        data = await audio.read()
+        data = await _read_at_most(audio, AUDIO_LIMIT)
         if len(data) > AUDIO_LIMIT:
             raise HTTPException(413, "keep recordings under a minute")
         hints = [x.strip() for x in languages.split(",") if x.strip() in LANGUAGES]
@@ -619,7 +690,7 @@ def create_app(config: Settings | None = None, services: Services | None = None)
     ) -> dict[str, Any]:
         """Check a photo. With ``keep``, a photo that passes is kept as evidence for a report
         and its ``evidence_id`` returned, to pass to report_disruption."""
-        data = await image.read()
+        data = await _read_at_most(image, IMAGE_LIMIT)
         if len(data) > IMAGE_LIMIT:
             raise HTTPException(413, "send a photo under 8 MB")
         mime = image.content_type or "image/jpeg"
@@ -654,7 +725,7 @@ def create_app(config: Settings | None = None, services: Services | None = None)
                         for k in ("first_day", "last_day")
                     ],
                     "mime": mime,
-                    "at": datetime.now(UTC).isoformat(),
+                    "at": clock_now().isoformat(),
                 },
             )
             out["evidence_id"] = evidence_id
@@ -815,7 +886,7 @@ def create_app(config: Settings | None = None, services: Services | None = None)
         dry_run: bool = Form(True),
         who: Caller = Depends(caller),
     ) -> dict[str, Any]:
-        data = await file.read()
+        data = await _read_at_most(file, ROSTER_LIMIT)
         if len(data) > ROSTER_LIMIT:
             raise HTTPException(413, "an upload is at most 2 MB")
         try:
@@ -859,7 +930,10 @@ def create_app(config: Settings | None = None, services: Services | None = None)
                     ((i, for_issue(op, i)) for i in issues), key=lambda p: p[1].level.rank
                 )[:12]
             ],
-            "callouts": s.toolbox.call("callout_status", {}, ctx).get("callouts", []),
+            "callouts": [
+                {**c, "asked": [_on_the_wall(o) for o in c.get("asked", [])]}
+                for c in s.toolbox.call("callout_status", {}, ctx).get("callouts", [])
+            ],
             "changes": s.toolbox.call("roster_changes", {"limit": 5}, ctx).get("changes", []),
             "disruptions": s.toolbox.call("disruptions", {"limit": 8}, ctx).get("disruptions", []),
             "desk_load": s.reports.load(),
@@ -893,8 +967,8 @@ def create_app(config: Settings | None = None, services: Services | None = None)
                     "at": n.at.astimezone(IST).strftime("%H:%M"),
                     "to": n.to,
                     "tone": tone_of(n.subject),
-                    "subject": n.subject,
-                    "body": n.body,
+                    "subject": _aloud(n.subject),
+                    "body": _aloud(n.body),
                 }
                 for n in desk_notices(s)[:25]
             ],
@@ -922,6 +996,9 @@ def create_app(config: Settings | None = None, services: Services | None = None)
         if who.role is Role.CREW:
             rows = [p for p in rows if p["crew_id"] == who.crew_id]
             approvals = []
+        elif who.role not in ADMINS:
+            # Where someone is paid is theirs and the admins' to see.
+            rows = [{**p, "receiver": masked(p.get("receiver"))} for p in rows]
         return {
             **s.payroll.totals(),
             "cap": s.payroll.config.cap,
@@ -936,6 +1013,8 @@ def create_app(config: Settings | None = None, services: Services | None = None)
         if who.role not in (Role.CONTROLLER, Role.APPROVER, Role.ADMIN, Role.SUPER_ADMIN):
             raise HTTPException(403, f"the {who.role} role cannot refresh payments")
         return {"changed": svc().payroll.sync()}
+
+    webhook_lock = threading.Lock()
 
     @app.post("/api/paypal/webhook")
     async def paypal_webhook(request: Request) -> dict[str, Any]:
@@ -958,6 +1037,17 @@ def create_app(config: Settings | None = None, services: Services | None = None)
             raise HTTPException(502, f"could not verify with PayPal: {err}") from err
         if not genuine:
             raise HTTPException(400, "the signature did not verify")
+        # PayPal delivers an event again until it gets a 2xx, and a signed event can be sent
+        # again by anyone who saw it: each event id counts once.
+        event_id = str(event.get("id") or request.headers.get("paypal-transmission-id"))
+        with webhook_lock:
+            if s.store.get_doc("paypal_events", event_id) is not None:
+                return {"received": True, "duplicate": True}
+            s.store.put_doc(
+                "paypal_events",
+                event_id,
+                {"type": str(event.get("event_type", "")), "at": datetime.now(UTC).isoformat()},
+            )
         moved = s.payroll.webhook(event)
         log(
             s.store,
@@ -1004,9 +1094,19 @@ def main() -> None:
     parser.add_argument("--port", type=int, default=int(os.environ.get("PORT", "8000")))
     args = parser.parse_args()
     config = settings()
+    if hosted and not config.demo_password:
+        # Without it anyone could say which role they are in a header, super admin included.
+        raise SystemExit("CREWPAY_DEMO_PASSWORD must be set on a hosted server")
     services = Services(config)
     start(services, config.ticker_seconds)
-    uvicorn.run(create_app(config, services), host=args.host, port=args.port)
+    uvicorn.run(
+        create_app(config, services),
+        host=args.host,
+        port=args.port,
+        # Hosted, the platform's proxy says who the client is in X-Forwarded-For.
+        proxy_headers=True,
+        forwarded_allow_ips="*" if hosted else "127.0.0.1",
+    )
 
 
 if __name__ == "__main__":

@@ -490,10 +490,16 @@ class ModelClient:
         purpose: str,
         effort: str = "low",
         max_tokens: int | None = None,
+        temperature: float | None = None,
     ) -> tuple[M, Reply]:
         """A reply that must fit ``schema``, validated before it is returned."""
         reply = self.chat(
-            messages, purpose=purpose, effort=effort, schema=schema, max_tokens=max_tokens
+            messages,
+            purpose=purpose,
+            effort=effort,
+            schema=schema,
+            max_tokens=max_tokens,
+            temperature=temperature,
         )
         try:
             return schema.model_validate_json(reply.content), reply

@@ -10,9 +10,9 @@ from __future__ import annotations
 
 import logging
 import threading
-from datetime import UTC, datetime
 from typing import Any
 
+from crewpay.engine.clock import now as clock_now
 from crewpay.engine.watch import scan
 from crewpay.ops import DESK, Notice
 from crewpay.ops.escalation import escalate
@@ -28,7 +28,7 @@ def tick(s: Any) -> dict[str, int]:
     raised = {d["issue_id"] for d in s.store.docs("alerted")}
     new = [i for i in scan(s.store.operation()) if i.kind != "certificate"]
     new = [i for i in new if i.issue_id not in raised]
-    now = datetime.now(UTC)
+    now = clock_now()
     for issue in new:
         cover = f" Cheapest legal cover: {issue.suggestion}." if issue.suggestion else ""
         where = f" on {issue.trip_id}" if issue.trip_id else ""

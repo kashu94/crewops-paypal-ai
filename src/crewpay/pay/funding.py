@@ -102,8 +102,13 @@ class Funding:
         return "paypal" if self.paypal is not None else "simulated"
 
     def attach(self, plans: Any) -> None:
-        """Make every approval on ``plans`` that costs money wait for PayPal."""
+        """Make every approval on ``plans`` that costs money wait for PayPal.
+
+        From here on the funding shares the plans' lock: an approval opens a funding while it
+        holds the plans, and a capture checks and confirms the plan while it holds the funding,
+        so two locks taken in opposite orders could leave both waiting for ever."""
         self.plans = plans
+        self._lock = getattr(plans, "_lock", self._lock)
         plans.gate = self.open
         plans.listeners.append(self.on_plan)
 
@@ -373,18 +378,26 @@ class Funding:
                 if funding["status"] not in OPEN:
                     continue
                 before = funding["status"]
-                if funding["status"] == FundingStatus.TO_PAY and self._too_old(funding):
+                order = None
+                if self.paypal is not None and funding.get("order_id"):
+                    try:
+                        order = self.paypal.get_order(funding["order_id"])
+                    except PayPalError as err:
+                        funding["error"] = str(err)
+                        self._save(funding)
+                        continue
+                taken = order is not None and any(
+                    (unit.get("payments") or {}).get("captures")
+                    for unit in order.get("purchase_units", [])
+                )
+                # Give up on an unpaid approval only once PayPal confirms nothing was taken: a
+                # capture whose reply was lost must be settled, not dropped with the money.
+                if before == FundingStatus.TO_PAY and self._too_old(funding) and not taken:
                     with contextlib.suppress(FundingError):
                         self.cancel(funding["funding_id"], "payroll", "not confirmed in time")
                     changed += 1
                     continue
-                if self.paypal is None or not funding.get("order_id"):
-                    continue
-                try:
-                    order = self.paypal.get_order(funding["order_id"])
-                except PayPalError as err:
-                    funding["error"] = str(err)
-                    self._save(funding)
+                if order is None:
                     continue
                 if order.get("status") == "APPROVED" and before == FundingStatus.TO_PAY:
                     with contextlib.suppress(FundingError):
@@ -439,6 +452,22 @@ class Funding:
         if captures:
             funding["capture_id"] = captures[0].get("id")
             funding["error"] = None
+            took = captures[0].get("amount") or {}
+            if took and (
+                Decimal(str(took.get("value", "0"))) != Decimal(funding["amount"])
+                or took.get("currency_code") != funding["currency"]
+            ):
+                # Never let an approval through on a payment that is not the one asked for.
+                wrong = f"PayPal took {took.get('value')} {took.get('currency_code')}, not "
+                wrong += f"{funding['amount']} {funding['currency']}"
+                funding["error"] = wrong
+                self._tell_desk(funding, "PayPal payment did not match", wrong)
+                if captures[0].get("status", "").upper() == "COMPLETED":
+                    self._refund(funding, wrong)
+                if self.plans is not None:
+                    with contextlib.suppress(Exception):
+                        self.plans.reopen(funding["plan_id"], "payroll", wrong)
+                return
             self._settle(funding, captures[0].get("status", ""), by, why)
         elif order.get("status") == "VOIDED":
             self.cancel(funding["funding_id"], "payroll", "PayPal voided the order")
@@ -452,11 +481,28 @@ class Funding:
             self._save(funding)
             return
         was = funding["status"]
+        # The end of a payment is one-way: a late or replayed notice never takes a refunded or
+        # cancelled payment back to paid, and a paid one can only be refunded.
+        if was == FundingStatus.CANCELLED and status is FundingStatus.PAID:
+            # Captured after the approval was dropped: nothing will use it, so give it back.
+            self._note(funding, str(status), by, f"captured after it was cancelled ({why})")
+            self._refund(funding, "captured after the approval was cancelled")
+            return
+        if was in (FundingStatus.REFUNDED, FundingStatus.CANCELLED) or (
+            was == FundingStatus.PAID and status is not FundingStatus.REFUNDED
+        ):
+            self._note(funding, str(was), by, f"ignored {capture_status} ({why}): already {was}")
+            self._save(funding)
+            return
         self._move(funding, status, by, why)
         if status is FundingStatus.PAID and was in (FundingStatus.TO_PAY, FundingStatus.PENDING):
             self._go_through(funding)
         elif status is FundingStatus.FAILED:
             self._tell_desk(funding, "PayPal payment failed", why)
+            # Nothing was taken: the plan must not wait for ever, it waits for a decision again.
+            if self.plans is not None:
+                with contextlib.suppress(Exception):
+                    self.plans.reopen(funding["plan_id"], by, f"PayPal payment {capture_status}")
 
     def _go_through(self, funding: dict[str, Any]) -> None:
         """The money is in: the approval takes effect."""

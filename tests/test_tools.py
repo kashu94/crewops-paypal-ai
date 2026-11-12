@@ -336,3 +336,22 @@ def test_an_accepted_callout_fills_the_seat(box, mem):
 
 def test_callouts_need_a_desk(box, mem):
     assert "not available" in call(box, mem, "callout_status")["error"]
+
+
+def test_the_assistant_can_never_move_money():
+    """Releasing, cancelling or confirming a payment, or changing where pay goes, needs a person:
+    text the model reads (a crew remark, a report) could otherwise talk it into one."""
+    box = ToolBox(ALL_TOOLS)
+    money = {
+        "confirm_approval",
+        "cancel_approval",
+        "release_payment",
+        "cancel_payment",
+        "set_payout_email",
+    }
+    assert all(box.tools[name].console_only for name in money)
+    for role in Role:
+        offered = {
+            t.name for t in box.available(Caller(user="x", role=role, crew_id="C-1111"), agent=True)
+        }
+        assert not offered & money

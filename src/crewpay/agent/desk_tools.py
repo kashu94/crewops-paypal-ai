@@ -46,6 +46,7 @@ from crewpay.domain import Rank
 from crewpay.engine import NotFound, Operation
 from crewpay.engine.aircraft import aircraft_options
 from crewpay.engine.clock import IST
+from crewpay.engine.clock import now as clock_now
 from crewpay.engine.cover import TripStarted, Way, find_cover
 from crewpay.engine.impact import absence_gaps, joint_cover
 from crewpay.engine.risk import crew_risk, risk_json
@@ -160,13 +161,17 @@ def _evidence(ctx: Context, args: FileReport) -> list[dict[str, Any]]:
         # A note's own next step ("confirm to record them") is the report itself here.
         item["message"] = item["message"].replace(" Confirm to record them as unavailable.", "")
         if check := _photo_matches(args, doc):
-            if check.startswith("The photo names"):
+            if check.endswith(NOT_ON_REPORT):
                 raise ToolError(
                     check + " Add their own note or certificate, or file without a photo."
                 )
             item["check"] = check
         found.append(item)
     return found
+
+
+NOT_ON_REPORT = "who is not on this report."
+"""How a photo of someone else ends: the one check that stops a report being filed."""
 
 
 def _photo_matches(args: FileReport, doc: dict[str, Any]) -> str | None:
@@ -176,7 +181,7 @@ def _photo_matches(args: FileReport, doc: dict[str, Any]) -> str | None:
     if not named or not args.crew_ids:
         return None
     if not named & set(args.crew_ids):
-        return f"The photo names {', '.join(sorted(named))}, who is not on this report."
+        return f"The photo names {', '.join(sorted(named))}, {NOT_ON_REPORT}"
     first, last = (doc.get("days") or [None, None])[:2]
     if first and args.first_day and args.kind is Kind.CREW_UNAVAILABLE:
         shown = (date.fromisoformat(first), date.fromisoformat(last or first))
@@ -533,6 +538,11 @@ def _already_reported(ctx: Context, args: FileReport, crew_ids: list[str]) -> No
             )
 
 
+def _cert_words(cert: str | None) -> str:
+    """A certificate kind as people say it: recurrent_training is "recurrent training"."""
+    return (cert or "certificate").replace("_", " ")
+
+
 def report_disruption(ctx: Context, args: FileReport) -> dict[str, Any]:
     desk = _reports(ctx)
     crew_ids = _who_may_file(ctx, args)
@@ -575,7 +585,7 @@ def report_disruption(ctx: Context, args: FileReport) -> dict[str, Any]:
         kind, reason = {
             Kind.CREW_UNAVAILABLE: (args.reason_kind, args.note or args.reason_kind),
             Kind.PLANNED_LEAVE: ("leave", (args.leave or "leave").replace("_", " ")),
-            Kind.CERTIFICATION_LAPSE: ("certificate", f"{args.cert} lapsed"),
+            Kind.CERTIFICATION_LAPSE: ("certificate", f"{_cert_words(args.cert)} lapsed"),
         }[args.kind]
         details |= {
             "crew_ids": crew_ids,
@@ -607,7 +617,7 @@ def report_disruption(ctx: Context, args: FileReport) -> dict[str, Any]:
         word = {
             Kind.CREW_UNAVAILABLE: args.reason_kind.capitalize(),
             Kind.PLANNED_LEAVE: "Leave",
-            Kind.CERTIFICATION_LAPSE: f"{args.cert} lapsed",
+            Kind.CERTIFICATION_LAPSE: f"{_cert_words(args.cert).capitalize()} lapsed",
         }[args.kind]
         title = f"{word}: {_names(op, crew_ids)}, {_days(first, last)}"
         draft = Report(
@@ -617,7 +627,7 @@ def report_disruption(ctx: Context, args: FileReport) -> dict[str, Any]:
             details=details,
             filed_by=by,
             filed_role=str(ctx.caller.role),
-            filed_at=datetime.now(UTC),
+            filed_at=clock_now(),
             desk_id="desk-1",
             severity="low",
             severity_reasons=[],
@@ -1139,7 +1149,8 @@ def my_queue(ctx: Context, args: MyQueue) -> dict[str, Any]:
                     "/approvals/",
                     "pending",
                 )
-    if role in (Role.APPROVER, Role.AUDITOR, Role.SPEAKER, Role.ADMIN, Role.SUPER_ADMIN):
+    # The auditor only reads: nothing waits on them.
+    if role in (Role.APPROVER, Role.SPEAKER, Role.ADMIN, Role.SUPER_ADMIN):
         for p in plans:
             if p.status is PlanStatus.SUBMITTED:
                 add(

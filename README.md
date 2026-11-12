@@ -50,10 +50,11 @@ sees it.
 | Pay the crew member who covers a seat, the moment the approval goes through | **Payouts API** (`POST /v1/payments/payouts`), one batch per plan | [`src/crewpay/pay/payroll.py`](src/crewpay/pay/payroll.py) |
 | Never pay twice, even on a retry or a timeout | `sender_batch_id` and `PayPal-Request-Id` set to the payment id | [`src/crewpay/pay/paypal.py`](src/crewpay/pay/paypal.py) |
 | Follow each payout to paid, unclaimed, failed or returned | **Webhooks** (`PAYMENT.PAYOUTS-ITEM.*`), each one verified with `verify-webhook-signature`; plus a status check every minute (`GET /v1/payments/payouts/{id}`) | [`src/crewpay/api/app.py`](src/crewpay/api/app.py), [`src/crewpay/api/ticker.py`](src/crewpay/api/ticker.py) |
-| Pay each crew member at the PayPal account they choose | Payout `receiver` from the crew member's own setting on **My pay** (or "pay me at …" to the assistant); they and crew control are both told of every change | `set_payout_email` tool, [`src/crewpay/pay/payroll.py`](src/crewpay/pay/payroll.py) |
+| Pay each crew member at the PayPal account they choose | Payout `receiver` from the crew member's own setting on **My pay**; they and crew control are both told of every change, and everyone else sees the address masked (`r***@example.com`) | `set_payout_email` tool, [`src/crewpay/pay/payroll.py`](src/crewpay/pay/payroll.py) |
 | Take back a payment nobody claimed | **Cancel unclaimed payout item** | `cancel_payment` tool |
+| Let an auditor trace every movement of money | One read-only ledger of every Checkout capture, refund and payout, newest first, with its PayPal order, capture, refund, batch, item and transaction ids, the fee, and a CSV download (**Transactions**, the auditor's home page) | `transactions` tool, [`web/app/(app)/transactions/page.tsx`](web/app/(app)/transactions/page.tsx) |
 | Finish a payment if the browser closes, and never charge twice | `PayPal-Request-Id` on create, capture and refund; **webhooks** `CHECKOUT.ORDER.APPROVED` and `PAYMENT.CAPTURE.*`, and the status check, capture an approved order | [`src/crewpay/pay/funding.py`](src/crewpay/pay/funding.py) |
-| Ask about pay in plain words ("has D. Reddy been paid for T-1018?", "is my approval still waiting for PayPal?") | The agent's `crew_payments`, `payment_status` and `approval_payments` tools read the ledger and PayPal. The agent can approve, and hands over the PayPal link, but `confirm_approval` is console-only: a person always pays in PayPal | [`src/crewpay/agent/pay_tools.py`](src/crewpay/agent/pay_tools.py) |
+| Ask about pay in plain words ("has D. Reddy been paid for T-1018?", "is my approval still waiting for PayPal?") | The agent's `crew_payments`, `payment_status` and `approval_payments` tools read the ledger and PayPal. The agent can approve, and hands over the PayPal link, but every tool that moves money or changes where it goes (`confirm_approval`, `cancel_approval`, `release_payment`, `cancel_payment`, `set_payout_email`) is console-only: a person always does it | [`src/crewpay/agent/pay_tools.py`](src/crewpay/agent/pay_tools.py) |
 
 Controls around the money:
 
@@ -67,6 +68,20 @@ Controls around the money:
   captures only an order PayPal says the payer approved. Only the approver who approved the plan
   can confirm it; the agent and MCP clients never can.
 - **Sandbox only**: the settings refuse any PayPal address other than the sandbox.
+- **The money is checked, not trusted**: a capture is accepted only for the amount and currency
+  the server ordered (anything else is refunded and the plan goes back for a decision), and an
+  approval left unpaid is dropped only once PayPal confirms nothing was taken.
+- **Each webhook counts once**: every event's signature is verified with PayPal, its id is
+  recorded so a replay is ignored, and end states are one-way (a late notice never takes a
+  refunded or returned payment back to paid).
+- **A timeout is not a failure**: a payout PayPal never answered stays queued and is sent again
+  under the same batch id, which PayPal never pays twice.
+- **The assistant can never move money**: text it reads (a crew remark, a report) cannot talk
+  it into a payment, because those tools are not offered to it at all.
+- **Browser protections**: a Content Security Policy that allows only CrewPay and PayPal's
+  domains, no framing, `nosniff`, HSTS when hosted; the open ops-room board and speaker never
+  show anyone's pay or PayPal address; sign-in is throttled per address and account, and a
+  hosted server will not start without the demo password.
 - **Rupees are the cost of record**; payouts are made in US dollars at a fixed demo rate
   (`CREWPAY_FX_INR_PER_USD`, default 84), and both are kept on every payment.
 
@@ -79,14 +94,14 @@ project works on any laptop.
 |---|---|---|
 | Planning each answer: which engine tools to call, then the reply | **Amazon Nova 2 Lite** | Tool calling over 61 typed tools, each with role checks in code |
 | Sorting each question (absence, delay, cover, legality, change, pay, lookup) and flagging attacks on the assistant | **Amazon Nova Micro** | Structured output (a forced tool with a strict JSON schema); keyword rules take over if the model is unavailable |
-| Reading photos: sick notes, roster swaps, certificates, departures boards | **Nova 2 Lite** (vision) | Each photo fills a fixed form; code decides what happens, and a person confirms |
+| Reading photos: sick notes, certificates, aircraft damage (with the registration), closed gates (with the gate sign), departures boards, roster swaps | **Nova 2 Lite** (vision, temperature 0) | Each photo fills a fixed form; code decides what happens, and a person confirms |
 | The shift brief, the message to passengers on a delayed flight, the shift handover | **Nova 2 Lite** | Structured output, then the same evidence check as every answer; a text that fails it is replaced by a template built from the same facts |
 | Spoken questions | The browser's speech recognition | Only the words heard are sent, like a typed question |
 
 The agent can **act**, not only advise: it can report an absence, start a callout, submit a plan
-and, for approvers, approve a plan (which then waits for them to confirm it with PayPal) or
-release a held payment. Every action goes through the same tools, role
-checks and four-eyes rules as the buttons in the console.
+and, for approvers, approve a plan (which then waits for them to confirm it with PayPal).
+Every action goes through the same tools, role checks and four-eyes rules as the buttons in the
+console; anything that moves money is left to a person at the console.
 
 ## Architecture
 

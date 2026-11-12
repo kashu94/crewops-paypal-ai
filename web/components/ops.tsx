@@ -209,7 +209,7 @@ export function PlanRow({ p }: { p: Plan }) {
         <Mono className="ml-auto text-xs text-faint">{p.plan_id}</Mono>
       </div>
       <p className="mt-1 text-sm">
-        <b className="font-medium">{p.name}</b> <Mono className="text-faint">{p.crew_id}</Mono> replaces <Mono>{p.replacing}</Mono> ·{" "}
+        <b className="font-medium">{p.name}</b> <Mono className="text-faint">{p.crew_id}</Mono> replaces {p.replacing_name && <b className="font-medium">{p.replacing_name}</b>} <Mono className="text-faint">{p.replacing}</Mono> ·{" "}
         <span className="font-mono">{inr(p.cost_inr)}</span>
       </p>
       <p className="text-xs text-muted">

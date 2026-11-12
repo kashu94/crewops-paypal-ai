@@ -390,3 +390,49 @@ def test_white_paper_is_not_glare():
     page.save(out, "JPEG")
     assert "washed out" in " ".join(measure(out.getvalue()).problems)
     assert measure(out.getvalue(), paper=True).problems == ()
+
+
+def test_no_segmentation_model_still_reads_the_photo(op):
+    """Without a segmentation model a defect or a gate photo is read, just without a box."""
+    from crewpay.models.media import MediaClient
+
+    result = read_photo(
+        op, Kind.DEFECT, SHARP, "image/jpeg", Reader(defect()), MediaClient(), "VT-SYA"
+    )
+    assert result.status in (Status.DRAFT, Status.CONFIRM) and result.box is None
+    flooded = read_photo(
+        op,
+        Kind.SCENE,
+        SHARP,
+        "image/jpeg",
+        Reader(
+            SceneForm(
+                shows_airport=True,
+                subject="apron",
+                condition="flooding",
+                view="clear",
+                detail="apron under standing water",
+            )
+        ),
+        MediaClient(),
+    )
+    assert flooded.status is not Status.REJECTED and flooded.box is None
+
+
+def test_a_flat_tyre_is_damage(op):
+    form = defect(
+        damage=[Damage(part="main gear tyre", kind="flat_tyre", where="left")],
+        damage_phrase="flat tyre",
+    )
+    result = read_photo(op, Kind.DEFECT, SHARP, "image/jpeg", Reader(form), None, "VT-SYA")
+    assert result.status is Status.DRAFT
+    assert "flat main gear tyre (left)" in result.message
+
+
+def test_what_a_wrong_photo_shows_reads_as_a_sentence():
+    from crewpay.vision.intake import _subject
+
+    assert _subject("No aircraft visible") == "something else"
+    assert _subject("A sleeping cat.") == "a sleeping cat"
+    assert _subject("ATR 72 cockpit") == "ATR 72 cockpit"
+    assert _subject("") == "something else"

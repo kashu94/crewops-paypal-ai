@@ -19,7 +19,9 @@ import { useAction, useLoad } from "@/lib/use-load";
 
 const DAYS = 14;
 
-type Earlier = { callout_id: string; trip_id: string; seat: string; offered_at: string; answer_by: string; outcome: string; answered_at?: string; your_remark?: string; seat_now: string };
+type Earlier = { callout_id: string; trip_id: string; seat: string; offered_at: string; answer_by: string; outcome: string; answered_at?: string; your_remark?: string; seat_now: string; days?: string[]; waiting_for_approval?: boolean };
+
+const AWAITING = "border border-[#e0a800] bg-[#ffe27a] text-[#5c3d00]";
 
 const OUTCOME: Record<string, string> = {
   accepted: "You accepted",
@@ -31,14 +33,17 @@ const OUTCOME: Record<string, string> = {
   "no longer needed": "No longer needed",
 };
 
-function Calendar({ trips, p, today, start }: { trips: Trip[]; p: Profile; today: string; start: string }) {
+function Calendar({ trips, p, today, start, days, waiting }: { trips: Trip[]; p: Profile; today: string; start: string; days: number; waiting: Earlier[] }) {
   const duty = new Map<string, string>();
   for (const t of trips) for (const d of t.days) duty.set(d, t.trip_id);
+  // A seat I accepted that still waits for an approver: yellow until it goes through.
+  const pending = new Map<string, string>();
+  for (const e of waiting) for (const d of e.days ?? []) if (!duty.has(d)) pending.set(d, e.trip_id);
   const standby = new Set(p.standby_days ?? []);
   const out = new Set<string>();
   for (const u of p.unavailable ?? []) for (let d = u.from; d <= u.to; d = addDays(d, 1)) out.add(d);
   const lead = (new Date(`${start}T00:00:00Z`).getUTCDay() + 6) % 7;
-  const cells = Array.from({ length: DAYS }, (_, i) => addDays(start, i));
+  const cells = Array.from({ length: days }, (_, i) => addDays(start, i));
   return (
     <div>
       <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
@@ -52,6 +57,7 @@ function Calendar({ trips, p, today, start }: { trips: Trip[]; p: Profile; today
         ))}
         {cells.map((iso) => {
           const trip = duty.get(iso);
+          const asked = pending.get(iso);
           const away = out.has(iso);
           const sb = standby.has(iso);
           const d = new Date(`${iso}T00:00:00Z`);
@@ -60,19 +66,29 @@ function Calendar({ trips, p, today, start }: { trips: Trip[]; p: Profile; today
               key={iso}
               className={cx(
                 "relative flex min-h-16 flex-col gap-0.5 rounded-md p-1.5 text-[11px] sm:p-2",
-                away ? "hatch-out border border-[#f3c4c0]" : trip ? "bg-accent text-white" : sb ? "bg-accent-soft text-accent-ink" : "bg-sunken",
+                away ? "hatch-out border border-[#f3c4c0]" : trip ? "bg-accent text-white" : asked ? AWAITING : sb ? "bg-accent-soft text-accent-ink" : "bg-sunken",
                 iso === today && "ring-2 ring-foreground ring-offset-2 ring-offset-surface",
                 iso < today && "opacity-55",
               )}
               aria-current={iso === today ? "date" : undefined}
+              title={asked ? `${asked}: you accepted; yet to be approved` : undefined}
             >
               {iso === today && <span className="absolute -top-2 right-1.5 rounded bg-foreground px-1 text-[9px] font-semibold uppercase tracking-wide text-white">today</span>}
               <span className={cx("font-mono", trip && !away ? "text-white/80" : "text-muted")}>
                 {d.getUTCDate()} {d.toLocaleString("en", { month: "short", timeZone: "UTC" })}
               </span>
               {trip && <span className={cx("font-mono font-semibold", away && "text-critical-ink line-through")}>{trip}</span>}
-              {!trip && sb && <span>standby</span>}
-              {!trip && !sb && !away && <span className="hidden text-faint sm:inline">day off</span>}
+              {!trip && asked && (
+                <>
+                  <span className="font-mono font-semibold">{asked}</span>
+                  <span className="text-[10px] font-medium leading-tight">
+                    <span className="sm:hidden">pending</span>
+                    <span className="hidden sm:inline">yet to be approved</span>
+                  </span>
+                </>
+              )}
+              {!trip && !asked && sb && <span>standby</span>}
+              {!trip && !asked && !sb && !away && <span className="hidden text-faint sm:inline">day off</span>}
               {away && <span className="font-medium text-critical-ink">can&apos;t fly</span>}
             </div>
           );
@@ -80,6 +96,7 @@ function Calendar({ trips, p, today, start }: { trips: Trip[]; p: Profile; today
       </div>
       <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted">
         <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded-sm bg-accent" />flying</span>
+        <span className="flex items-center gap-1.5"><i className={cx("h-3 w-3 rounded-sm", AWAITING)} />accepted, yet to be approved</span>
         <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded-sm bg-accent-soft" />standby</span>
         <span className="flex items-center gap-1.5"><i className="hatch-out h-3 w-3 rounded-sm border border-[#f3c4c0]" />can&apos;t fly</span>
         <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded-sm ring-2 ring-foreground ring-offset-1" />today</span>
@@ -307,7 +324,12 @@ export default function CrewPage() {
   const trips = data.trips.ok ? data.trips.value.trips ?? [] : [];
   const offers = data.offers.ok ? data.offers.value.offers_to_me ?? [] : [];
   const earlier = data.offers.ok ? data.offers.value.earlier_offers ?? [] : [];
-  const start = me.days?.first ?? today;
+  // From today (the demo starts the evening before its first day) to the demo's last day.
+  const first = me.days?.first ?? today;
+  const start = today < first ? today : first;
+  const last = me.days?.last ?? addDays(start, DAYS - 1);
+  const span = Math.max(DAYS, Math.round((Date.parse(`${last}T00:00:00Z`) - Date.parse(`${start}T00:00:00Z`)) / 86_400_000) + 1);
+  const waiting = earlier.filter((e) => e.waiting_for_approval);
   const next = trips.find((t) => t.days.some((d) => d >= today));
 
   return (
@@ -347,10 +369,20 @@ export default function CrewPage() {
         } />
       ))}
 
+      {waiting.map((e) => (
+        <div key={e.callout_id} role="status" className={cx("mb-5 flex items-start gap-2.5 rounded-lg px-4 py-3 text-sm", AWAITING)}>
+          <Timer size={16} className="mt-0.5 shrink-0" />
+          <span>
+            You accepted <b className="font-mono">{e.trip_id}</b> as {e.seat}
+            {e.days?.length ? ` (${e.days.map(short).join(", ")})` : ""}. It is <b>yet to be approved</b>: those days show in yellow on your calendar, and turn into a normal duty once an approver approves it.
+          </span>
+        </div>
+      ))}
+
       <div className="grid gap-5 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <div className="flex min-w-0 flex-col gap-5">
-          <Panel title="My calendar" icon={<CalendarDays size={15} />} action={`${short(start)} – ${short(addDays(start, DAYS - 1))}`}>
-            <Calendar trips={trips} p={p} today={today} start={start} />
+          <Panel title="My calendar" icon={<CalendarDays size={15} />} action={`${short(start)} – ${short(addDays(start, span - 1))}`}>
+            <Calendar trips={trips} p={p} today={today} start={start} days={span} waiting={waiting} />
           </Panel>
           <Panel flush title="My flights" icon={<Plane size={15} />} action={plural(trips.length, "trip")}>
             <Part of={data.trips}>
@@ -468,7 +500,8 @@ export default function CrewPage() {
                     </div>
                     <p className={cx("mt-1 text-xs", e.outcome === "accepted" ? "text-ok-ink" : e.outcome === "no answer" ? "text-pending-ink" : "text-muted")}>
                       {OUTCOME[e.outcome] ?? e.outcome}
-                      {e.answered_at && e.outcome !== "no answer" ? ` at ${short(e.answered_at)}` : e.outcome === "no answer" ? ` (answer was due by ${short(e.answer_by)})` : ""}. Seat now {e.seat_now.replace("_", " ")}.
+                      {e.answered_at && e.outcome !== "no answer" ? ` at ${short(e.answered_at)}` : e.outcome === "no answer" ? ` (answer was due by ${short(e.answer_by)})` : ""}.{" "}
+                      {e.waiting_for_approval ? "Yet to be approved: yellow on your calendar until an approver approves it." : `Seat now ${e.seat_now.replace("_", " ")}.`}
                     </p>
                     {e.your_remark && <p className="mt-1 text-xs italic text-muted">“{e.your_remark}”</p>}
                   </li>
